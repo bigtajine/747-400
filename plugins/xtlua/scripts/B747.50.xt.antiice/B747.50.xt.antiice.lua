@@ -81,6 +81,7 @@ simDR_flap_deploy_ratio             = find_dataref("laminar/B747/cablecontrols/f
 simDR_all_wheels_on_ground          = find_dataref("sim/flightmodel/failures/onground_any")
 simDR_ice_detected                  = find_dataref("sim/cockpit2/annunciators/ice")
 simDR_OAT_degc                      = find_dataref("sim/cockpit2/temperature/outside_air_temp_degc")
+simDR_TAT_degc                      = find_dataref("sim/cockpit2/temperature/outside_air_LE_temp_degc")
 simDR_AOA_heat_fail_L               = find_dataref("sim/flightmodel/failures/aoa_ice")
 simDR_AOA_heat_fail_R               = find_dataref("sim/flightmodel/failures/aoa_ice2")
 simDR_pitot_heat_fail_capt          = find_dataref("sim/operation/failures/rel_ice_pitot_heat1")
@@ -491,13 +492,13 @@ function B747_antiice_EICAS_msg()
         or simDR_engine_nacelle_heat_on[2] > 0
         or simDR_engine_nacelle_heat_on[3] > 0)
         or
-        (simDR_wing_heat_on_L == 1 or simDR_wing_heat_on_R))
+        (simDR_wing_heat_on_L == 1 or simDR_wing_heat_on_R == 1))
         and
-        simDR_OAT_degc > 12.0
+        simDR_TAT_degc > 12.0
         and
         simDR_ice_detected == 0
     then
-        B747DR_CAS_advisory_status[7] = 0
+        B747DR_CAS_advisory_status[7] = 1
     else
         B747DR_CAS_advisory_status[7] = 0
     end
