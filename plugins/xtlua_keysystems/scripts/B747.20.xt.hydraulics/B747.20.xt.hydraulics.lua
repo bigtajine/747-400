@@ -68,10 +68,6 @@ simDR_engine01_hyd_pump_fail    = find_dataref("sim/operation/failures/rel_hydpm
 simDR_engine02_hyd_pump_fail    = find_dataref("sim/operation/failures/rel_hydpmp2")
 simDR_engine03_hyd_pump_fail    = find_dataref("sim/operation/failures/rel_hydpmp3")
 simDR_engine04_hyd_pump_fail    = find_dataref("sim/operation/failures/rel_hydpmp4")
-simDR_hyd_press_1               = find_dataref("sim/cockpit2/hydraulics/indicators/hydraulic_pressure_1")
-simDR_hyd_press_2               = find_dataref("sim/cockpit2/hydraulics/indicators/hydraulic_pressure_2")
-simDR_hyd_fluid_level           = find_dataref("sim/cockpit2/hydraulics/indicators/hydraulic_fluid_ratio_1")
-simDR_hyd_fluid_level2          = find_dataref("sim/cockpit2/hydraulics/indicators/hydraulic_fluid_ratio_2")
 simDR_parking_brake_ratio       = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
 B747DR_parking_brake_ratio = find_dataref("laminar/B747/flt_ctrls/parking_brake_ratio")
 

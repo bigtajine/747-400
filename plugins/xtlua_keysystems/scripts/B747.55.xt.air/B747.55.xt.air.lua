@@ -141,7 +141,6 @@ simDR_press_diff_psi                = find_dataref("sim/cockpit2/pressurization/
 simDR_apu_N1_pct                    = find_dataref("sim/cockpit2/electrical/APU_N1_percent")
 simDR_engine_running                = find_dataref("sim/flightmodel/engine/ENGN_running")
 B747DR_display_N1				= find_dataref("laminar/B747/engines/display_N1")
-B747DR_display_N2				= find_dataref("laminar/B747/engines/display_N2")
 
 
 

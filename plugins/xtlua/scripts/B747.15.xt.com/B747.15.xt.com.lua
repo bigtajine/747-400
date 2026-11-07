@@ -92,7 +92,6 @@ simDR_audio_radio_vol_nav1  = find_dataref("sim/cockpit2/radios/actuators/audio_
 simDR_audio_radio_vol_nav2  = find_dataref("sim/cockpit2/radios/actuators/audio_volume_nav2")
 simDR_audio_radio_vol_adf1  = find_dataref("sim/cockpit2/radios/actuators/audio_volume_adf1")
 simDR_audio_radio_vol_adf2  = find_dataref("sim/cockpit2/radios/actuators/audio_volume_adf2")
-simDR_audio_radio_vol_dme   = find_dataref("sim/cockpit2/radios/actuators/audio_volume_dme")
 simDR_audio_radio_vol_mark  = find_dataref("sim/cockpit2/radios/actuators/audio_volume_mark")
 
 

@@ -12,9 +12,7 @@ simDR_vvi_fpm_pilot = find_dataref("sim/cockpit2/gauges/indicators/vvi_fpm_pilot
 simDR_pressureAlt1	= find_dataref("sim/cockpit2/gauges/indicators/altitude_ft_pilot")
 simDR_eng_fuel_flow_kg_sec = find_dataref("sim/cockpit2/engine/indicators/fuel_flow_kg_sec")
 B747DR_ap_flightPhase = find_dataref("laminar/B747/autopilot/flightPhase")
-B747DR_fms_setCurrent = find_dataref("xtlua/currentFMS")
 B747DR_ap_lnavHeading_mode     	= find_dataref("laminar/B747/autopilot/lnavHeading_mode")
-B747DR_acfType               = find_dataref("laminar/B747/acfType")
 B747DR_payload_weight               = find_dataref("sim/flightmodel/weight/m_fixed")
 simDR_acf_m_jettison  		=find_dataref("sim/aircraft/weight/acf_m_jettison")
 simDR_m_jettison  		=find_dataref("sim/flightmodel/weight/m_jettison")
@@ -155,22 +153,13 @@ ss=find_dataref("sim/cockpit2/clock_timer/zulu_time_seconds")
 simDR_bus_volts               = find_dataref("sim/cockpit2/electrical/bus_volts")
 simDR_startup_running               = find_dataref("sim/operation/prefs/startup_running")
 
-simDR_instrument_brightness_switch  = find_dataref("sim/cockpit2/switches/instrument_brightness_ratio")
-simDR_instrument_brightness_ratio   = find_dataref("sim/cockpit2/electrical/instrument_brightness_ratio_manual")
 
-simDR_radio_nav_freq_Mhz            = find_dataref("sim/cockpit2/radios/actuators/nav_frequency_Mhz")
-simDR_radio_nav_freq_khz            = find_dataref("sim/cockpit2/radios/actuators/nav_frequency_khz")
 simDR_radio_nav_freq_hz             = find_dataref("sim/cockpit2/radios/actuators/nav_frequency_hz")
 
-simDR_radio_nav_course_deg          = find_dataref("sim/cockpit2/radios/actuators/nav_course_deg_mag_pilot")
 simDR_radio_nav_obs_deg             = find_dataref("sim/cockpit2/radios/actuators/nav_obs_deg_mag_pilot")
-simDR_radio_nav1_obs_deg             = find_dataref("sim/cockpit/radios/nav1_obs_degt")
-simDR_radio_nav2_obs_deg             = find_dataref("sim/cockpit/radios/nav2_obs_degt")
 simDR_radio_nav_horizontal          = find_dataref("sim/cockpit2/radios/indicators/nav_display_horizontal")
 simDR_radio_nav_hasDME              = find_dataref("sim/cockpit2/radios/indicators/nav_has_dme")
 simDR_radio_nav_radial		    = find_dataref("sim/cockpit2/radios/indicators/nav_bearing_deg_mag")
-simDR_radio_nav01_ID                = find_dataref("sim/cockpit2/radios/indicators/nav1_nav_id")
-simDR_radio_nav02_ID                = find_dataref("sim/cockpit2/radios/indicators/nav2_nav_id")
 simDR_radio_nav03_ID                = find_dataref("sim/cockpit2/radios/indicators/nav3_nav_id")
 simDR_radio_nav04_ID                = find_dataref("sim/cockpit2/radios/indicators/nav4_nav_id")
 
@@ -183,9 +172,7 @@ navAidsJSON   = find_dataref("xtlua/navaids")
 fmsJSON = find_dataref("xtlua/fms")
 fmsFlightPlan = find_dataref("xtlua/fltpln")
 
-B747DR_fms1_display_mode            = find_dataref("laminar/B747/fms1/display_mode")
 
-B747DR_init_fmsL_CD                 = find_dataref("laminar/B747/fmsL/init_CD")
 ilsData=deferred_dataref("laminar/B747/radio/ilsData", "string")
 acars=deferred_dataref("laminar/B747/comm/acars","number")  
 toderate=deferred_dataref("laminar/B747/engine/derate/TO","number") 
@@ -195,7 +182,6 @@ B747DR_FMSdata=deferred_dataref("laminar/B747/fms/data", "string")
 B747DR_ap_vnav_state                = find_dataref("laminar/B747/autopilot/vnav_state")
 simDR_autopilot_vs_status          = find_dataref("laminar/B747/autopilot/vvi_status")
 B747BR_totalDistance 			= find_dataref("laminar/B747/autopilot/dist/remaining_distance")
-B747BR_nextDistanceInFeet 		= find_dataref("laminar/B747/autopilot/dist/next_distance_feet")
 B747BR_cruiseAlt 			= find_dataref("laminar/B747/autopilot/dist/cruise_alt")
 B747BR_tod				= find_dataref("laminar/B747/autopilot/dist/top_of_descent")
 B747BR_toc				= find_dataref("laminar/B747/autopilot/dist/distance_to_toc")
@@ -207,21 +193,13 @@ B747DR_airspeed_Vmc = find_dataref("laminar/B747/airspeed/Vmc")
 B747DR_ap_ATT     	                = find_dataref("laminar/B747/autopilot/att_rate")
 
 B747DR_efis_min_ref_alt_capt_sel_dial_pos       = find_dataref("laminar/B747/efis/min_ref_alt/capt/sel_dial_pos")
-B747DR_efis_ref_alt_capt_set_dial_pos           = find_dataref("laminar/B747/efis/ref_alt/capt/set_dial_pos")
-B747DR_efis_dh_reset_capt_switch_pos            = find_dataref("laminar/B747/efis/dh_reset/capt/switch_pos")
 B747DR_efis_baro_ref_capt_sel_dial_pos          = find_dataref("laminar/B747/efis/baro_ref/capt/sel_dial_pos")
 B747DR_efis_baro_std_capt_switch_pos            = find_dataref("laminar/B747/efis/baro_std/capt/switch_pos")
-B747DR_efis_baro_capt_set_dial_pos              = find_dataref("laminar/B747/efis/baro/capt/set_dial_pos")
-B747DR_efis_baro_capt_preselect                 = find_dataref("laminar/B747/efis/baro/capt/preselect")
 B747DR_efis_baro_alt_ref_capt                   = find_dataref("laminar/B747/efis/baro_ref/capt")
 
 B747DR_efis_min_ref_alt_fo_sel_dial_pos         = find_dataref("laminar/B747/efis/min_ref_alt/fo/sel_dial_pos")
-B747DR_efis_ref_alt_fo_set_dial_pos             = find_dataref("laminar/B747/efis/ref_alt/fo/set_dial_pos")
-B747DR_efis_dh_reset_fo_switch_pos              = find_dataref("laminar/B747/efis/dh_reset/fo/switch_pos")
 B747DR_efis_baro_ref_fo_sel_dial_pos            = find_dataref("laminar/B747/efis/baro_ref/fo/sel_dial_pos")
 B747DR_efis_baro_std_fo_switch_pos              = find_dataref("laminar/B747/efis/baro_std/fo/switch_pos")
-B747DR_efis_baro_fo_set_dial_pos                = find_dataref("laminar/B747/efis/baro/fo/set_dial_pos")
-B747DR_efis_baro_fo_preselect                   = find_dataref("laminar/B747/efis/baro/fo/preselect")
 B747DR_efis_baro_alt_ref_fo                     = find_dataref("laminar/B747/efis/baro_ref/fo")
 
 
@@ -259,7 +237,6 @@ simDR_nd_mode_dial_capt		= find_dataref("laminar/B747/nd/mode/capt/sel_dial_pos"
 simDR_nd_mode_dial_fo			= find_dataref("laminar/B747/nd/mode/fo/sel_dial_pos")
 simDR_nd_center_dial_capt		= find_dataref("laminar/B747/nd/map_center/capt")
 simDR_nd_center_dial_fo			= find_dataref("laminar/B747/nd/map_center/fo")
-simDR_EFIS_map_mode                 = find_dataref("sim/cockpit2/EFIS/map_mode")
 simDR_EFIS_map_range                = find_dataref("sim/cockpit2/EFIS/map_range")
 
 simDR_groundspeed			= find_dataref("sim/flightmodel2/position/groundspeed")
@@ -273,8 +250,6 @@ simDR_air_temp		= find_dataref("sim/cockpit2/temperature/outside_air_temp_degc")
 simDR_aircraft_hdg		 	= find_dataref("sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_pilot")
 
 --WB CG Info
-simDR_cgZ_ref_point			= find_dataref("sim/aircraft/weight/acf_cgZ_original")
-simDR_cgz_ref_to_default	= find_dataref("sim/flightmodel/misc/cgz_ref_to_default")
 simDR_empty_weight			= find_dataref("sim/aircraft/weight/acf_m_empty")
 simDR_fuel_qty				= find_dataref("sim/flightmodel/weight/m_fuel")
 simDR_cg_adjust				= find_dataref("sim/flightmodel/misc/cgz_ref_to_default")
@@ -1170,7 +1145,6 @@ function do_flight_start()
 end
 
 debug_fms     = find_dataref("laminar/B747/debug/fms")
-fms_style = find_dataref("sim/cockpit2/radios/indicators/fms_cdu1_style_line2")
 lastNotify=0
 function setNotifications()
   local diff=simDRTime-lastNotify

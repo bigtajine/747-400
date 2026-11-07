@@ -93,10 +93,7 @@ B747DR_throttle						= deferred_dataref("laminar/B747/engine/throttle", "array[4
 B747DR_throttle_reversor			= deferred_dataref("laminar/B747/engine/throttle_reversor", "array[4]")
 simDR_startup_running               	= find_dataref("sim/operation/prefs/startup_running")
 simDR_all_wheels_on_ground          	= find_dataref("sim/flightmodel/failures/onground_any")
-simDR_autopilot_servos_on           	= find_dataref("laminar/B747/autopilot/servos_on")
 simDR_AHARS_roll_deg_pilot          	= find_dataref("sim/cockpit2/gauges/indicators/roll_AHARS_deg_pilot")
-simDR_autopilot_TOGA_vert_status    	= find_dataref("sim/cockpit2/autopilot/TOGA_status")
-simDR_autopilot_TOGA_lat_status     	= find_dataref("sim/cockpit2/autopilot/TOGA_lateral_status")
 B747DR_autopilot_TOGA_status     	= deferred_dataref("laminar/B747/autopilot/TOGA_status","number")
 B747DR_autothrottle_active	= find_dataref("laminar/B747/engines/autothrottle_active")
 
@@ -109,9 +106,6 @@ simDR_livery  				=find_dataref("sim/aircraft/view/acf_livery_path")
 simDR_acf_m_jettison  				=find_dataref("sim/aircraft/weight/acf_m_jettison")
 --B747DR_autothrottle_armed           = find_dataref("laminar/B747/autothrottle/armed")
 
-B747DR_autopilot_cmd_L_mode         = find_dataref("laminar/B747/autopilot/cmd_L_mode/status")
-B747DR_autopilot_cmd_C_mode         = find_dataref("laminar/B747/autopilot/cmd_C_mode/status")
-B747DR_autopilot_cmd_R_mode         = find_dataref("laminar/B747/autopilot/cmd_R_mode/status")
 
 B747DR_master_warning               = find_dataref("laminar/B747/warning/master_warning")
 B747DR_master_caution               = find_dataref("laminar/B747/warning/master_caution")
@@ -195,7 +189,6 @@ B747DR_ovhd_map_light_y_fo          = deferred_dataref("laminar/B747/misc/ovhd_m
 --** 				              FIND CUSTOM COMMANDS                   	    	 **--
 --*************************************************************************************--
 
-B747CMD_ap_reset 					= find_command("laminar/B747/autopilot/mode_reset")
 --B747CMD_ap_att_mode					= find_command("laminar/B747/autopilot/att_mode")
 
 
@@ -203,9 +196,6 @@ B747CMD_ap_reset 					= find_command("laminar/B747/autopilot/mode_reset")
 --*************************************************************************************--
 --** 				             X-PLANE COMMAND HANDLERS               	    	 **--
 --*************************************************************************************--
-simDR_autopilot_alt_hold_status         = find_dataref("laminar/B747/autopilot/altitude_hold_status")
-simDR_autopilot_vs_status          = find_dataref("laminar/B747/autopilot/vvi_status")
-simDR_autopilot_flch_status         	= find_dataref("laminar/B747/autopilot/speed_status")
 -- REBUILT AFDS: generic X-Plane FLCH / V/S bindings press the MCP buttons
 B747CMD_mcp_flch = find_command("laminar/B747/autopilot/button_switch/flch_mode")
 B747CMD_mcp_vs   = find_command("laminar/B747/autopilot/button_switch/vs_mode")
@@ -443,7 +433,6 @@ end
 --** 				                 FIND X-PLANE COMMANDS                   	     **--
 --*************************************************************************************--
 
-simCMD_autopilot_heading_mode       = find_command("sim/autopilot/heading_hold")
 
 
 

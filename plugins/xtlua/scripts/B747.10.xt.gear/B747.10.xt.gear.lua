@@ -86,7 +86,6 @@ simDR_joy_axis		    = find_dataref("sim/joystick/joy_mapped_axis_value")
 local seenTakeoffThrust=false
 simDR_OAT_degC              = find_dataref("sim/cockpit2/temperature/outside_air_temp_degc")
 simDR_tire_rot_speed        = find_dataref("sim/flightmodel2/gear/tire_rotation_speed_rad_sec")
-B747DR_parking_brake_ratio  = find_dataref("laminar/B747/flt_ctrls/parking_brake_ratio")
 simDR_parking_brake_ratio   = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
 simDR_brake_override= find_dataref("sim/operation/override/override_toe_brakes")
 simDR_brake_sweep= find_dataref("sim/cockpit2/controls/wingsweep_ratio")
@@ -104,7 +103,6 @@ simDR_reverser_deployed			= find_dataref("sim/cockpit2/annunciators/reverser_dep
 simDR_throttle_ratio_all		= find_dataref("sim/cockpit2/engine/actuators/throttle_ratio_all")
 simDR_left_brake_add			= find_dataref("sim/flightmodel/controls/l_brake_add")
 simDR_right_brake_add			= find_dataref("sim/flightmodel/controls/r_brake_add")
-simDR_speedbrake_ratio			= find_dataref("sim/flightmodel2/controls/speedbrake_ratio")
 B747DR_speedbrake_lever_changed	= find_dataref("laminar/B747/flt_ctrls/speedbrake_lever_changed", "number")
 --Marauder28
 

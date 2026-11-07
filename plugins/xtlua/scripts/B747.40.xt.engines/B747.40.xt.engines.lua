@@ -104,7 +104,6 @@ local B747_ref_thr_limit = {
 }
 toderate=deferred_dataref("laminar/B747/engine/derate/TO","number") 
 
-throttlederate=find_dataref("sim/aircraft/engine/acf_throtmax_FWD")
 simDR_version=find_dataref("sim/version/xplane_internal_version")
 --Simulator Config Options
 simConfigData = {}
@@ -129,18 +128,12 @@ simDR_engine_throttle_jet       = find_dataref("sim/cockpit2/engine/actuators/th
 simDR_engine_throttle_jet_all   = find_dataref("sim/cockpit2/engine/actuators/throttle_jet_rev_ratio_all")
 --simCMD_autopilot_autothrottle_on		= find_command("sim/autopilot/autothrottle_on")
 --simCMD_autopilot_autothrottle_off		= find_command("sim/autopilot/autothrottle_off")
-simCMD_autopilot_glideslope_mode		= find_command("sim/autopilot/glide_slope")
 B747DR_ap_approach_mode     	= deferred_dataref("laminar/B747/autopilot/approach_mode", "number")
 
-simCMD_autopilot_appr_mode					= find_command("sim/autopilot/approach")
 simDR_autopilot_TOGA_vert_status    	= find_dataref("sim/cockpit2/autopilot/TOGA_status")
-simDR_autopilot_TOGA_lat_status     	= find_dataref("sim/cockpit2/autopilot/TOGA_lateral_status")
 B747DR_autopilot_TOGA_status     	= deferred_dataref("laminar/B747/autopilot/TOGA_status","number")
-simCMD_autopilot_TOGA_mode          = find_command("sim/autopilot/take_off_go_around")
 simDRTime					= find_dataref("sim/time/total_running_time_sec")
 B747DR_ap_lastCommand              		= deferred_dataref("laminar/B747/autopilot/lastCommand", "number")
-simDR_hydraulic_sys_press_01    = find_dataref("sim/operation/failures/hydraulic_pressure_ratio")
-simDR_hydraulic_sys_press_02    = find_dataref("sim/operation/failures/hydraulic_pressure_ratio2")
 
 simDR_engine_nacelle_heat_on    = find_dataref("sim/cockpit2/ice/ice_inlet_heat_on_per_engine")
 simDR_engine_starter_status     = find_dataref("sim/cockpit2/engine/actuators/ignition_key")				-- CHANGE TO STARTER IS RUNNING  ??
@@ -149,7 +142,6 @@ simDR_engine_igniter_on         = find_dataref("sim/cockpit2/engine/actuators/ig
 B747DR_display_N1				= find_dataref("laminar/B747/engines/display_N1")
 B747DR_display_N2				= find_dataref("laminar/B747/engines/display_N2")
 
-simDR_engine_EGT_degC           = find_dataref("sim/cockpit2/engine/indicators/EGT_deg_C")
 simDR_engine_fuel_mix_ratio     = find_dataref("sim/cockpit2/engine/actuators/mixture_ratio")
 simDR_engine_oil_pressure       = find_dataref("sim/cockpit2/engine/indicators/oil_pressure_psi")
 simDR_engine_oil_temp           = find_dataref("sim/cockpit2/engine/indicators/oil_temperature_deg_C")
@@ -159,7 +151,6 @@ simDR_engine_fire		= find_dataref("sim/flightmodel2/engines/is_on_fire")
 simDR_flap_deploy_ratio         = find_dataref("laminar/B747/cablecontrols/flap_ratio")
 --simDR_allThrottle           	= find_dataref("sim/cockpit2/engine/actuators/throttle_ratio_all")
 simDR_engine_running            = find_dataref("sim/flightmodel/engine/ENGN_running")
-simDR_apu_running            	= find_dataref("sim/cockpit/engine/APU_running")
 
 simDR_thrust_rev_fail_01        = find_dataref("sim/operation/failures/rel_revers0")
 simDR_thrust_rev_fail_02        = find_dataref("sim/operation/failures/rel_revers1")
@@ -175,7 +166,6 @@ simDR_autopilot_TOGA_vert_status = find_dataref("sim/cockpit2/autopilot/TOGA_sta
 --*************************************************************************************--
 --** 				              FIND CUSTOM DATAREFS             			    	 **--
 --*************************************************************************************--
-B747DR_acfType               = find_dataref("laminar/B747/acfType")
 B747DR_button_switch_position               = find_dataref("laminar/B747/button_switch/position")
 B747DR_toggle_switch_position               = find_dataref("laminar/B747/toggle_switch/position")
 
@@ -238,17 +228,12 @@ simCMD_starter_off_4        = find_command("sim/starters/shut_down_4")
 --** 				               FIND CUSTOM COMMANDS              			     **--
 --*************************************************************************************--
 
-B747CMD_engine_start_switch1        = find_command("laminar/B747/toggle_switch/engine_start1")
-B747CMD_engine_start_switch2        = find_command("laminar/B747/toggle_switch/engine_start2")
-B747CMD_engine_start_switch3        = find_command("laminar/B747/toggle_switch/engine_start3")
-B747CMD_engine_start_switch4        = find_command("laminar/B747/toggle_switch/engine_start4")
 
 B747CMD_engine_start_switch1_off    = find_command("laminar/B747/toggle_switch/engine_start1_off")
 B747CMD_engine_start_switch2_off    = find_command("laminar/B747/toggle_switch/engine_start2_off")
 B747CMD_engine_start_switch3_off    = find_command("laminar/B747/toggle_switch/engine_start3_off")
 B747CMD_engine_start_switch4_off    = find_command("laminar/B747/toggle_switch/engine_start4_off")
 
-simCMD_ThrottleUp=find_command("sim/engines/throttle_up")
 
 
 

@@ -92,7 +92,6 @@ simDRTime                       = find_dataref("sim/time/total_running_time_sec"
 simDR_engine_running            = find_dataref("sim/flightmodel/engine/ENGN_running")
 
 simDR_aircraft_on_ground        = find_dataref("sim/flightmodel/failures/onground_any")
-simDR_aircraft_groundspeed      = find_dataref("sim/flightmodel/position/groundspeed")
 
 simDR_battery_on                = find_dataref("sim/cockpit2/electrical/battery_on")
 simDR_gpu_on                    = find_dataref("sim/cockpit/electrical/gpu_on")
@@ -108,10 +107,8 @@ B747DR_elec_apu_oil      	= deferred_dataref("laminar/B747/electrical/oil", "num
 
 simDR_generator_on              = find_dataref("sim/cockpit2/electrical/generator_on")
 simDR_generator_off              = find_dataref("sim/cockpit2/annunciators/generator_off")
-simDR_esys0              = find_dataref("sim/operation/failures/rel_esys")
 simDR_esys1              = find_dataref("sim/operation/failures/rel_esys2")
 simDR_esys2              = find_dataref("sim/operation/failures/rel_esys3")
-simDR_esys3              = find_dataref("sim/operation/failures/rel_esys4")
 
 
 

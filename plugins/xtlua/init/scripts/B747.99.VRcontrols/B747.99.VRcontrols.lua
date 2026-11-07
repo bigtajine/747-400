@@ -9,12 +9,6 @@ simCMD_viewLEFT					= find_command("sim/general/left")
 simCMD_viewRIGHT				= find_command("sim/general/right")
 simCMD_viewFWD					= find_command("sim/general/forward")
 simCMD_viewBACK					= find_command("sim/general/backward")
-simCMD_viewUPFast					= find_command("sim/general/up_fast")
-simCMD_viewDOWNFast					= find_command("sim/general/down_fast")
-simCMD_viewLEFTFast					= find_command("sim/general/left_fast")
-simCMD_viewRIGHTFast				= find_command("sim/general/right_fast")
-simCMD_viewFWDFast					= find_command("sim/general/forward_fast")
-simCMD_viewBACKFast					= find_command("sim/general/backward_fast")
 simDRTime=find_dataref("sim/time/total_running_time_sec")
 
 pilotSeatHotspot={}

@@ -16,7 +16,6 @@
 --Load helper files
 dofile("json/json.lua")
 dofile("B747.42.xt.EEC.tbls.lua")
-simDR_version=find_dataref("sim/version/xplane_internal_version")
 dofile("pid.lua")
 dofile("spool.lua")
 local SP = B744SPOOL
@@ -37,8 +36,6 @@ throttlePid.target=0
 throttlePid.input = 0
 throttlePid:compute()
 B747DR_pidthrottleP = find_dataref("laminar/B747/flt_ctrls/pid/throttle/p")
-B747DR_pidthrottleHP = find_dataref("laminar/B747/flt_ctrls/pid/throttle/highp")
-B747DR_pidthrottleLP = find_dataref("laminar/B747/flt_ctrls/pid/throttle/lowp")
 B747DR_pidthrottleI = find_dataref("laminar/B747/flt_ctrls/pid/throttle/i")
 B747DR_pidthrottleD = find_dataref("laminar/B747/flt_ctrls/pid/throttle/d")
 B747DR_pideccI = find_dataref("laminar/B747/flt_ctrls/pid/ecc/N1/i")
@@ -195,7 +192,6 @@ simDR_onGround				= find_dataref("sim/flightmodel/failures/onground_any")
 simDR_altitude				= find_dataref("sim/cockpit2/gauges/indicators/altitude_ft_pilot")
 simDR_temperature			= find_dataref("sim/cockpit2/temperature/outside_air_temp_degc")
 simDR_TAT					= find_dataref("sim/cockpit2/temperature/outside_air_LE_temp_degc")
-simDR_EPR					= find_dataref("sim/flightmodel/engine/ENGN_EPR")
 simDR_EPR_target_bug		= find_dataref("sim/cockpit2/engine/actuators/EPR_target_bug")
 simDR_N1					= find_dataref("sim/flightmodel/engine/ENGN_N1_")
 simDR_N1_target_bug			= find_dataref("sim/cockpit2/engine/actuators/N1_target_bug")
@@ -212,16 +208,13 @@ simDR_engn_thro_use			= find_dataref("sim/flightmodel/engine/ENGN_thro_use")
 simDR_throttle_max			= find_dataref("sim/aircraft/engine/acf_throtmax_FWD")
 simDR_acf_weight_total_kg   = find_dataref("sim/flightmodel/weight/m_total")
 simDR_ias_pilot				= find_dataref("sim/cockpit2/gauges/indicators/airspeed_kts_pilot")
-simDR_vvi_fpm_pilot        	= find_dataref("sim/cockpit2/gauges/indicators/vvi_fpm_pilot")
 simDR_tas_pilot				= find_dataref("sim/cockpit2/gauges/indicators/true_airspeed_kts_pilot")
 simDR_flap_ratio			= find_dataref("sim/cockpit2/controls/flap_ratio")
 
-simDR_flap_handle_ratio		= find_dataref("sim/cockpit2/controls/flap_handle_deploy_ratio")
 simDR_thrust_max			= find_dataref("sim/aircraft/engine/acf_tmax")
 simDR_thrust_max_engine			= find_dataref("sim/aircraft/engine/acf_tmax_per_engine")
 simDR_thrust_n				= find_dataref("sim/cockpit2/engine/indicators/thrust_dry_n")
 simDR_engine_anti_ice		= find_dataref("laminar/B747/antiice/nacelle/valve_pos")
-simDR_acceleration_kts_sec_pilot    = find_dataref("sim/cockpit2/gauges/indicators/airspeed_acceleration_kts_sec_pilot")
 simDR_engn_EGT_c			= find_dataref("sim/flightmodel/engine/ENGN_EGT_c")
 simDR_engine_high_idle_ratio	= find_dataref("sim/aircraft2/engine/high_idle_ratio")
 simDR_rpm					= find_dataref("sim/cockpit2/engine/indicators/engine_speed_rpm")
@@ -243,8 +236,6 @@ debug_ecc     = deferred_dataref("laminar/B747/debug/ecc", "number")
 *************************************************************************************
 ]]
 --simCMD_autopilot_autothrottle_off		= find_command("sim/autopilot/autothrottle_off")
-simCMD_ThrottleUp			= find_command("sim/engines/throttle_up")
-simCMD_ThrottleDown			= find_command("sim/engines/throttle_down")
 
 --[[
 *************************************************************************************
@@ -302,9 +293,6 @@ B747DR_ap_FMA_active_pitch_mode     	= deferred_dataref("laminar/B747/autopilot/
     9 = ALT
 --]]
 --[[mSparks, placeholder for RR displays]]
-simDR_engine_N1_pct                 = find_dataref("sim/cockpit2/engine/indicators/N1_percent")
-simDR_engine_N2_pct                 = find_dataref("sim/cockpit2/engine/indicators/N2_percent")
-simDR_engine_EPR					= find_dataref("sim/cockpit2/engine/indicators/EPR_ratio")
 --[[end mSparks]]
 
 B747DR_display_N1					= deferred_dataref("laminar/B747/engines/display_N1", "array[4]")

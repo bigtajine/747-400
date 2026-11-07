@@ -64,7 +64,6 @@ local B747_wheels_on_ground = 1
 local B747_last_sim_sb_handle_pos = 0
 B747_sb_manip_changed = deferred_dataref("laminar/B747/flt_ctrls/speedbrake_lever_changed", "number")
 simDR_radarAlt1           	= find_dataref("sim/cockpit2/gauges/indicators/radio_altimeter_height_ft_pilot")
-B747DR_fmc_notifications            = find_dataref("laminar/B747/fms/notification")
 
 
 --*************************************************************************************--
@@ -93,8 +92,6 @@ B747DR_engines_throttle_ind     = find_dataref("sim/cockpit2/engine/actuators/th
 --** 				               FIND CUSTOM COMMANDS              			     **--
 --*************************************************************************************--
 
-B747CMD_yaw_damper_upr = find_command("laminar/B747/button_switch/yaw_damper_upr")
-B747CMD_yaw_damper_lwr = find_command("laminar/B747/button_switch/yaw_damper_lwr")
 
 
 
@@ -105,14 +102,10 @@ B747CMD_yaw_damper_lwr = find_command("laminar/B747/button_switch/yaw_damper_lwr
 
 simDR_startup_running           = find_dataref("sim/operation/prefs/startup_running")
 
-simDR_innerslats_ratio  	= find_dataref("sim/flightmodel2/controls/slat1_deploy_ratio")
-simDR_outerslats_ratio  	= find_dataref("sim/flightmodel2/controls/slat2_deploy_ratio")
-simDR_autoslats_ratio  		= find_dataref("sim/aircraft/parts/acf_slatEQ")
 simDR_prop_mode                 = find_dataref("sim/cockpit2/engine/actuators/prop_mode")
 simDR_all_wheels_on_ground      = find_dataref("sim/flightmodel/failures/onground_any")
 B747DR_reverser_lockout            = deferred_dataref("laminar/B747/engines/reverser_lockout", "number")
 simDR_speedbrake_ratio_control  = find_dataref("sim/cockpit2/controls/speedbrake_ratio")
-simDR_flap_handle_deploy_ratio  = find_dataref("sim/cockpit2/controls/flap_handle_deploy_ratio")
 simDR_flap_ratio_control        = find_dataref("sim/cockpit2/controls/flap_ratio")                      -- FLAP HANDLE
 B747DR_flap_ratio               = deferred_dataref("laminar/B747/cablecontrols/flap_ratio", "number") -- USED FLAP HANDLE
 B747DR_flap_deployed_ratio        = find_dataref("laminar/B747/gauges/indicators/flap_deployed_ratio")
@@ -124,20 +117,17 @@ B747DR_yaw_damper_upr_on             = deferred_dataref("laminar/B747/flt_ctrls/
 B747DR_yaw_damper_lwr_on             = deferred_dataref("laminar/B747/flt_ctrls/yaw_damper_lwr_on", "number")
 simDR_flap_deploy_ratio         = find_dataref("laminar/B747/cablecontrols/flap_ratio")
 simDR_yaw_damper_on             = find_dataref("sim/cockpit2/switches/yaw_damper_on")
-simDR_gear_vert_defl            = find_dataref("sim/flightmodel2/gear/tire_vertical_deflection_mtr")
 simDR_gear_deploy_ratio         = find_dataref("sim/flightmodel2/gear/deploy_ratio")
 simDR_wing_flap1_deg            = find_dataref("sim/flightmodel2/wing/flap1_deg")
 B747DR_airspeed_flapsRef        = find_dataref("laminar/B747/airspeed/flapsRef")
 simDR_ind_airspeed_kts_pilot    = find_dataref("laminar/B747/gauges/indicators/airspeed_kts_pilot")
 
 B747DR_display_N1				= find_dataref("laminar/B747/engines/display_N1")
-B747DR_display_N2				= find_dataref("laminar/B747/engines/display_N2")
 simDR_radio_alt_height_capt     = find_dataref("sim/cockpit2/gauges/indicators/radio_altimeter_height_ft_pilot")
 
 simDR_tire_steer_deg        = find_dataref("sim/flightmodel2/gear/tire_steer_actual_deg")
 simDR_parking_brake_ratio       = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
 simDR_elevator_trim             = find_dataref("sim/flightmodel2/controls/elevator_trim")
-simDR_acf_weight_total_kg       = find_dataref("sim/flightmodel/weight/m_total")
 simDR_flap_control_fail         = find_dataref("sim/operation/failures/rel_flap_act")
 
 simDR_engine_throttle_jet_all   = find_dataref("sim/cockpit2/engine/actuators/throttle_jet_rev_ratio_all")
@@ -145,7 +135,6 @@ B747DR_throttle                 = deferred_dataref("laminar/B747/engine/throttle
 
 simDR_hyd_press_1_2             = find_dataref("laminar/B747/hydraulics/indicators/hydraulic_pressure_1_2_4")
 
-simDR_cg_adjust					= find_dataref("sim/flightmodel/misc/cgz_ref_to_default")
 --*************************************************************************************--
 --** 				        CREATE READ-ONLY CUSTOM DATAREFS               	         **--
 --*************************************************************************************--

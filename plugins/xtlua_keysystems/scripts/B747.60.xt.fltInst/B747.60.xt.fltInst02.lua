@@ -185,9 +185,7 @@ B747DR_CAS_advisory_status      = find_dataref("laminar/B747/CAS/advisory_status
 
 B747DR_elec_standby_power_sel_pos   = find_dataref("laminar/B747/electrical/standby_power/sel_dial_pos")
 
-B747DR_autothrottle_fail            	= find_dataref("laminar/B747/engines/autothrottle_fail")
 
-B747DR_toga_mode                 = find_dataref("sim/cockpit2/autopilot/TOGA_status")
 --*************************************************************************************--
 --** 				        CREATE READ-ONLY CUSTOM DATAREFS               	         **--
 --*************************************************************************************--
@@ -432,9 +430,7 @@ simCMD_clock_is_gmt             = find_command("sim/instruments/timer_is_GMT")
 
 simCMD_EFIS_wxr                 = find_command("sim/instruments/EFIS_wxr")
 simCMD_EFIS_wxr_fo                 = find_command("sim/instruments/EFIS_copilot_wxr")
-simCMD_EFIS_tcas                = find_command("sim/instruments/EFIS_tcas")
 
-simCMD_EFIS_fix                 = find_command("sim/instruments/EFIS_fix")
 
 simDR_EFIS_apt			= find_dataref("sim/cockpit2/EFIS/EFIS_airport_on")
 simDR_EFIS_fix 			= find_dataref("sim/cockpit2/EFIS/EFIS_fix_on")
@@ -450,7 +446,6 @@ simDR_EFIS_ndb_fo 			= find_dataref("sim/cockpit2/EFIS/EFIS_ndb_on_copilot")
 --** 				               FIND CUSTOM COMMANDS              			     **--
 --*************************************************************************************--
 
-B747CMD_autothrottle_disarm                 = find_command("laminar/B747/authrottle_disarm")
 
 
 

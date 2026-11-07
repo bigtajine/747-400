@@ -15,8 +15,6 @@ simDR_longitude				= find_dataref("sim/flightmodel/position/longitude")
 simDR_true_heading			= find_dataref("sim/flightmodel/position/psi")
 simDR_AHARS_roll_heading_deg_pilot          	= find_dataref("sim/cockpit2/gauges/indicators/roll_AHARS_deg_pilot")
 simDR_AHARS_pitch_heading_deg_pilot           = find_dataref("sim/cockpit2/gauges/indicators/pitch_AHARS_deg_pilot")
-simDR_mag_heading			= find_dataref("sim/cockpit/gyros/psi_ind_ahars_pilot_degm")
-simDR_ground_track			= find_dataref("sim/cockpit2/gauges/indicators/ground_track_mag_pilot")
 simDR_groundspeed			                      = find_dataref("sim/flightmodel2/position/groundspeed")
 simDR_vvi_fpm_pilot        	                = find_dataref("sim/cockpit2/gauges/indicators/vvi_fpm_pilot")
 simDR_autopilot_altitude_ft    		          = find_dataref("laminar/B747/autopilot/altitude_dial_ft")
@@ -45,11 +43,7 @@ simDR_autopilot_altitude_ft = find_dataref("laminar/B747/autopilot/altitude_dial
 
 
 
-B747BR_totalDistance 			= find_dataref("laminar/B747/autopilot/dist/remaining_distance")
 B747BR_eod_index 			= find_dataref("laminar/B747/autopilot/dist/eod_index", "number")
-B747BR_nextDistanceInFeet 		= find_dataref("laminar/B747/autopilot/dist/next_distance_feet")
-B747BR_cruiseAlt 			= find_dataref("laminar/B747/autopilot/dist/cruise_alt")
-B747BR_tod				= find_dataref("laminar/B747/autopilot/dist/top_of_descent")
 B747BR_todLat				= find_dataref("laminar/B747/autopilot/dist/top_of_descent_lat", "number")
 B747BR_todLong				= find_dataref("laminar/B747/autopilot/dist/top_of_descent_long", "number")
 B747BR_vnavProfile 			= find_dataref("laminar/B747/autopilot/dist/vnavProfile")

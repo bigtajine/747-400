@@ -22,7 +22,6 @@ B747DR_fmc_cockpit_seats_hide	= deferred_dataref("laminar/B747/fmc/cockpit_seats
 
 acarsOnlineDataref = find_dataref("autoatc/acars/online")
 B747DR_acarsProvider = deferred_dataref("laminar/B747/acars/systemProvider", "number")
-B747DR_acars = find_dataref("laminar/B747/comm/acars")
 fmsFunctions={}
 dofile("acars/acars.lua")
 

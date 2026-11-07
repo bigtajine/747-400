@@ -71,17 +71,14 @@ end
 simDR_version=find_dataref("sim/version/xplane_internal_version")
 simDR_startup_running               = find_dataref("sim/operation/prefs/startup_running")
 simDR_engine_nacelle_heat_on        = find_dataref("sim/cockpit2/ice/ice_inlet_heat_on_per_engine")
-simDR_wing_heat_on                  = find_dataref("sim/cockpit2/ice/ice_surfce_heat_on")
 simDR_wing_heat_on_L                = find_dataref("sim/cockpit2/ice/ice_surfce_heat_left_on")
 simDR_wing_heat_on_R                = find_dataref("sim/cockpit2/ice/ice_surfce_heat_right_on")
 simDR_window_heat_on                = find_dataref("sim/cockpit2/ice/ice_window_heat_on")
 simDR_window_heat_fail              = find_dataref("sim/operation/failures/rel_ice_window_heat")
 simDR_windshield_wiper_speed        = find_dataref("sim/cockpit2/switches/wiper_speed_switch")
 simDR_windshield_wiper_speedXP11        = find_dataref("sim/cockpit2/switches/wiper_speed")
-simDR_flap_deploy_ratio             = find_dataref("laminar/B747/cablecontrols/flap_ratio")
 simDR_all_wheels_on_ground          = find_dataref("sim/flightmodel/failures/onground_any")
 simDR_ice_detected                  = find_dataref("sim/cockpit2/annunciators/ice")
-simDR_OAT_degc                      = find_dataref("sim/cockpit2/temperature/outside_air_temp_degc")
 simDR_TAT_degc                      = find_dataref("sim/cockpit2/temperature/outside_air_LE_temp_degc")
 simDR_AOA_heat_fail_L               = find_dataref("sim/flightmodel/failures/aoa_ice")
 simDR_AOA_heat_fail_R               = find_dataref("sim/flightmodel/failures/aoa_ice2")
@@ -113,10 +110,8 @@ B747DR_engine3_bleed_air_start_valve_pos  = find_dataref("laminar/B747/air/engin
 B747DR_engine4_bleed_air_start_valve_pos  = find_dataref("laminar/B747/air/engine4/bleed_start_valve_pos")
 
 B747DR_duct_pressure_L              = find_dataref("laminar/B747/air/duct_pressure_L")
-B747DR_duct_pressure_C              = find_dataref("laminar/B747/air/duct_pressure_C")
 B747DR_duct_pressure_R              = find_dataref("laminar/B747/air/duct_pressure_R")
 
-B747DR_CAS_warning_status           = find_dataref("laminar/B747/CAS/warning_status")
 B747DR_CAS_caution_status           = find_dataref("laminar/B747/CAS/caution_status")
 B747DR_CAS_advisory_status          = find_dataref("laminar/B747/CAS/advisory_status")
 

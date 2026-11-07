@@ -70,23 +70,6 @@ annun.b = {}
 --*************************************************************************************--
 simDR_version=find_dataref("sim/version/xplane_internal_version")
 simDR_shadow			    = find_dataref("sim/private/controls/shadow/total_fade_ratio")
-simDR_headX=find_dataref("sim/graphics/view/pilots_head_x")
-simDR_headY=find_dataref("sim/graphics/view/pilots_head_y")
-simDR_headZ=find_dataref("sim/graphics/view/pilots_head_z")
-simDR_headpsi=find_dataref("sim/graphics/view/pilots_head_psi")
-simDR_headpitch=find_dataref("sim/graphics/view/pilots_head_the")
-simDR_photoBias			    = find_dataref("sim/private/controls/photometric/ev100_bias")
-simDR_capt_visor_lr			    = find_dataref("laminar/B747/misc/sun_visor/left_right/capt") --left/right
-simDR_capt_visor_ud			    = find_dataref("laminar/B747/toggle_switch/position[31]") --up/down
-simDR_fo_visor_lr			    = find_dataref("laminar/B747/misc/sun_visor/left_right/fo") --left/right
-simDR_fo_visor_ud			    = find_dataref("laminar/B747/toggle_switch/position[32]") --up/down
-simDR_contrast			    = find_dataref("sim/private/controls/tonemap/contrast")
-simDR_light_storage			    = find_dataref("sim/private/controls/photometric/light_storage_scale")
-simDR_tone_mode			    = find_dataref("sim/private/controls/tonemap/mode")
-simDR_exposure_fusion			    = find_dataref("sim/private/controls/tonemap/exposure_fusion")
-simDR_ev100			    = find_dataref("sim/private/controls/photometric/ev100")
-simDR_sun_pitch			    = find_dataref("sim/graphics/scenery/sun_pitch_degrees")
-simDR_view_pitch			    = find_dataref("sim/graphics/view/view_pitch")
 simDR_startup_running               = find_dataref("sim/operation/prefs/startup_running")
 simDR_percent_lights_on             = find_dataref("sim/graphics/scenery/percent_lights_on")
 simDR_ai_flies_aircraft				= find_dataref("sim/operation/prefs/ai_flies_aircraft")
@@ -135,12 +118,10 @@ simDR_hyd_fluid_level_04            = find_dataref("laminar/B747/hydraulics/res_
 --simDR_annun_master_caution          = find_dataref("sim/cockpit2/annunciators/master_caution")
 --simDR_annun_master_warning          = find_dataref("sim/cockpit2/annunciators/master_warning")
 simDR_annun_generator_off           = find_dataref("sim/cockpit2/annunciators/generator_off")
-simDR_yaw_damper_annun              = find_dataref("sim/cockpit2/annunciators/yaw_damper")
 B747DR_yaw_damper_upr_on             = deferred_dataref("laminar/B747/flt_ctrls/yaw_damper_upr_on", "number")
 B747DR_yaw_damper_lwr_on             = deferred_dataref("laminar/B747/flt_ctrls/yaw_damper_lwr_on", "number")
 --simDR_bleed_air_off                 = find_dataref("sim/cockpit2/annunciators/bleed_air_off")
 --simDR_bleed_air_mode                = find_dataref("sim/cockpit2/pressurization/actuators/bleed_air_mode")
-simDR_annun_GPWS                    = find_dataref("sim/cockpit2/annunciators/GPWS")
 
 simDR_generator_fail_01             = find_dataref("sim/operation/failures/rel_genera0")
 simDR_generator_fail_02             = find_dataref("sim/operation/failures/rel_genera1")
@@ -163,28 +144,10 @@ simDR_gear_deploy_ratio             = find_dataref("sim/flightmodel2/gear/deploy
 simDR_aircraft_altitude             = find_dataref("sim/cockpit2/gauges/indicators/altitude_ft_pilot")
 simDR_cabin_altitude                = find_dataref("sim/cockpit2/pressurization/indicators/cabin_altitude_ft")
 
-simDR_autopilot_servos_on           	= find_dataref("laminar/B747/autopilot/servos_on")
-B747DR_autothrottle_active	= find_dataref("laminar/B747/engines/autothrottle_active")
 
-simDR_autopilot_fms_vnav_status			= find_dataref("sim/cockpit2/autopilot/fms_vnav")
-B747DR_ap_FMA_active_pitch_mode     	= find_dataref("laminar/B747/autopilot/FMA/active_pitch_mode")
-simDR_autopilot_flch_status         	= find_dataref("laminar/B747/autopilot/speed_status")
-simDR_autopilot_heading_hold_status     = find_dataref("sim/cockpit2/autopilot/heading_hold_status")
-simDR_autopilot_vs_status           	= find_dataref("laminar/B747/autopilot/vvi_status")
-simDR_autopilot_alt_hold_status         = find_dataref("laminar/B747/autopilot/altitude_hold_status")
-B747DR_ap_approach_mode     	= find_dataref("laminar/B747/autopilot/approach_mode")
 --simDR_autopilot_nav_status          = find_dataref("sim/cockpit2/autopilot/nav_status")
 --simDR_autopilot_gs_status           = find_dataref("sim/cockpit2/autopilot/glideslope_status")
-simDR_autopilot_nav_status = find_dataref("laminar/B747/autopilot/actual_nav_status")
-simDR_autopilot_gs_status = find_dataref("laminar/B747/autopilot/actual_glideslope_status")
 
-simDR_autopilot_app_status          = find_dataref("sim/cockpit2/autopilot/approach_status")
-B747DR_autopilot_nav_status = find_dataref("laminar/B747/autopilot/nav_status")
-B747DR_autopilot_gs_status = find_dataref("laminar/B747/autopilot/glideslope_status")
-simDR_esys0              = find_dataref("sim/operation/failures/rel_esys")
-simDR_esys1              = find_dataref("sim/operation/failures/rel_esys2")
-simDR_esys2              = find_dataref("sim/operation/failures/rel_esys3")
-simDR_esys3              = find_dataref("sim/operation/failures/rel_esys4")
 
 
 simDR_cockpit2_no_smoking_switch    = find_dataref("sim/cockpit2/switches/no_smoking")
@@ -204,11 +167,8 @@ simDR_flap_ratio_control        	= find_dataref("sim/cockpit2/controls/flap_rati
 --*************************************************************************************--
 --** 				              FIND CUSTOM DATAREFS             			    	 **--
 --*************************************************************************************--
-B747DR_ap_lnav_state                = find_dataref("laminar/B747/autopilot/lnav_state")
-B747DR_ap_vnav_state                = find_dataref("laminar/B747/autopilot/vnav_state")
 B747DR_button_switch_position       = find_dataref("laminar/B747/button_switch/position")
 B747DR_toggle_switch_position       = find_dataref("laminar/B747/toggle_switch/position")
-B747DR_engine_TOGA_mode             = find_dataref("laminar/B747/engines/TOGA_mode")
 B747DR_elec_ext_pwr1_available      = find_dataref("laminar/B747/electrical/ext_pwr1_avail")
 B747DR_elec_ext_pwr2_available      = find_dataref("laminar/B747/electrical/ext_pwr2_avail")
 B747DR_elec_apu_pwr1_available      = find_dataref("laminar/B747/electrical/apu_pwr1_avail")
@@ -267,7 +227,6 @@ B747DR_ap_L_vhf_C_call_status       = find_dataref("laminar/B747/ap_L/vhf_C/call
 B747DR_ap_L_vhf_R_call_status       = find_dataref("laminar/B747/ap_L/vhf_R/call_status")
 B747DR_ap_L_flt_call_status         = find_dataref("laminar/B747/ap_L/flt/call_status")
 B747DR_ap_L_cab_call_status         = find_dataref("laminar/B747/ap_L/cab/call_status")
-B747DR_ap_L_pa_call_status          = find_dataref("laminar/B747/ap_L/pa/call_status")
 B747DR_ap_L_hf_L_call_status        = find_dataref("laminar/B747/ap_L/hf_L/call_status")
 B747DR_ap_L_hf_R_call_status        = find_dataref("laminar/B747/ap_L/hf_R/call_status")
 B747DR_ap_L_sat_L_call_status       = find_dataref("laminar/B747/ap_L/sat_L/call_status")
@@ -303,7 +262,6 @@ B747DR_ap_C_vhf_C_call_status       = find_dataref("laminar/B747/ap_C/vhf_C/call
 B747DR_ap_C_vhf_R_call_status       = find_dataref("laminar/B747/ap_C/vhf_R/call_status")
 B747DR_ap_C_flt_call_status         = find_dataref("laminar/B747/ap_C/flt/call_status")
 B747DR_ap_C_cab_call_status         = find_dataref("laminar/B747/ap_C/cab/call_status")
-B747DR_ap_C_pa_call_status          = find_dataref("laminar/B747/ap_C/pa/call_status")
 B747DR_ap_C_hf_L_call_status        = find_dataref("laminar/B747/ap_C/hf_L/call_status")
 B747DR_ap_C_hf_R_call_status        = find_dataref("laminar/B747/ap_C/hf_R/call_status")
 B747DR_ap_C_sat_L_call_status       = find_dataref("laminar/B747/ap_C/sat_L/call_status")
@@ -339,7 +297,6 @@ B747DR_ap_R_vhf_C_call_status       = find_dataref("laminar/B747/ap_R/vhf_C/call
 B747DR_ap_R_vhf_R_call_status       = find_dataref("laminar/B747/ap_R/vhf_R/call_status")
 B747DR_ap_R_flt_call_status         = find_dataref("laminar/B747/ap_R/flt/call_status")
 B747DR_ap_R_cab_call_status         = find_dataref("laminar/B747/ap_R/cab/call_status")
-B747DR_ap_R_pa_call_status          = find_dataref("laminar/B747/ap_R/pa/call_status")
 B747DR_ap_R_hf_L_call_status        = find_dataref("laminar/B747/ap_R/hf_L/call_status")
 B747DR_ap_R_hf_R_call_status        = find_dataref("laminar/B747/ap_R/hf_R/call_status")
 B747DR_ap_R_sat_L_call_status       = find_dataref("laminar/B747/ap_R/sat_L/call_status")
@@ -418,9 +375,6 @@ B747DR_bleed_air_engine4_start_valve_pos = find_dataref("laminar/B747/air/engine
 B747DR_nacelle_ai_valve_pos         = find_dataref("laminar/B747/antiice/nacelle/valve_pos")
 B747DR_wing_ai_valve_pos            = find_dataref("laminar/B747/antiice/wing/valve_pos")
 
-B747DR_autopilot_cmd_L_status       = find_dataref("laminar/B747/autopilot/cmd_L_mode/status")
-B747DR_autopilot_cmd_C_status       = find_dataref("laminar/B747/autopilot/cmd_C_mode/status")
-B747DR_autopilot_cmd_R_status       = find_dataref("laminar/B747/autopilot/cmd_R_mode/status")
 
 B747DR_master_warning               = find_dataref("laminar/B747/warning/master_warning")
 B747DR_master_caution               = find_dataref("laminar/B747/warning/master_caution")
@@ -576,9 +530,6 @@ B747CMD_cockpitLightsOff		= deferred_command("laminar/B747/light/cockpit_lightsO
 --** 				               FIND CUSTOM COMMANDS              			     **--
 --*************************************************************************************--
 
-B747CMD_taxi_light_switch               = find_command("laminar/B747/toggle_switch/taxi_light")
-B747CMD_runway_turnoff_light_switch_L   = find_command("laminar/B747/toggle_switch/rwy_tunoff_L")
-B747CMD_runway_turnoff_light_switch_R   = find_command("laminar/B747/toggle_switch/rwy_tunoff_R")
 
 
 

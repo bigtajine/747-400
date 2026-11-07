@@ -52,8 +52,6 @@ simDR_startup_running       = find_dataref("sim/operation/prefs/startup_running"
 simDR_engine_fire           = find_dataref("sim/cockpit2/annunciators/engine_fires")
 simDR_apu_fire           = find_dataref("sim/operation/failures/rel_apu_fire")
 simDR_engine_fire_ext_on    = find_dataref("sim/cockpit2/engine/actuators/fire_extinguisher_on")
-simDR_cockpit_smoke         = find_dataref("sim/operation/failures/rel_smoke_cpit")
-simDR_press_diff_psi        = find_dataref("sim/cockpit2/pressurization/indicators/pressure_diffential_psi")
 
 
 

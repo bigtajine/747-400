@@ -92,7 +92,6 @@ B747DR_brake_temp_ind               = deferred_dataref("laminar/B747/gear/brake_
 B747DR_init_gear_CD             = deferred_dataref("laminar/B747/gear/init_CD", "number")
 B747DR__gear_chocked           = deferred_dataref("laminar/B747/gear/chocked", "number")
 B747DR_parking_brake_ratio = find_dataref("laminar/B747/flt_ctrls/parking_brake_ratio")
-simDR_parking_brake_ratio       = find_dataref("sim/cockpit2/controls/parking_brake_ratio")
 ----- GEAR HANDLE DATAREF HANDLER -------------------------------------------------------
 
 local B747_gear_handle_lock_override = 0
@@ -159,7 +158,6 @@ B747CMD_autobrakes_sel_dial_dn  = deferred_command("laminar/B747/gear/autobrakes
 B747CMD_ai_gear_quick_start			= deferred_command("laminar/B747/ai/gear_quick_start", "number", B747_ai_gear_quick_start_CMDhandler)
 
 
-simDR_aircraft_on_ground    = find_dataref("sim/flightmodel/failures/onground_any")
 
 
 
