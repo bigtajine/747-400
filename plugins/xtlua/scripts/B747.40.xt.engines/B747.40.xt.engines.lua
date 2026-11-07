@@ -1927,6 +1927,10 @@ function B747_electronic_engine_control()
 
 
     ----- SET X-PLANE IGNITER STATE -----------------------------------------------------
+    -- The starter keeps the igniters on through the start; after cutout the ignition logic above decides.
+    for i = 0, 3 do
+        simDR_engine_igniter_on[i] = (B747_igniter_status[i + 1] == 1 or B747_starter_status[i + 1] == 1) and 1 or 0
+    end
 -- ENGINE 1
     --print(B747_igniter_status[1] .. " " .. B747_starter_status[1].. " " .. simDR_engine_igniter_on[1])
     --if B747_igniter_status[1] == 0 and B747_starter_status[1]==1 then simCMD_starter_on_1:stop() B747_starter_status[1]=0 end
