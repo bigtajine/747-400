@@ -299,76 +299,10 @@ function M.ils(icao, rwy)
   end
   return nil
 end
-function M.loc_by_ident(icao, ident)
-  local r = locs[icao]
-  if not r then return nil end
-  for rec in sgmatch(r, "[^;]+") do
-    local rw, id = smatch(rec, "^(%S+) (%S+)")
-    if id == ident then return M.ils(icao, rw) end
-  end
-end
 
 -- airways ------------------------------------------------------------------------------------
 -- returns list of fix objects after `from` up to and including `to` along airway `name`
-function M.airway_path(name, from, to)
-  local r = awys[name]
-  if not r then return nil, "NOT IN DATA BASE" end
-  local adj, pos = {}, {}
-  local function key(f, rg) return f .. "/" .. rg end
-  local function link(a, b)
-    local l = adj[a]
-    if not l then l = {}; adj[a] = l end
-    l[#l + 1] = b
-  end
-  for rec in sgmatch(r, "[^|]+") do
-    local f1, r1, t1, f2, r2, t2, dir = smatch(rec, "^(%S+) (%S+) (%S+) (%S+) (%S+) (%S+) (%S)")
-    local k1, k2 = key(f1, r1), key(f2, r2)
-    pos[k1] = { f1, r1, t1 }; pos[k2] = { f2, r2, t2 }
-    if dir == "N" or dir == "F" then link(k1, k2) end
-    if dir == "N" or dir == "B" then link(k2, k1) end
-  end
-  -- start nodes matching `from` ident (nearest region match if several)
-  local starts = {}
-  for k, p in pairs(pos) do
-    if p[1] == from.ident and (from.region == nil or from.region == p[2] or from.kind == "APT") then starts[#starts + 1] = k end
-  end
-  if #starts == 0 then
-    for k, p in pairs(pos) do if p[1] == from.ident then starts[#starts + 1] = k end end
-  end
-  if #starts == 0 then return nil, "NOT ON AIRWAY" end
-  for _, s in ipairs(starts) do
-    -- BFS
-    local prev, q, qi = { [s] = false }, { s }, 1
-    local goal = nil
-    while qi <= #q do
-      local c = q[qi]; qi = qi + 1
-      if pos[c][1] == to and c ~= s then goal = c break end
-      for _, nb in ipairs(adj[c] or {}) do
-        if prev[nb] == nil then prev[nb] = c; q[#q + 1] = nb end
-      end
-    end
-    if goal then
-      local chain = {}
-      local c = goal
-      while c and c ~= s do table.insert(chain, 1, c); c = prev[c] end
-      local out = {}
-      local rlat, rlon = from.lat, from.lon
-      for _, k in ipairs(chain) do
-        local p = pos[k]
-        local t = tonumber(p[3])
-        local sec = (t == 11 and "EA") or (t == 2 and "DB") or "D"
-        local o = M.resolve(p[1], p[2], sec, nil, rlat, rlon)
-        if not o then return nil, "NOT IN DATA BASE" end
-        out[#out + 1] = o
-        rlat, rlon = o.lat, o.lon
-      end
-      return out
-    end
-  end
-  return nil, "NOT ON AIRWAY"
-end
 
-function M.airway_exists(name) return awys[name] ~= nil end
 
 -- CIFP procedures -----------------------------------------------------------------------------
 local function dms(s, neg)

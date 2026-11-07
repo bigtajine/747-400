@@ -2319,40 +2319,6 @@ function closest_intercept(x1,y1,z1,x2,y2,z2,psi,pitch)
     loc=math.sqrt(((pdx*pdx) + (pdz*pdz) + (pdy*pdy)));
     return loc
 end
-function viewheadCoPilotVisor()
-    local psi=simDR_headpsi
-    local pitch=simDR_headpitch
-    local visorX=B747_rescale(0.5,0.845,1,0.102,simDR_fo_visor_lr) 
-    local visorY=5.2
-    local visorZ=B747_rescale(0,-25.41,0.6,-26.4,simDR_fo_visor_lr)
-    local thisHit=closest_intercept(simDR_headX,simDR_headY,simDR_headZ,visorX,visorY,visorZ,psi,pitch)
-    
-    local retVal=B747_rescale(0,1,0.4,0,thisHit)
-    return retVal
-end
-function viewheadPilotVisor()
-    local psi=simDR_headpsi
-    local pitch=simDR_headpitch
-    local visorX=B747_rescale(0.5,-0.845,1,-0.102,simDR_capt_visor_lr)
-    local visorY=5.2
-    local visorZ=B747_rescale(0,-25.41,0.6,-26.4,simDR_capt_visor_lr)
-    local thisHit=closest_intercept(simDR_headX,simDR_headY,simDR_headZ,visorX,visorY,visorZ,psi,pitch)
-    
-    local retVal=B747_rescale(0,1,0.4,0,thisHit)
-    return retVal
-end
-function getPilotVisorValue()
-    local retVal=viewheadPilotVisor()
-    --print("getPilotVisorValue "..(retVal))
- 
-    return retVal*(1-simDR_capt_visor_ud)
-end
-function getCoPilotVisorValue()
-    local retVal=viewheadCoPilotVisor()
-    --print("getCoPilotVisorValue "..retVal)
- 
-    return retVal*(1-simDR_fo_visor_ud)
-end
 local defaultBias=-0.3
 --function flight_crash() end
 

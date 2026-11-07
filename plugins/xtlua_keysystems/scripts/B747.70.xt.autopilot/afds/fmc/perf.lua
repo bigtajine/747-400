@@ -73,10 +73,6 @@ function M.flap_detent(ratio)
   elseif ratio < 0.58 then return 10 elseif ratio < 0.75 then return 20 elseif ratio < 0.92 then return 25 end
   return 30
 end
-function M.max_alt(w)  -- ft (stock FCOM-derived fit)
-  local kft = 58.16363636 - 0.06154545 * (w / 1000)
-  return floor(min(45100, max(29000, kft * 1000)) / 100) * 100
-end
 
 -- climb rate (fpm) at climb thrust ---------------------------------------------------------------
 local ROC = { { 0, 3300 }, { 5000, 3000 }, { 10000, 2700 }, { 15000, 2300 }, { 20000, 2000 }, { 25000, 1700 },

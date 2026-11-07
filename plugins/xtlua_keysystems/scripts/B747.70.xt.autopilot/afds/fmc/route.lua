@@ -55,12 +55,6 @@ local function conv_alt(desc, a1, a2)
   if desc == "B" and a2 then return { d = "B", a = a1, b = a2 } end -- at/below a1, at/above a2
   return { d = "@", a = a1 }
 end
-local function conv_spd(desc, v)
-  if not v then return nil end
-  if desc == "+" then return { d = "+", v = v } end
-  if desc == "-" then return { d = "-", v = v } end
-  return { d = "@", v = v }
-end
 
 -- check constraint satisfied by alt
 function M.alt_hi(c) if not c then return nil end if c.d == "-" or c.d == "@" or c.d == "B" then return c.a end end
@@ -82,65 +76,9 @@ local function pseudo_label(l)
 end
 M.pseudo_label = pseudo_label
 
-function M.proc_leg(pl, P, seg, via, ref_lat, ref_lon)
-  local l = {
-    t = pl.path, seg = seg, via = via, turn = pl.turn ~= "" and pl.turn or nil,
-    crs = pl.crs, crs_is_true = pl.crs_is_true, dist = pl.dist, time = pl.time, theta = pl.theta, rho = pl.rho,
-    arc_r = pl.arc_r, fpa = pl.vangle, flyover = pl.flyover, faf = pl.is_faf, map = pl.is_map, iaf = pl.is_iaf,
-    alt = conv_alt(pl.alt_desc, pl.alt1, pl.alt2), spd = conv_spd(pl.spd_desc, pl.spd), missed = pl.missed,
-  }
-  if l.t == "" then l.t = "TF" end
-  local icao = P and P.icao
-  if pl.ident then
-    local o
-    if pl.fix_sec == "PG" and P and P.rwys[pl.ident] then
-      local r = P.rwys[pl.ident]
-      o = { ident = pl.ident, lat = r.lat, lon = r.lon, kind = "RWY", elev = r.elev }
-      l.rwy = true
-    else
-      o = N.resolve(pl.ident, pl.fix_region, pl.fix_sec, icao, ref_lat, ref_lon)
-    end
-    if o then l.fix = copy_fix(o) else l.fix = nil; l.unresolved = pl.ident end
-  end
-  if pl.nav_ident and pl.nav_ident ~= "" then
-    local o
-    if pl.nav_sec == "PI" and icao then o = N.loc_by_ident(icao, pl.nav_ident) end
-    if not o then o = N.resolve(pl.nav_ident, pl.nav_region, pl.nav_sec, icao, ref_lat, ref_lon) end
-    if o then l.nav = copy_fix(o) end
-  end
-  if pl.ctr_ident and pl.ctr_ident ~= "" then
-    local o = N.resolve(pl.ctr_ident, pl.ctr_region, pl.ctr_sec, icao, ref_lat, ref_lon)
-    if o then l.ctr = copy_fix(o) end
-  end
-  if (l.t == "HM" or l.t == "HA" or l.t == "HF") then
-    l.hold = { inbd = pl.crs, turn = l.turn or "R", time = pl.time or (not pl.dist and 1.0) or nil, dist = pl.dist }
-  end
-  local dyn = { CA = 1, VA = 1, FA = 1, CI = 1, VI = 1, VM = 1, FM = 1, CD = 1, VD = 1, FD = 1, CR = 1, VR = 1, FC = 1 }
-  if dyn[l.t] then
-    l.id = pseudo_label(l) or (l.fix and l.fix.ident) or "-----"
-    if l.t == "VM" or l.t == "VA" or l.t == "VI" or l.t == "VD" or l.t == "VR" or l.t == "CA" or l.t == "CI" or l.t == "CD" or l.t == "CR" then
-      l.fix = nil
-    end
-  else
-    l.id = (l.fix and l.fix.ident) or pseudo_label(l) or pl.ident or "-----"
-  end
-  if l.t == "IF" and not l.fix then l.t = "TF" end
-  return l
-end
 
-local function append_proc(out, legs, P, seg, via, rlat, rlon)
-  for _, pl in ipairs(legs or {}) do
-    local l = M.proc_leg(pl, P, seg, via, rlat, rlon)
-    if l.fix then rlat, rlon = l.fix.lat, l.fix.lon end
-    out[#out + 1] = l
-  end
-  return rlat, rlon
-end
 
 -- leg factories ---------------------------------------------------------------------------------
-function M.tf_leg(fix, seg, via)
-  return { t = "TF", fix = copy_fix(fix), id = fix.ident, seg = seg or "ENRT", via = via or "DIRECT" }
-end
 function M.disco() return { t = "DISCO", id = "*****", seg = "DISCO" } end
 
 local function same_fix(a, b)
@@ -209,22 +147,9 @@ function M.connect(p)
 end
 
 -- segment helpers ----------------------------------------------------------------------------------
-local function remove_seg(p, set)
-  local out = {}
-  for _, l in ipairs(p.legs) do if not set[l.seg] then out[#out + 1] = l end end
-  p.legs = out
-end
 local function first_index(p, set)
   for i, l in ipairs(p.legs) do if set[l.seg] then return i end end
   return nil
-end
-local function last_index(p, set)
-  local r = nil
-  for i, l in ipairs(p.legs) do if set[l.seg] then r = i end end
-  return r
-end
-local function insert_at(p, idx, list)
-  for k, l in ipairs(list) do table.insert(p.legs, idx + k - 1, l) end
 end
 
 -- DEPARTURE: runway + SID (+ transition) ---------------------------------------------------------
@@ -232,31 +157,8 @@ end
 -- ARRIVAL: STAR (+trans, runway trans) then approach (+trans) + missed approach -----------------
 
 -- the enroute segment list derived from legs (RTE page 2+) ----------------------------------------
-function M.enroute_segments(p)
-  local segs = {}
-  local cur = nil
-  for i, l in ipairs(p.legs) do
-    if l.seg == "ENRT" then
-      if l.t == "DISCO" then
-        cur = nil
-      elseif cur and cur.via == l.via and l.via ~= "DIRECT" then
-        cur.to = l.fix; cur.last = i
-      else
-        cur = { via = l.via or "DIRECT", to = l.fix, first = i, last = i }
-        segs[#segs + 1] = cur
-      end
-    else
-      cur = nil
-    end
-  end
-  return segs
-end
 
 -- index after which enroute legs go
-local function enroute_anchor(p)
-  local li = last_index(p, { RWY = true, SID = true })
-  return li or 0
-end
 
 -- RTE page: add VIA airway/DIRECT TO fix at end of enroute.  returns errmsg on failure
 
@@ -264,16 +166,6 @@ end
 
 -- LEGS edits ------------------------------------------------------------------------------------------
 -- region tag for a leg inserted before index idx
-local function region_at(p, idx)
-  local l = p.legs[idx] or p.legs[idx - 1]
-  if not l then return "ENRT" end
-  if l.seg == "DISCO" then
-    local a = p.legs[idx - 1]
-    return (a and a.seg ~= "RWY" and a.seg) or "ENRT"
-  end
-  if l.seg == "RWY" then return "SID" end
-  return l.seg
-end
 
 -- find later occurrence of fix ident at or after index
 function M.find_ident(p, ident, from)
