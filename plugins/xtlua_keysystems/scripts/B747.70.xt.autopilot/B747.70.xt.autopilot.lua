@@ -1532,11 +1532,13 @@ local function core()
   -- glideslope only within 17 nm of the landing runway (distance to the runway in the route, else the
   -- ILS DME, else the distance to the destination): the G/S pointer is shown and G/S can capture only
   -- there - farther out the signal is unusable / false lobes, and on short routes it would always show
+  -- The tuned ILS's own DME comes first, since the route's runway may not be the one being flown.
+  -- With no distance at all the glideslope is not blocked.
   local gs_dist = nil
-  if rwy_p and rwy_p.lat then gs_dist = GEO.dist(simDR_latitude, simDR_longitude, rwy_p.lat, rwy_p.lon)
-  elseif simDR_nav1_has_dme == 1 and simDR_nav1_dme > 0.3 then gs_dist = simDR_nav1_dme
+  if simDR_nav1_has_dme == 1 and simDR_nav1_dme > 0.3 then gs_dist = simDR_nav1_dme
+  elseif rwy_p and rwy_p.lat then gs_dist = GEO.dist(simDR_latitude, simDR_longitude, rwy_p.lat, rwy_p.lon)
   elseif B747BR_distance_to_dest and B747BR_distance_to_dest >= 0 then gs_dist = B747BR_distance_to_dest end
-  local gs_in_range = gs_dist ~= nil and gs_dist <= 17.0
+  local gs_in_range = gs_dist == nil or gs_dist <= 17.0
   if not gs_in_range and S.pitch ~= "GS" and S.pitch ~= "FLARE" then gs_valid = false end
   -- course reference for the geometry checks (true): the localizer course in use; the route's final
   -- approach course when it agrees with the selected course (independent of the receiver)
