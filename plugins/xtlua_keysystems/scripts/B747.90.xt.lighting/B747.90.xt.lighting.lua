@@ -2354,23 +2354,6 @@ function getCoPilotVisorValue()
     return retVal*(1-simDR_fo_visor_ud)
 end
 local defaultBias=-0.3
-function tone_mapping()
-
-    simDR_photoBias=defaultBias-1.6*math.max(getPilotVisorValue(),getCoPilotVisorValue())
-   
- --[[   if simDR_sun_pitch>0 then
-        simDR_contrast	= B747_rescale(0,1.25,30,0.8,math.abs(simDR_view_pitch))
-        simDR_ev100	    = B747_rescale(-10,8,15,14,math.abs(simDR_sun_pitch))
-        simDR_tone_mode			    = 0
-        simDR_exposure_fusion			    = 0
-    else
-        simDR_contrast	= B747_rescale(0,0.8,30,1.25,math.abs(simDR_view_pitch))
-        simDR_light_storage		    = B747_rescale(0,10,30,1,math.abs(simDR_view_pitch))
-        simDR_tone_mode			    = 1
-    simDR_exposure_fusion			    = 1
-    end]]--
-    
-end
 --function flight_crash() end
 
 --function before_physics() end

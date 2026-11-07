@@ -52,14 +52,6 @@ targetHotspot=pilotSeatHotspot
 local dX=0
 local dY=0
 local dZ=0
-function killMoves()
-  if dX>0.1 then simCMD_viewRIGHT:stop() dX=0 end
-    if dX<-0.1 then simCMD_viewLEFT:stop() dX=0 end
-    if dY>0.1 then simCMD_viewUP:stop() dY=0 end
-    if dY<-0.1 then simCMD_viewDOWN:stop() dY=0 end
-    if dZ>0.1 then simCMD_viewBACK:stop() dZ=0 end
-    if dZ<-0.1 then simCMD_viewFWD:stop() dZ=0 end
-end
 function B747CMD_VR_stop_CMDhandler(phase, duration)
   simCMD_viewRIGHT:stop()
   simCMD_viewLEFT:stop()

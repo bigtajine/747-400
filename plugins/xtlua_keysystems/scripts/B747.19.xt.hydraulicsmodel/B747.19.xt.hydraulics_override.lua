@@ -874,36 +874,6 @@ function dampSlip()
     retval=retval/30]]
     return ap_director_yaw()--retval
 end
-function dampYaw()
-    --local displayUpdate=false
-    
-    
-    local retval=director_yawRecord[1]
-    local left=0
-    if retval>270 then left=1 end
-    for i=2,30,1 do
-        local tVal=director_yawRecord[i]
-        if left==1 and tVal<90 then tVal=tVal+360 end
-        if left==0 and tVal>270 then tVal=tVal-360 end
-        retval=retval+tVal
-       --if displayUpdate then print("i "..i.." = " ..pitchRecord[i].. " " ..retval) end
-    end
-    retval=retval/30
-    if retval<0 then retval=retval+360 end
-
-    retval=getHeadingDifference(retval,simDR_AHARS_heading_deg_pilot)
-    --if displayUpdate then print("ap_director_yaw_integral "..retval.." simDR_AHARS_heading_deg_pilot "..simDR_AHARS_heading_deg_pilot) end
-    return retval
-end
-function clearYawIntegral()
-    local val=0
-    if math.abs(simDR_AHARS_roll_heading_deg_pilot)<5 then 
-        val=simDR_AHARS_heading_deg_pilot
-    end
-    for i=1,30,1 do
-        director_yawRecord[i]=val
-    end
-end
 local lastDamperSystem=0 --0 == slip, 1==yaw
 local current_yaw_intregal=0
 function ap_director_yaw_integral()

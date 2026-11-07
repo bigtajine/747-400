@@ -362,25 +362,7 @@ end
 
 
 
-function sim_yaw_damper_on_beforeCMDhandler(phase, duration) end
-function sim_yaw_damper_on_afterCMDhandler(phase, duration)
-    if phase == 0 then
-        if B747DR_button_switch_position[82] <= 0.05 then
-            B747CMD_yaw_damper_upr:once()
-            B747CMD_yaw_damper_lwr:once()
-        end
-    end
-end
 
-function sim_yaw_damper_off_beforeCMDhandler(phase, duration) end
-function sim_yaw_damper_off_afterCMDhandler(phase, duration)
-    if phase == 0 then
-        if B747DR_button_switch_position[82] >= 0.95 then
-            B747CMD_yaw_damper_upr:once()
-            B747CMD_yaw_damper_lwr:once()
-        end
-    end
-end
 
 
 

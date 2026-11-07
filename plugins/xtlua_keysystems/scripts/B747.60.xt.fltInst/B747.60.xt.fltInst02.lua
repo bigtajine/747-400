@@ -1949,9 +1949,6 @@ end
 
 
 
-function roundUp(x)
-    return x >= 0 and math.floor(x + 0.5) or math.ceil(x - 0.5)
-end
 
 
 
@@ -3131,13 +3128,6 @@ end
 
 
 -- INIT V1 / Vr / V2
-function B747_initV1VrV2()
-
-    B747_setTempAltRegion()
-    B747_V1_wind_adjustment()
-    B747_setV1VrV2()
-
-end
 
 
 

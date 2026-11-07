@@ -258,25 +258,7 @@ B747CMD_gear_off      = deferred_command("laminar/B747/gear/overrideOff", "Gear 
 
 
 
-function sim_landing_gear_up_CMDhandler(phase, duration)
-    if phase == 0 then
-        -- GEAR HANDLE LOCK IS DISENGAGED
-        if B747_gear_handle_lock == 0 then
-            B747DR_gear_handle = 2.0
-            simDR_gear_handle_down = 0
-        -- GEAR HANDLE LOCK IS ENGAGED
-        else
-            B747DR_gear_handle = 1.0            -- PREVENT MOVEMENT OF GEAR HANDLE TO 'UP' POSITION
-        end
-    end
-end
 
-function sim_landing_gear_down_CMDhandler(phase, duration)
-     if phase == 0 then
-		B747DR_gear_handle = 0.0
- 	    simDR_gear_handle_down = 1
-     end
-end
 
 function sim_landing_gear_toggle_CMDhandler(phase, duration)
     if phase == 0 then

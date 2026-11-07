@@ -835,30 +835,6 @@ function eng_deadband(i, ctx)
 	local c = (ctx == "gi") and "gi" or "fi"
 	return db[c][i + 1]
 end
-function eng_deadband_learn(i, ctx)
-	local c = (ctx == "gi") and "gi" or "fi"
-	local thr, n1 = simDR_engn_thro_use[i] or 0, simDR_N1[i] or 0
-	local L = db_last[i] or { n1 = n1, t = simDRTime, st = 0 }
-	db_last[i] = L
-	local dt = simDRTime - L.t
-	if dt <= 0 then return end
-	-- settled: X-Plane N1 steady for 1.5 s
-	if math.abs(n1 - L.n1) < 0.05 * dt / 0.05 * 0.05 and math.abs(n1 - L.n1) < 0.02 then L.st = L.st + dt else L.st = 0 end
-	L.n1, L.t = n1, simDRTime
-	if L.st < 1.5 or simDR_engine_running[i] ~= 1 or simDR_prop_mode[i] ~= 1 then return end
-	if thr <= 0.0005 then
-		db_idle[c][i + 1] = n1
-	elseif db_idle[c][i + 1] and thr > 0.15 and thr < 0.36 then
-		-- low part of X-Plane's N1 / throttle curve: about 57% N1 per unit throttle past the band
-		local n1i = db_idle[c][i + 1]
-		if n1 > n1i + 3 then
-			local slope = 0.81 * (100 - n1i)
-			local edge = thr - (n1 - n1i) / slope
-			edge = math.max(0, math.min(0.2, edge))
-			db[c][i + 1] = db[c][i + 1] + (edge - db[c][i + 1]) * 0.05
-		end
-	end
-end
 
 local spd_target_throttle=0.5
 local REV_N1_MAX = 93.0             -- (v47) maximum N1 in reverse thrust

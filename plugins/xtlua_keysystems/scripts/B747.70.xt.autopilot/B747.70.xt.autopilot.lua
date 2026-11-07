@@ -319,11 +319,6 @@ local function safe_print(s) print("B744 AFDS: " .. s) end
 local function fdr(c) pcall(function() c:once() end) end
 local function btn(i, phase) if phase == 0 then btn_target[i] = 1 elseif phase == 2 then btn_target[i] = 0 end end
 
-local function fmsdata_get(key)
-  local ok, d = pcall(function() return json.decode(B747DR_FMSdata) end)
-  if ok and type(d) == "table" then return d[key] end
-  return nil
-end
 local fmsdata_cache, fmsdata_t = nil, -100
 local function fmsdata()
   if simDRTime - fmsdata_t > 2 then
@@ -1258,9 +1253,6 @@ end
 local function flap_deg()
   return PF.flap_detent(simDR_flap_ratio_control)
 end
-function isATEnabled() return S.at_engaged end
-function B747_ap_all_cmd_modes_off() for k = 1, 3 do S.ap[k] = false end end
-function ap_reset() B747_ap_reset_CMDhandler(0, 0) end
 function B747_set_ap_all_modes()
   simDR_autopilot_airspeed_is_mach = 0
   B747DR_ap_alt_show_thousands = 1

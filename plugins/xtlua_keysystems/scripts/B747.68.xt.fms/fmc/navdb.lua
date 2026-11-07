@@ -191,9 +191,6 @@ function M.load_step(budget)
   return false
 end
 
-function M.load_all() -- blocking (tests)
-  while not M.load_step(10) do end
-end
 
 -- lookups ------------------------------------------------------------------------------------
 local function mkfix(ident, lat, lon, reg, term)
@@ -372,11 +369,6 @@ function M.airway_path(name, from, to)
 end
 
 function M.airway_exists(name) return awys[name] ~= nil end
-function M.airway_has_fix(name, ident)
-  local r = awys[name]
-  if not r then return false end
-  return sfind(" " .. r:gsub("|", " | ") .. " ", " " .. ident .. " ", 1, true) ~= nil
-end
 
 -- CIFP procedures -----------------------------------------------------------------------------
 local function dms(s, neg)
@@ -652,6 +644,5 @@ function M.procedures(icao)
   return P
 end
 
-function M.clear_cache() cifp_cache = {} end
 
 B744NAVDB = M

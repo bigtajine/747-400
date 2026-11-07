@@ -120,7 +120,6 @@ function M.roll(st, inp)
   return u
 end
 
-function M.reset(st) st.p = {}; st.r = {} end
 
 B744INNER = M
 return M

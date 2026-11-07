@@ -55,24 +55,3 @@ B747_FMCAlertMsg   = {
     {DRindex = 52, name = "WIND DATA UPLINK READY",data="", status = 0},
     {DRindex = 53, name = "DESTINATION NOT SET",data="", status = 0}
 }
-function getAdvisoryMessages()
-  B747_FMCAdvisoryMsg={}
-  B747_FMCAdvisoryMsg   = {
-        {DRindex = 0, name = "ARR N/A FOR RUNWAY", status = 0},        --
-    {DRindex = 1, name = "CRS REVERSAL AT FA FIX", status = 0},
-    {DRindex = 2, name = "DELETE", status = 0},
-    {DRindex = 3, name = "INVALID DELETE", status = 0},
-    {DRindex = 4, name = "INVALID ENTRY", status = 0},
-    {DRindex = 5, name = "KEY/FUNCTION INOP", status = 0},
-    {DRindex = 6, name = "MAX ALT FL", status = 0},
-    {DRindex = 7, name = "NOT IN DATA BASE", status = 0},
-    {DRindex = 8, name = "NOT ON INTERCEPT HEADING", status = 0},
-    {DRindex = 9, name = "ROUTE FULL", status = 0},
-    {DRindex = 10, name = "RUNWAY N/A FOR SID", status = 0},
-    {DRindex = 11, name = "STANDBY ONE", status = 0},
-    {DRindex = 12, name = "TIME OUT - RESELECT", status = 0},
-    {DRindex = 13, name = "UNABLE CRZ ALT", status = 0},
-    {DRindex = 14, name = "VERIFY RNP ENTRY", status = 0}
-  }
-  return B747_FMCAdvisoryMsg
-end

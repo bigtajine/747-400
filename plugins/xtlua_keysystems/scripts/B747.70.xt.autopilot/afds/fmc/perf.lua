@@ -35,14 +35,6 @@ function M.tas(cas, h, isadev)
 end
 function M.tas_mach(m, h) local _, _, a = M.isa(h) return m * a end
 -- altitude where CAS equals Mach (crossover)
-function M.crossover(cas, mach)
-  local lo, hi = 0, 45000
-  for _ = 1, 30 do
-    local mid = (lo + hi) / 2
-    if M.cas_to_mach(cas, mid) < mach then lo = mid else hi = mid end
-  end
-  return (lo + hi) / 2
-end
 
 -- ECON speeds ------------------------------------------------------------------------------------
 local function interp(tbl, x)
@@ -69,7 +61,6 @@ function M.econ_crz(ci, w, h)
   local m = interp(CRZ_M, ci) + 0.005 * wadj(w)
   return min(0.88, m)
 end
-function M.lrc_crz(w) return min(0.87, 0.840 + 0.008 * wadj(w)) end
 function M.econ_des(ci, w) return floor(interp(DES_CAS, ci) + 0.5), interp(DES_M, ci) end
 
 -- limits -----------------------------------------------------------------------------------------
@@ -85,9 +76,6 @@ end
 function M.max_alt(w)  -- ft (stock FCOM-derived fit)
   local kft = 58.16363636 - 0.06154545 * (w / 1000)
   return floor(min(45100, max(29000, kft * 1000)) / 100) * 100
-end
-function M.opt_alt(w)
-  return floor((M.max_alt(w) - 2000) / 100) * 100
 end
 
 -- climb rate (fpm) at climb thrust ---------------------------------------------------------------
