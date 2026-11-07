@@ -407,7 +407,7 @@ function autobrake_check()
 			print("Manual Speedbrake = "..B747DR_speedbrake_lever_changed.." / "..simDR_speedbrake_lever)
 			B747DR_autobrakes_sel_dial_pos = 2  --DISARM
 		--Brake Failure
-		elseif (simDR_left_brake_fail > 0 or simDR_right_brake_fail > 0) then
+		elseif (simDR_left_brake_fail == 6 or simDR_right_brake_fail == 6) then
 			print("LANDING - Autobrakes DISARM - BRAKE FAILURE")
 			print("Brake Failure = "..simDR_left_brake_fail.." / "..simDR_right_brake_fail)
 			B747DR_autobrakes_sel_dial_pos = 2  --DISARM
