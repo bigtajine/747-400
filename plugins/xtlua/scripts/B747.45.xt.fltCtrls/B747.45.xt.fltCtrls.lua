@@ -1077,7 +1077,8 @@ function B747_fltCtrols_EICAS_msg()
         and B747DR_engines_numLeverClimb>=2
 	and is_timer_scheduled(B747_speedbrake_warn) == false then
 	--print("warning speedbrake")  
-        run_after_time(B747_speedbrake_warn, 1.0)
+        -- In flight the warning waits 3 s at climb thrust or more.
+        run_after_time(B747_speedbrake_warn, 3.0)
     elseif is_timer_scheduled(B747_speedbrake_warn) == false or B747DR_engines_numClimb<=1 then 
         B747DR_CAS_warning_status[6] = 0
     end
