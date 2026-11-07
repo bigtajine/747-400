@@ -108,6 +108,7 @@ simDR_adf2_ID                       = find_dataref("sim/cockpit2/radios/indicato
 simDR_altimeter_baro_inHg           = find_dataref("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_pilot")
 simDR_altimeter_baro_inHg_fo        = find_dataref("sim/cockpit2/gauges/actuators/barometer_setting_in_hg_copilot")
 simDR_altitude_ft_pilot             = find_dataref("sim/cockpit2/gauges/indicators/altitude_ft_pilot")
+simDR_altitude_ft_copilot           = find_dataref("sim/cockpit2/gauges/indicators/altitude_ft_copilot")
 
 simDR_radio_alt_DH_capt             = find_dataref("sim/cockpit2/gauges/actuators/radio_altimeter_bug_ft_pilot")
 simDR_radio_alt_DH_fo               = find_dataref("sim/cockpit2/gauges/actuators/radio_altimeter_bug_ft_copilot")
@@ -3237,7 +3238,28 @@ function fltInstsetASIs()
         simDR_airspeed2=simDR_airspeed_copilot
     else
         simDR_airspeed2=30
-    end   
+    end
+end
+
+-- Altitude with the altimeter setting removed, so different baro settings do not count as a disagreement.
+local function uncorrected_alt_ft(alt_ft, baro_inhg)
+    local p = baro_inhg * (1 - alt_ft / 145442.16) ^ (1 / 0.190263)
+    return 145442.16 * (1 - (p / 29.92) ^ 0.190263)
+end
+
+local disagree_since = {}
+-- A disagreement must last 5 s before the caution shows, so transients do not trip it.
+local function persists(key, cond)
+    if not cond then disagree_since[key] = nil return false end
+    disagree_since[key] = disagree_since[key] or simDR_time_now
+    return simDR_time_now - disagree_since[key] >= 5
+end
+
+function fltInstDisagree()
+    local dh = math.abs(uncorrected_alt_ft(simDR_altitude_ft_pilot, simDR_altimeter_baro_inHg)
+        - uncorrected_alt_ft(simDR_altitude_ft_copilot, simDR_altimeter_baro_inHg_fo))
+    B747DR_CAS_caution_status[1] = persists("alt", dh > 200) and 1 or 0
+    B747DR_CAS_caution_status[44] = persists("ias", math.abs(simDR_airspeed_pilot - simDR_airspeed_copilot) >= 5) and 1 or 0
 end
 
 function fltInstsetCRTs()
@@ -3660,6 +3682,7 @@ function after_physics()
     B747_inst_monitor_AI()
     fltInstsetCRTs()
     fltInstsetASIs()
+    fltInstDisagree()
     update_heading_bug()
 
     B747_10000_callout()
