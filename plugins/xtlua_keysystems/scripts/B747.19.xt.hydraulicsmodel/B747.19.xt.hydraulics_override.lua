@@ -1217,7 +1217,13 @@ function flight_controls_override()
             ap_roll_assist()
         end
     else
+        local held = B747DR_sim_pitch_ratio
         B747DR_sim_pitch_ratio=ap_pitch_assist()
+        -- The autopilot's leftover elevator moves into the stabilizer as it washes out, so the
+        -- aircraft stays in trim when the autopilot lets go.
+        if simDR_autopilot_servos_on == 0 and simDR_touchGround == 0 then
+            simDR_elevator_trim = math.max(-1, math.min(1, simDR_elevator_trim + (held - B747DR_sim_pitch_ratio) / 0.7))
+        end
         B747DR_sim_roll_ratio=ap_roll_assist()
     end
     yaw_damper_system()
