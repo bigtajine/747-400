@@ -369,30 +369,15 @@ function B747_engine_dem_modes()
   B747DR_hyd_dem_mode_4=B747DR_hyd_dmd_pmp_sel_pos[3]
   
 end
+-- An engine pump is geared to N2 and makes full pressure from about half of idle N2 upward.
+local function edp_pressure(valve, n2)
+    return valve == 1 and B747_rescale(0, 0, 30, 3000, n2) or 0
+end
 function B747_edp_pressures()
-    if B747DR_hyd_valve_1==1 then
-      B747DR_hyd_edp_pressure_1=40*B747DR_display_N1[0]
-    else
-      B747DR_hyd_edp_pressure_1=0;
-    end
-    
-    if B747DR_hyd_valve_2==1 then
-      B747DR_hyd_edp_pressure_2=40*B747DR_display_N1[1]
-    else
-      B747DR_hyd_edp_pressure_2=0;
-    end
-    
-    if B747DR_hyd_valve_3==1 then
-      B747DR_hyd_edp_pressure_3=40*B747DR_display_N1[2]
-    else
-      B747DR_hyd_edp_pressure_3=0;
-    end
-    
-    if B747DR_hyd_valve_4==1 then
-      B747DR_hyd_edp_pressure_4=40*B747DR_display_N1[3]
-    else
-      B747DR_hyd_edp_pressure_4=0;
-    end
+    B747DR_hyd_edp_pressure_1 = edp_pressure(B747DR_hyd_valve_1, B747DR_display_N2[0])
+    B747DR_hyd_edp_pressure_2 = edp_pressure(B747DR_hyd_valve_2, B747DR_display_N2[1])
+    B747DR_hyd_edp_pressure_3 = edp_pressure(B747DR_hyd_valve_3, B747DR_display_N2[2])
+    B747DR_hyd_edp_pressure_4 = edp_pressure(B747DR_hyd_valve_4, B747DR_display_N2[3])
 end
 
 function B747_dem_pressures()
@@ -450,6 +435,16 @@ function B747_dem_pressures()
   end
   
 end
+-- Pumps build pressure up to their output. With less pump output than system pressure,
+-- the system bleeds down over a few seconds instead of holding pressure forever.
+-- The floor of -1 keeps B747_animate_value from snapping straight to zero.
+local function pressurise(sys, use, supply)
+  supply = math.min(supply, 3300)
+  if sys > supply then
+    return B747_animate_value(sys, supply, -1, 3300, 0.5)
+  end
+  return B747_animate_value(sys, sys + use, 0, supply - math.random() * 50, 10)
+end
 local lastpressureUpdate=0
 function B747_show_system_pressures()
   local diff = simDRTime - lastpressureUpdate
@@ -471,14 +466,10 @@ function B747_system_pressures()
   B747DR_hyd_sys_pressure_use_4=B747_animate_value(B747DR_hyd_sys_pressure_use_4,((B747DR_hyd_dem_pressure_4+B747DR_hyd_edp_pressure_4+B747DR_hyd_aux_pressure)/10),0,45,1)--math.max(B747DR_hyd_dem_pressure_4,B747DR_hyd_edp_pressure_4,B747DR_hyd_aux_pressure)
   
   --sys_pressure_use now contains how much pressure we can put into the system
-  local s1Max=math.min(math.max(B747DR_hyd_dem_pressure_1,B747DR_hyd_edp_pressure_1,B747DR_hyd_sys_pressure_1),3300)
-  local s2Max=math.min(math.max(B747DR_hyd_dem_pressure_2,B747DR_hyd_edp_pressure_2,B747DR_hyd_sys_pressure_2),3300)
-  local s3Max=math.min(math.max(B747DR_hyd_dem_pressure_3,B747DR_hyd_edp_pressure_3,B747DR_hyd_sys_pressure_3),3300)
-  local s4Max=math.min(math.max(B747DR_hyd_dem_pressure_4,B747DR_hyd_edp_pressure_4,B747DR_hyd_aux_pressure,B747DR_hyd_sys_pressure_4),3300)
-  B747DR_hyd_sys_pressure_1=B747_animate_value(B747DR_hyd_sys_pressure_1,B747DR_hyd_sys_pressure_1+B747DR_hyd_sys_pressure_use_1,0,s1Max-math.random()*50,10)
-  B747DR_hyd_sys_pressure_2=B747_animate_value(B747DR_hyd_sys_pressure_2,B747DR_hyd_sys_pressure_2+B747DR_hyd_sys_pressure_use_2,0,s2Max-math.random()*50,10)
-  B747DR_hyd_sys_pressure_3=B747_animate_value(B747DR_hyd_sys_pressure_3,B747DR_hyd_sys_pressure_3+B747DR_hyd_sys_pressure_use_3,0,s3Max-math.random()*50,10)
-  B747DR_hyd_sys_pressure_4=B747_animate_value(B747DR_hyd_sys_pressure_4,B747DR_hyd_sys_pressure_4+B747DR_hyd_sys_pressure_use_4,0,s4Max-math.random()*50,10)
+  B747DR_hyd_sys_pressure_1=pressurise(B747DR_hyd_sys_pressure_1,B747DR_hyd_sys_pressure_use_1,math.max(B747DR_hyd_dem_pressure_1,B747DR_hyd_edp_pressure_1))
+  B747DR_hyd_sys_pressure_2=pressurise(B747DR_hyd_sys_pressure_2,B747DR_hyd_sys_pressure_use_2,math.max(B747DR_hyd_dem_pressure_2,B747DR_hyd_edp_pressure_2))
+  B747DR_hyd_sys_pressure_3=pressurise(B747DR_hyd_sys_pressure_3,B747DR_hyd_sys_pressure_use_3,math.max(B747DR_hyd_dem_pressure_3,B747DR_hyd_edp_pressure_3))
+  B747DR_hyd_sys_pressure_4=pressurise(B747DR_hyd_sys_pressure_4,B747DR_hyd_sys_pressure_use_4,math.max(B747DR_hyd_dem_pressure_4,B747DR_hyd_edp_pressure_4,B747DR_hyd_aux_pressure))
   B747DR_hyd_sys_pressure_13=math.max(B747DR_hyd_sys_pressure_1,B747DR_hyd_sys_pressure_3) --12 remapped to 13
   B747DR_hyd_sys_pressure_23=math.max(B747DR_hyd_sys_pressure_2,B747DR_hyd_sys_pressure_3)
   B747DR_hyd_sys_pressure_24=math.max(B747DR_hyd_sys_pressure_2,B747DR_hyd_sys_pressure_4) 
