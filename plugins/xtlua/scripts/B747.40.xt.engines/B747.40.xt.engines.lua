@@ -1788,13 +1788,13 @@ function B747_engine_start_sw_off(engine)
             if simDR_engine_starter_status[0] > 3 and B747_starter_status[1]==1 then simCMD_starter_on_1:stop() simCMD_starter_off_1:once() simDR_engine_igniter_on[0]=0 B747_starter_status[1]=0 end
         end
         if engine == 1 then
-            if simDR_engine_starter_status[1] > 3 and B747_starter_status[2]==1 then simCMD_starter_on_2:stop() simCMD_starter_off_2:once() simDR_engine_igniter_on[0]=0 B747_starter_status[2]=0 end
+            if simDR_engine_starter_status[1] > 3 and B747_starter_status[2]==1 then simCMD_starter_on_2:stop() simCMD_starter_off_2:once() simDR_engine_igniter_on[1]=0 B747_starter_status[2]=0 end
         end
         if engine == 2 then
-            if simDR_engine_starter_status[2] > 3 and B747_starter_status[3]==1 then simCMD_starter_on_3:stop() simCMD_starter_off_3:once() simDR_engine_igniter_on[0]=0 B747_starter_status[3]=0 end
+            if simDR_engine_starter_status[2] > 3 and B747_starter_status[3]==1 then simCMD_starter_on_3:stop() simCMD_starter_off_3:once() simDR_engine_igniter_on[2]=0 B747_starter_status[3]=0 end
         end
         if engine == 3 then
-            if simDR_engine_starter_status[3] > 3 and B747_starter_status[4]==1 then simCMD_starter_on_4:stop() simCMD_starter_off_4:once() simDR_engine_igniter_on[0]=0 B747_starter_status[4]=0 end
+            if simDR_engine_starter_status[3] > 3 and B747_starter_status[4]==1 then simCMD_starter_on_4:stop() simCMD_starter_off_4:once() simDR_engine_igniter_on[3]=0 B747_starter_status[4]=0 end
         end
     end
 
