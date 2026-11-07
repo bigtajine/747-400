@@ -563,7 +563,12 @@ function inflight_update_CG()
 	local dist_default_CG	= 1243.32  --103.61 feet (from the aircraft .acf file)
 	local cg_shift			= (dist_default_CG - CG) / inch_to_meters  --determine how far ahead or behind the OEW CG we are
 
-	simDR_cg_adjust = cg_shift * -1  --Value is flipped from what is in the XP slider
+	-- smooth rolling update (every 0.5 s, lightly filtered): the CG moves continuously as fuel burns
+	-- and transfers instead of stepping once a minute
+	local tgt = cg_shift * -1  --Value is flipped from what is in the XP slider
+	local cur = simDR_cg_adjust or tgt
+	if math.abs(tgt - cur) > 0.5 then cur = tgt end   -- (reload / large change: no slow drift)
+	simDR_cg_adjust = cur + (tgt - cur) * 0.1
 
 	--print("Dist = "..dist_default_CG.." - "..CG)
 	--print("CG Shift = "..cg_shift)
@@ -837,12 +842,22 @@ fmsModules.fmsR=fmsR;
 B747DR_CAS_memo_status          = find_dataref("laminar/B747/CAS/memo_status")
 
 --Marauder28
+local function is_dep_point(e, i)
+	-- origin airport or departure runway at the start of the list
+	if i > 3 or e == nil then return false end
+	local id = tostring(e[8] or "")
+	return e[2] == 1 or string.match(id, "^RW%d") ~= nil
+end
 function getCurrentWayPoint(fms,usenext)
 	--print("FMS j="..fmsJSON)
-	for i=1,table.getn(fms),1 do
+	local n = table.getn(fms)
+	for i0=1,n,1 do
      --print("FMS j="..fmsJSON)
 
-		if fms[i][10] == true then
+		if fms[i0][10] == true then
+				-- active on the origin / departure runway: the active waypoint is the first point after it
+				local i = i0
+				while i < n - 1 and is_dep_point(fms[i], i) do i = i + 1 end
 				--print("Found TRUE = "..fms[i][1].." "..fms[i][2].." "..fms[i][8])
 				if usenext==false then
 				if fms[i][8] == "latlon" then
@@ -867,9 +882,11 @@ function get_ETA_for_Distance(distance,additionalTime)
 	local mins = 0
 	local secs = 0
 	local time_to_waypoint = 0
-	local default_speed = 275 * meters_per_second_to_kts
+	-- (the ground speed; 275 kt while on the ground or slow - it used 275 m/s, 534 kt, as a minimum:
+	-- every estimate in flight was early)
 	local actual_speed = simDR_groundspeed * meters_per_second_to_kts
-	time_to_waypoint = additionalTime + (distance / math.max(default_speed, actual_speed)) * 3600
+	local spd = (actual_speed > 60) and actual_speed or 275
+	time_to_waypoint = additionalTime + (distance / spd) * 3600
 	
 	hours = math.floor((time_to_waypoint % 86400) / 3600)
 	mins = math.floor((time_to_waypoint % 3600) / 60)
@@ -915,6 +932,42 @@ function get_waypoint_estimate(latitude,longitude,fms_waypoint, fms_latitude, fm
 end
 
 
+-- the active and next waypoints from the AFDS route (laminar/B747/nd/route_geom "S,n,active,..;W,i,id,type,lat,lon,..")
+-- - the legs LNAV really flies, including the ones X-Plane's flight plan does not hold ((700), (INTC)...)
+B747DR_fms_route_geom = find_dataref("laminar/B747/nd/route_geom")
+local function afds_waypoints()
+	local okg, g = pcall(function() return B747DR_fms_route_geom end)
+	if not okg or type(g) ~= "string" or #g < 5 then return nil end
+	local act = tonumber(g:match("^S,%d+,(%d+)"))
+	if not act then return nil end
+	-- (v44: LNAV on a vectors leg that ends in a discontinuity - the ND header shows "(VECTOR)")
+	local ra = tonumber(g:match("^S,%d+,%d+,%d+,(%d+)"))
+	if ra and ra < act and not g:find("W," .. ra .. ",", 1, true) then return { "(VECTOR)" }, nil end
+	local cur, nxt = nil, nil
+	for idx, id, ty, la, lo in g:gmatch("W,(%d+),([^,;]*),([^,;]*),([%-%d%.]*),([%-%d%.]*)") do
+		idx = tonumber(idx)
+		if idx and idx >= act and ty ~= "DISCO" and ty ~= "IF" and la ~= "" then
+			if not cur then cur = { id, tonumber(la), tonumber(lo) }
+			elseif not nxt then nxt = { id, tonumber(la), tonumber(lo) } break end
+		end
+	end
+	return cur, nxt
+end
+
+-- VNAV prediction (laminar/B747/fms/legs_pred "lat,lon,alt,spd,t,dtg;...") at a waypoint position
+B747DR_fms_legs_pred = find_dataref("laminar/B747/fms/legs_pred")
+function afds_prediction(lat, lon)
+	local ps = B747DR_fms_legs_pred
+	if type(ps) ~= "string" or #ps < 5 or not lat then return nil end
+	for rec in ps:gmatch("[^;]+") do
+		local f = {}
+		for v in (rec .. ","):gmatch("([^,]*),") do f[#f + 1] = tonumber(v) end
+		if f[1] and f[2] and math.abs(f[1] - lat) < 0.002 and math.abs(f[2] - lon) < 0.002 then
+			return { alt = f[3], spd = f[4], t = f[5], dtg = f[6] }
+		end
+	end
+	return nil
+end
 function waypoint_eta_display()
 	local hours = 0
 	local mins = 0
@@ -939,7 +992,7 @@ function waypoint_eta_display()
 		else
 			B747DR_destination="----"
 		end
-		if simDR_onGround ~= 1 then
+		do
 		--print(fmsJSON)
 			
 		fms_current_waypoint, fms_latitude, fms_longitude = getCurrentWayPoint(fms,false)
@@ -947,6 +1000,23 @@ function waypoint_eta_display()
 		fms_distance_to_waypoint,time_to_waypoint,hours,mins,secs = get_waypoint_estimate(simDR_latitude, simDR_longitude,fms_current_waypoint, fms_latitude, fms_longitude,0)
 		
 		fms_next_waypoint, fms_next_latitude, fms_next_longitude = getCurrentWayPoint(fms,true)
+		-- (the AFDS active / next leg when it has one: what LNAV flies)
+		local okw, ca, na = pcall(afds_waypoints)
+		if okw and ca and ca[1] == "(VECTOR)" then
+			fms_current_waypoint = "(VECTOR)"
+		elseif okw and ca and ca[2] then
+			fms_current_waypoint, fms_latitude, fms_longitude = ca[1], ca[2], ca[3]
+			fms_distance_to_waypoint,time_to_waypoint,hours,mins,secs = get_waypoint_estimate(simDR_latitude, simDR_longitude,fms_current_waypoint, fms_latitude, fms_longitude,0)
+			if na and na[2] then fms_next_waypoint, fms_next_latitude, fms_next_longitude = na[1], na[2], na[3] else fms_next_waypoint = "" end
+			-- the VNAV profile's distance along the path and time to the waypoint (as the FMC computes
+			-- them - also on the ground before departure, where the present ground speed means nothing)
+			local okp, pr = pcall(afds_prediction, fms_latitude, fms_longitude)
+			if okp and pr and pr.dtg and pr.dtg >= 0 and pr.t and pr.t >= 0 then
+				local tt = pr.t + ((simDR_onGround == 1) and 60 or 0)      -- (takeoff roll)
+				fms_distance_to_waypoint = pr.dtg
+				time_to_waypoint,hours,mins,secs = get_ETA_for_Distance(0, tt)
+			end
+		end
 		--print(string.match(fms_current_waypoint, "%("))
 		fms_distance_to_next_waypoint,time_to_waypoint,nhours,nmins,nsecs = get_waypoint_estimate(fms_latitude, fms_longitude,fms_next_waypoint, fms_next_latitude, fms_next_longitude,time_to_waypoint)
 		end
@@ -954,8 +1024,12 @@ function waypoint_eta_display()
 		B747DR_destination="----"	
 	end
 	
-	if fms_current_waypoint == "" or string.match(fms_current_waypoint, "%(") then
-		B747DR_ND_current_waypoint = "-----"
+	if fms_current_waypoint == "(VECTOR)" then
+		B747DR_ND_current_waypoint = "(VECTOR)"
+		B747DR_ND_waypoint_distance = "------NM"
+		B747DR_ND_waypoint_eta = "------Z"
+	elseif fms_current_waypoint == "" or fms_current_waypoint == "(VECTORS)" then
+		B747DR_ND_current_waypoint = (fms_current_waypoint == "") and "-----" or "VECTORS"
 		B747DR_ND_waypoint_distance = "------NM"
 		B747DR_ND_waypoint_eta = "------Z"
 			
@@ -1101,7 +1175,7 @@ function do_flight_start()
 	simDR_cg_adjust = 0  --reset CG slider to begin current flight
 	
 	--Ensure that CG location gets updated periodically so that the CG slider repositions automatically as fuel is burned during flight
-	run_at_interval(inflight_update_CG, 60)	
+	run_at_interval(inflight_update_CG, 0.5)	
 end
 
 debug_fms     = find_dataref("laminar/B747/debug/fms")
@@ -1199,8 +1273,103 @@ function throttleDataRefresh()
 	local ref26=simDR_throttle_max      
 end
 
+local legs_err_t = -100
+
+-- ND (b744_nd plugin): runways of the origin and destination airports from the nav database, as text
+-- "R,airport,runway,lat,lon,true heading,length ft,selected" (selected: the runway is in the route)
+B747DR_nd_rwy_geom = find_dataref("laminar/B747/nd/rwy_geom")
+local nd_rwy_t, nd_rwy_sig = -100, nil
+local function nd_publish_runways()
+  if simDRTime - nd_rwy_t < 3 then return end
+  nd_rwy_t = simDRTime
+  local N = B744NAVDB
+  if not (N and N.ready and N.procedures) then return end
+  local ok, fms = pcall(json.decode, fmsJSON)
+  if not ok or type(fms) ~= "table" then return end
+  local apts, names = {}, {}
+  for _, e in ipairs(fms) do
+    if e[2] == 1 and e[8] and #apts < 2 then apts[#apts + 1] = e[8] end
+    if type(e[7]) == "string" then names[(e[7]:gsub("%s", ""))] = true end
+    if type(e[8]) == "string" then names[(e[8]:gsub("%s", ""))] = true end
+  end
+  -- the destination is the last airport in the plan
+  for i = #fms, 1, -1 do
+    local e = fms[i]
+    if e[2] == 1 and e[8] then apts[2] = e[8] break end
+  end
+  -- departure runway selected on the RTE page (X-Plane's plan may hold it only as an unnamed point)
+  local okr, dr = pcall(function() return getFMSData("runway") end)
+  if okr and type(dr) == "string" then
+    dr = dr:gsub("%s", "")
+    if dr ~= "" and not dr:find("%-") then names[dr:find("^RW") and dr or ("RW" .. dr)] = true end
+  end
+  local sig = table.concat(apts, ",") .. "|" .. tostring(#fms) .. "|" .. tostring(fmsJSON):len() .. "|" .. tostring(dr)
+  if sig == nd_rwy_sig then return end
+  nd_rwy_sig = sig
+  local out = {}
+  local seen = {}
+  for k, icao in ipairs(apts) do
+    if icao and not seen[icao] then
+      seen[icao] = true
+      local okp, P = pcall(N.procedures, icao)
+      if okp and P and P.rwys then
+        local byid = {}
+        for id, r in pairs(P.rwys) do byid[(tostring(id):gsub("%s", ""))] = r end
+        for rid, r in pairs(byid) do
+          if r.lat and r.lon then
+            local hdg, len = r.hdg_true, r.length_ft or 10000
+            -- opposite threshold: true heading and length from the two thresholds
+            local n, sx = rid:match("^RW(%d%d)([LRC]?)$")
+            local opp = n and byid[string.format("RW%02d%s", (tonumber(n) + 18 - 1) % 36 + 1,
+              (sx == "L" and "R") or (sx == "R" and "L") or sx)]
+            if opp and opp.lat then
+              local r1, r2 = math.rad(r.lat), math.rad(opp.lat)
+              local dl = math.rad(opp.lon - r.lon)
+              local y = math.sin(dl) * math.cos(r2)
+              local x = math.cos(r1) * math.sin(r2) - math.sin(r1) * math.cos(r2) * math.cos(dl)
+              hdg = (math.deg(math.atan2(y, x)) + 360) % 360
+              local a = math.sin((r2 - r1) / 2) ^ 2 + math.cos(r1) * math.cos(r2) * math.sin(dl / 2) ^ 2
+              len = 2 * math.asin(math.sqrt(a)) * 3440.065 * 6076.12
+            end
+            if hdg then
+              out[#out + 1] = string.format("R,%s,%s,%.6f,%.6f,%.1f,%.0f,%d", icao, rid, r.lat, r.lon, hdg, len,
+                names[rid] and 1 or 0)
+            end
+          end
+        end
+      end
+    end
+  end
+  B747DR_nd_rwy_geom = table.concat(out, ";")
+end
+-- VNAV page of the flight phase (AFDS laminar/B747/autopilot/flightPhase: 0 takeoff, 1 climb,
+-- 2 cruise, 3 descent): page 1 CLB, 2 CRZ, 3 DES
+function B744_vnav_phase_page()
+  local ph = B747DR_ap_flightPhase or 0
+  if ph >= 3 then return 3 elseif ph == 2 then return 2 end
+  return 1
+end
+-- as on the aircraft, a displayed VNAV page follows the phase change (CLB -> CRZ at T/C, CRZ -> DES
+-- at T/D) - only when it shows the page of the phase that has just ended
+local vnav_page_seen = nil
+local function vnav_page_follow()
+  local pg = B744_vnav_phase_page()
+  if vnav_page_seen and pg ~= vnav_page_seen then
+    for _, id in ipairs({ "fmsL", "fmsC", "fmsR" }) do
+      local m = fmsModules[id]
+      if m and m.currentPage == "VNAV" and m.pgNo == vnav_page_seen and m.targetPage == "VNAV" then m.targetpgNo = pg end
+    end
+  end
+  vnav_page_seen = pg
+end
 function after_physics()
   if debug_fms>0 then return end
+  pcall(vnav_page_follow)
+  pcall(nd_publish_runways)
+  -- native LEGS page: route sync, nav database loading, EXEC light
+  local ok, err = pcall(B744_legs_lights)
+  if ok then ok, err = pcall(B744_legs_sync) end
+  if not ok and simDRTime - legs_err_t > 10 then legs_err_t = simDRTime print("B744 LEGS error: " .. tostring(err)) end
 	
   if hasSimConfig()==false then return end
   if flightInit==false then

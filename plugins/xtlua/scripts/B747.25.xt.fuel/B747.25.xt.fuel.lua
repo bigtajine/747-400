@@ -370,6 +370,8 @@ simDR_elec_bus_volts                = find_dataref("sim/cockpit2/electrical/bus_
 simDR_flap_deploy_ratio             = find_dataref("laminar/B747/cablecontrols/flap_ratio")
 simDR_wing_flap1_deg                = find_dataref("sim/flightmodel2/wing/flap1_deg")
 simDR_all_wheels_on_ground          = find_dataref("sim/flightmodel/failures/onground_any")
+simDR_engine_running                = find_dataref("sim/flightmodel/engine/ENGN_running")
+local fuel_imbal_t = {}   -- (local: XTLua wraps global bare tables, and reading a missing key of one overflows the stack)
 simDR_TAT                           = find_dataref("sim/cockpit2/temperature/outside_air_LE_temp_degc")
 
 simDR_engine_fire                   = find_dataref("sim/cockpit2/annunciators/engine_fires")
@@ -2887,52 +2889,34 @@ function B747_fuel_EICAS_msg()
       B747DR_CAS_advisory_status[117] = 0
     end
 
-    -- FUEL IMBALANCE
+    -- FUEL IMBALANCE / IMBAL 1-4 / IMBAL 2-3: set when the difference exceeds 1360 kg (3000 lb) for 30 s,
+    -- cleared below 450 kg (1000 lb); inhibited on the ground until an engine is running (a short
+    -- difference while the APU runs or the tanks are being loaded is not an imbalance)
+    local w = simDR_fuel_tank_weight_kg
+    local eng_run = false
+    if simDR_engine_running then
+        for e = 0, 3 do if simDR_engine_running[e] == 1 then eng_run = true end end
+    else
+        eng_run = true
+    end
+    local inhibit = (simDR_all_wheels_on_ground == 1) and not eng_run
+    local function imbal(idx, diff)
+        if inhibit then B747DR_CAS_advisory_status[idx] = 0; fuel_imbal_t[idx] = nil return end
+        if diff > 1360.0 then
+            fuel_imbal_t[idx] = fuel_imbal_t[idx] or simDR_time_now
+            if simDR_time_now - fuel_imbal_t[idx] >= 30 then B747DR_CAS_advisory_status[idx] = 1 end
+        else
+            fuel_imbal_t[idx] = nil
+            if diff < 450.0 then B747DR_CAS_advisory_status[idx] = 0 end
+        end
+    end
     if fuel_tankToEngine == 1 then
-
-        if math.abs(simDR_fuel_tank_weight_kg[2] - simDR_fuel_tank_weight_kg[3]) > 2720.0
-            or math.abs(simDR_fuel_tank_weight_kg[1] - simDR_fuel_tank_weight_kg[4]) > 2720.0
-        then
-            B747DR_CAS_advisory_status[148] = 1
-        end
-
-        if B747DR_CAS_advisory_status[148] == 1
-            and
-            math.abs(((simDR_fuel_tank_weight_kg[2] + simDR_fuel_tank_weight_kg[3]) - (simDR_fuel_tank_weight_kg[3] + simDR_fuel_tank_weight_kg[4]))) < 450.0
-        then
-            B747DR_CAS_advisory_status[148] = 0
-        end
-    end
-
-    -- FUEL IMBAL 1-4
-    
-    if math.abs(simDR_fuel_tank_weight_kg[1] - simDR_fuel_tank_weight_kg[4]) > 1360.0 then
-        B747DR_CAS_advisory_status[149] = 1
+        imbal(148, math.abs((w[1] + w[2]) - (w[3] + w[4])))
     else
-        B747DR_CAS_advisory_status[149] = 0
+        B747DR_CAS_advisory_status[148] = 0
     end
-
-    if B747DR_CAS_advisory_status[149] == 1
-        and
-        math.abs(simDR_fuel_tank_weight_kg[1] - simDR_fuel_tank_weight_kg[4]) < 450.0
-    then
-        B747DR_CAS_advisory_status[149] = 1
-    end
-
-    -- FUEL IMBAL 2-3
-    
-    if math.abs(simDR_fuel_tank_weight_kg[2] - simDR_fuel_tank_weight_kg[3]) > 1360.0 then
-        B747DR_CAS_advisory_status[150] = 1
-    else
-        B747DR_CAS_advisory_status[150] = 0
-    end
-
-    if B747DR_CAS_advisory_status[150] == 1
-        and
-        math.abs(simDR_fuel_tank_weight_kg[2] - simDR_fuel_tank_weight_kg[3]) < 450.0
-    then
-        B747DR_CAS_advisory_status[150] = 1
-    end
+    imbal(149, math.abs(w[1] - w[4]))
+    imbal(150, math.abs(w[2] - w[3]))
 
     -- FUEL OVRD CTR L
     

@@ -212,7 +212,7 @@ function engine_idle_control_RR(altitude_ft_in)
         elseif simDR_altitude <= 50000 then
           climb_rate_fpm = 2250
         end
-      elseif string.match(simConfigData["data"].PLANE.engines, "524H") then
+      elseif string.match(simConfigData["data"].PLANE.engines, "524H$") then
         --V/S mode / use what the pilot has input on the MCP for V/S
         if B747DR_ap_FMA_active_pitch_mode == 7 then
           if B747DR_ap_vvi_fpm > 0 then
@@ -695,23 +695,23 @@ function engine_idle_control_RR(altitude_ft_in)
       engine_max_thrust_n = 258000
       simDR_throttle_max = 1.0
       if orig_thrust_n == 0.0 or B747DR_newsimconfig_data == 1 then
-        B747_setMaxThrust(258000)  --252970  --(56870 lbf)
+        B747_setMaxThrust(258000)  --(58,000 lbf)
         simDR_reverser_max = 0.75
       end
       simDR_compressor_area = 3.54136  --(86.3-inch fan -- 38.12 sq. ft)
-    elseif string.match(simConfigData["data"].PLANE.engines, "524H") then
-      engine_max_thrust_n = 270000
+    elseif string.match(simConfigData["data"].PLANE.engines, "524H$") then
+      engine_max_thrust_n = 269600
       simDR_throttle_max = 1.0
       if orig_thrust_n == 0.0 or B747DR_newsimconfig_data == 1 then
-        B747_setMaxThrust(270000)  --264450  --(59450 lbf)
+        B747_setMaxThrust(269600)  --(60,600 lbf)
         simDR_reverser_max = 0.75
       end
       simDR_compressor_area = 3.54136  --(86.3-inch fan -- 38.12 sq. ft)
     elseif string.match(simConfigData["data"].PLANE.engines, "524H8T")  then
-      engine_max_thrust_n = 270000
+      engine_max_thrust_n = 269600
       simDR_throttle_max = 1.0
       if orig_thrust_n == 0.0 or B747DR_newsimconfig_data == 1 then
-        B747_setMaxThrust( 270000 ) --264450  --(59450 lbf)
+        B747_setMaxThrust(269600)  --(60,600 lbf, 524H-T)
         simDR_reverser_max = 0.75
       end
       simDR_compressor_area = 3.54136  --(86.3-inch fan -- 38.12 sq. ft)
@@ -719,7 +719,7 @@ function engine_idle_control_RR(altitude_ft_in)
       engine_max_thrust_n = 258000
       simDR_throttle_max = 1.0
       if orig_thrust_n == 0.0 or B747DR_newsimconfig_data == 1 then
-        B747_setMaxThrust(258000)  --252970  --(56870 lbf)
+        B747_setMaxThrust(258000)  --(58,000 lbf)
         simDR_reverser_max = 0.75
       end
       simDR_compressor_area = 3.54136  --(86.3-inch fan -- 48.19 sq. ft)
@@ -793,21 +793,16 @@ function engine_idle_control_RR(altitude_ft_in)
       end
     elseif string.match(B747DR_ref_thr_limit_mode, "CLB") then
       EPR_actual, EPR_initial_climb, EPR_max_climb = in_flight_EPR_RR(altitude_ft_in, 0)
-  
+      -- climb rating (FCOM initial / max climb EPR), not a target climb rate: the climb rate is
+      -- whatever weight, drag and the air allow. CLB 1 / CLB 2: -10 % / -20 % thrust, washed out
+      -- between 10 000 and 15 000 ft (FCOM 7/11.32.3); thrust is roughly proportional to EPR - 1.
+      local epr_clb = (EPR_initial_climb > EPR_max_climb) and EPR_initial_climb or EPR_max_climb
+      local d = (B747DR_clbderate == 1 and 0.10) or (B747DR_clbderate == 2 and 0.20) or 0
+      if d > 0 then epr_clb = 1 + (epr_clb - 1) * B747_rescale(10000.0, 1 - d, 15000.0, 1.0, altitude_ft_in) end
         --Set target bugs
       for i = 0, 3 do
-        if EPR_actual > EPR_max_climb then
-          if EPR_initial_climb > EPR_max_climb then
-            EPR_target_bug[i] = string.format("%3.2f", EPR_initial_climb) + packs_adjustment_value + engine_anti_ice_adjustment_value
-            display_EPR_ref[i] = math.min(string.format("%3.2f", EPR_initial_climb) + packs_adjustment_value + engine_anti_ice_adjustment_value, 1.90)
-          else
-            EPR_target_bug[i] = string.format("%3.2f", EPR_max_climb) + packs_adjustment_value + engine_anti_ice_adjustment_value
-            display_EPR_ref[i] = math.min(string.format("%3.2f", EPR_max_climb) + packs_adjustment_value + engine_anti_ice_adjustment_value, 1.90)
-          end
-        else
-          EPR_target_bug[i] = string.format("%3.2f", EPR_actual) + packs_adjustment_value + engine_anti_ice_adjustment_value
-          display_EPR_ref[i] = math.min(string.format("%3.2f", EPR_actual) + packs_adjustment_value + engine_anti_ice_adjustment_value, 1.90)
-        end
+        EPR_target_bug[i] = string.format("%3.2f", epr_clb) + packs_adjustment_value + engine_anti_ice_adjustment_value
+        display_EPR_ref[i] = math.min(string.format("%3.2f", epr_clb) + packs_adjustment_value + engine_anti_ice_adjustment_value, 1.90)
 
         if B747DR_display_EPR_max[i] < B747DR_display_EPR_ref[i] then
           display_EPR_max[i] = B747DR_display_EPR_ref[i]

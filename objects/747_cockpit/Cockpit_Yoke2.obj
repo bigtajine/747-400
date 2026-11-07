@@ -8231,12 +8231,12 @@ ANIM_begin
 	ANIM_hide	0.0 0.0	sim/graphics/view/hide_yoke
 	ANIM_show	1.0 1.0	sim/graphics/view/hide_yoke
 	ANIM_trans	   0.5208    1.9968    5.1883	   0.5208    1.9968    5.1883	0 0	no_ref
-	ANIM_rotate	  -1.0000    0.0000   -0.0000	 20.50  -4.50	-1.0 1	sim/cockpit2/controls/yoke_pitch_ratio
+	ANIM_rotate	  -1.0000    0.0000   -0.0000	 20.50  -4.50	-1.0 1	laminar/B747/flt_ctrls/yoke_anim_pitch
 # Image: //objects/747_cockpit/Cockpit_Yoke2.png
 	TRIS	0 8946
 	ANIM_begin
 		ANIM_trans	   0.0000    0.7704    0.1010	   0.0000    0.7704    0.1010	0 0	no_ref
-		ANIM_rotate	  -0.0000    0.0000    1.0000	 80.00 -80.00	-1.0 1	sim/cockpit2/controls/yoke_roll_ratio
+		ANIM_rotate	  -0.0000    0.0000    1.0000	 80.00 -80.00	-1.0 1	laminar/B747/flt_ctrls/yoke_anim_roll
 		ANIM_rotate	  -0.0000   -0.0000    -1.0000	 54.00 -54.00	1.0 -1	sim/cockpit2/controls/aileron_trim
 		TRIS	8946 15501
 		ANIM_begin

@@ -69,7 +69,8 @@ function keyDown(fmsModule,key)
       fmsModules[fmsModule].targetCustomFMC=true
       --simCMD_FMS_key[fmsModule]["clb"]:once()
       fmsModules[fmsModule].targetPage="VNAV"
-      fmsModules[fmsModule].targetpgNo=1
+      -- the VNAV page of the present flight phase: CLB (preflight, takeoff, climb), CRZ, DES
+      fmsModules[fmsModule].targetpgNo=B744_vnav_phase_page and B744_vnav_phase_page() or 1
       return
   elseif key=="dir_intc" then
       fmsModules[fmsModule].targetCustomFMC=false
@@ -78,18 +79,14 @@ function keyDown(fmsModule,key)
       fmsModules[fmsModule].targetpgNo=1
       return
   elseif key=="legs" then
-      
-      if simDR_onGround ==1 or simDR_version>=120012 then
-        fmsModules[fmsModule].targetCustomFMC=true
-        fmsModules[fmsModule].targetPage="LEGS"
-        simCMD_FMS_key[fmsModule]["legs"]:once()
-        fmsModules[fmsModule].targetpgNo=1
-      else
-        fmsModules[fmsModule].targetCustomFMC=false
-        fmsModules[fmsModule].targetPage="RTE2"
-        simCMD_FMS_key[fmsModule]["dir_intc"]:once()
-        fmsModules[fmsModule].targetpgNo=1
-      end
+      -- native RTE 1 LEGS page (Boeing direct-to / insert / delete / discontinuity logic)
+      fmsModules[fmsModule].targetCustomFMC=true
+      fmsModules[fmsModule].targetPage="LEGS"
+      fmsModules[fmsModule].targetpgNo=1
+      return
+  elseif key=="exec" and B744_legs_has_mod ~= nil and B744_legs_has_mod() then
+      -- a pending LEGS modification is executed from any page
+      B744_legs_exec()
       return
   elseif key=="dep_arr" then
       fmsModules[fmsModule].targetCustomFMC=false
@@ -535,9 +532,19 @@ function fms:B747_fms_display()
       if self.pgNo>fmsPages[page]:getNumPages(thisID) then self.pgNo=fmsPages[page]:getNumPages(thisID) self.targetpgNo=fmsPages[page]:getNumPages(thisID) end
       if self.pgNo<1 then self.pgNo=1 self.targetpgNo=1 end
       --print("getPage "..thisID)
-      local fmsPage = fmsPages[page]:getPage(self.pgNo,thisID);
-      --print("getSmallPage "..thisID)
-      local fmsPagesmall = fmsPages[page]:getSmallPage(self.pgNo,thisID);
+      -- v42: a Lua error in a page's code must not stop the whole system instance (the FMCs and the
+      -- autopilot run in it): the page shows blank lines and the error is printed once
+      local okP, fmsPage = pcall(fmsPages[page].getPage, fmsPages[page], self.pgNo, thisID)
+      local okS, fmsPagesmall = pcall(fmsPages[page].getSmallPage, fmsPages[page], self.pgNo, thisID)
+      if not okP or type(fmsPage) ~= "table" then
+        print("FMC page error " .. tostring(page) .. " " .. tostring(self.pgNo) .. ": " .. tostring(fmsPage))
+        fmsPage = {}
+      end
+      if not okS or type(fmsPagesmall) ~= "table" then fmsPagesmall = {} end
+      for i = 1, 13 do
+        if type(fmsPage[i]) ~= "string" then fmsPage[i] = "                        " end
+        if type(fmsPagesmall[i]) ~= "string" then fmsPagesmall[i] = "                        " end
+      end
       local tmpSRC
       for i=1,13,1 do
 	      tmpSRC=B747DR_srcfms[thisID][i] -- make sure src is always fresh

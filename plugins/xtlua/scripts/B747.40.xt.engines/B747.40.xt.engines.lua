@@ -512,19 +512,17 @@ function B747_thrust_rev_hold_max_all_CMDhandler(phase, duration)
 		
 	end		
 	
-	--[[if phase == 2 then
-		
-		if B747_hold_rev_on_all == 1 then
-			--simDR_prop_mode[0] = 1													
-			--simDR_prop_mode[1] = 1													
-			--simDR_prop_mode[2] = 1													
-			--simDR_prop_mode[3] = 1	
-            --print("canx rev")	
+	if phase == 2 then
+		-- binding released: reverse levers back to idle reverse (the engines spool down), then the
+		-- reversers stow and the thrust levers work normally again
+		if simDR_engine_throttle_jet_all < 0 or B747_hold_rev_on_all == 1 then
 			simDR_engine_throttle_jet_all = -0.01
-            run_after_time(canx_revHold,5)
+			B747_hold_rev_on_all = 0
+			if is_timer_scheduled(canx_revHold) then stop_timer(canx_revHold) end
+			if is_timer_scheduled(canx_rev) then stop_timer(canx_rev) end
+			run_after_time(canx_rev, 2.0)
 		end
-					
-    end]]--
+	end
     
 end
 
@@ -539,7 +537,9 @@ end
 
 
 
+B747DR_afds_toga_count = find_dataref("laminar/B747/afds/toga_count")
 function B747_engine_TOGA_power_CMDhandler(phase, duration)
+    if phase == 0 then B747DR_afds_toga_count = B747DR_afds_toga_count + 1 end   -- REBUILT AFDS: TO/GA press
      
     callEngineReverse[0]=0
     callEngineReverse[1]=0
@@ -875,7 +875,7 @@ function B747_EGT_indicator()
         end
     end
     if num_eng_running==4 then 
-      simDR_thrust_spoolTime=5
+      simDR_thrust_spoolTime=0.8 -- EEC acceleration schedules (B747.42.xt.EEC/spool.lua) set the response
     elseif num_eng_running==0 then
       simDR_thrust_spoolTime=26
     end
@@ -1682,7 +1682,7 @@ function B747_set_engines_ER()
     B747DR_engine_fuel_valve_pos[1] = 1
     B747DR_engine_fuel_valve_pos[2] = 1
     B747DR_engine_fuel_valve_pos[3] = 1  
-    simDR_thrust_spoolTime=5
+    simDR_thrust_spoolTime=0.8 -- EEC acceleration schedules (B747.42.xt.EEC/spool.lua) set the response
     B747_startup_ignition()
 	
 end

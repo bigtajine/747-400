@@ -132,14 +132,14 @@ function modFlapSpeed(speed)
 	local maxSafeSpeed = B747DR_airspeed_Vmo
 	if simDR_flap_ratio_control > 0 then
 		if simDR_flap_ratio_control <= 0.168 then --flaps 1
-			maxSafeSpeed = math.min(275,B747DR_airspeed_Vf0+15)
+			maxSafeSpeed = math.min(275,B747DR_airspeed_Vf0+2)
 		elseif simDR_flap_ratio_control <= 0.34 then --flaps 5
-			maxSafeSpeed = math.min(255,B747DR_airspeed_Vf1+15)
+			maxSafeSpeed = math.min(255,B747DR_airspeed_Vf1+2)
 		elseif simDR_flap_ratio_control <= 0.5 then --flaps 10
-			maxSafeSpeed = math.min(235,B747DR_airspeed_Vf5+15)
+			maxSafeSpeed = math.min(235,B747DR_airspeed_Vf5+2)
 			minSafeSpeed = minSafeSpeed - 5
 		elseif simDR_flap_ratio_control <= 0.668 then --flaps 20
-			maxSafeSpeed = math.min(225,B747DR_airspeed_Vf10+15)
+			maxSafeSpeed = math.min(225,B747DR_airspeed_Vf10+2)
 			minSafeSpeed = minSafeSpeed - 5
 		elseif simDR_flap_ratio_control <= 0.84 then --flaps 25
 			maxSafeSpeed = math.min(200,B747DR_airspeed_Vf20+2)
@@ -166,7 +166,7 @@ function clb_src_setSpd()
 end
 function clb_aptres_setSpd()
     local spdval=modFlapSpeed(tonumber(getFMSData("clbrestspd")))
-    spdval=math.max(spdval,simDR_ind_airspeed_kts_pilot-15)
+    spdval=SPDCTL_stepLimit(spdval)
     simDR_autopilot_airspeed_is_mach = 0
     print("convert to clb clbrestspd ".. spdval)
     B747DR_ap_ias_dial_value = math.min(399.0, spdval)
@@ -191,7 +191,7 @@ function clb_spcres_setSpd()
       elseif(B747DR_ap_ias_dial_value<spdval) and simDR_autopilot_airspeed_is_mach == 0 then
         spdval=math.min(B747DR_ap_ias_dial_value+5,spdval)
       end]]--
-      spdval=math.max(spdval,simDR_ind_airspeed_kts_pilot-15)
+      spdval=SPDCTL_stepLimit(spdval)
       simDR_autopilot_airspeed_is_mach = 0
       print("convert to clb speed ".. spdval.. " at "..simDR_ind_airspeed_kts_pilot)
       B747DR_ap_ias_dial_value = math.min(399.0, spdval)
@@ -219,7 +219,7 @@ function clb_nores_setSpd()
      else
         simDR_autopilot_airspeed_is_mach = 0
      end
-      spdval=math.max(spdval,simDR_ind_airspeed_kts_pilot-15)
+      spdval=SPDCTL_stepLimit(spdval)
       print("convert to transpd speed ".. spdval)
       B747DR_ap_ias_dial_value = math.min(399.0, spdval)
       B747DR_lastap_dial_airspeed=B747DR_ap_ias_dial_value
@@ -391,8 +391,13 @@ function B747_update_vnav_speed()
        lastVNAVSpeed=simDRTime
     end
 
+    if SPDCTL_overspeedTrigger(lastVNAVSpeed) then
+       print("SPDCTL overspeed - re-evaluating VNAV speed")
+       vnavSPD_state["gotVNAVSpeed"]=false
+       lastVNAVSpeed=simDRTime
+    end
     local diff=simDRTime-lastVNAVSpeed
-    if diff>30 then
+    if diff>SPDCTL_refreshSec() then
        vnavSPD_state["gotVNAVSpeed"]=false
        lastVNAVSpeed=simDRTime
     end

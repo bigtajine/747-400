@@ -90,6 +90,10 @@ B747DR_pfd_mode_fo		                		= deferred_dataref("laminar/B747/pfd/fo/ir
 B747DR_pfd_mode_show_mins          				= deferred_dataref("laminar/B747/pfd/show_mins", "number")
 B747DR_nd_fo_heading_bug            			= deferred_dataref("laminar/B747/nd/mode/fo/show_heading_bug", "number")
 B747DR_nd_capt_heading_bug          			= deferred_dataref("laminar/B747/nd/mode/capt/show_heading_bug", "number")
+-- selected heading line (dashed, MAP mode): only while the heading is what the aircraft follows or will
+-- follow (not while LNAV / LOC is the active roll mode)
+B747DR_nd_fo_hdg_line              			= deferred_dataref("laminar/B747/nd/mode/fo/show_hdg_line", "number")
+B747DR_nd_capt_hdg_line            			= deferred_dataref("laminar/B747/nd/mode/capt/show_hdg_line", "number")
 
 
 B747DR_nd_mode_capt_sel_dial_pos                = deferred_dataref("laminar/B747/nd/mode/capt/sel_dial_pos", "number")

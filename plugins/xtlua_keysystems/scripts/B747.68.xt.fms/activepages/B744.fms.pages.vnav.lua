@@ -47,6 +47,7 @@ fmsPages["VNAV"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be thi
     if pgNo==1 then 
 
       --ref pg 1519 fcomm
+      fmsFunctionsDefs["VNAV"]["R5"]=nil
       fmsFunctionsDefs["VNAV"]["L1"]={"setdata","crzalt"}
       fmsFunctionsDefs["VNAV"]["L2"]={"setdata","clbspd"}
       fmsFunctionsDefs["VNAV"]["L3"]={"setdata","clbtrans"}
@@ -175,6 +176,7 @@ fmsPages["VNAV"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be thi
       }
     elseif pgNo==2 then 
       --ref pg 1543 fcomm
+      fmsFunctionsDefs["VNAV"]["R5"]=nil
       fmsFunctionsDefs["VNAV"]["L1"]={"setdata","crzalt"}
       fmsFunctionsDefs["VNAV"]["L2"]={"setdata","crzspd"}
       fmsFunctionsDefs["VNAV"]["L3"]=nil
@@ -331,6 +333,7 @@ fmsPages["VNAV"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be thi
       }  
     elseif pgNo==3 then 
       --ref FCOM Virgin p.1023, Lease p.822
+      fmsFunctionsDefs["VNAV"]["R5"]={"setpage","DESFCST"}
       fmsFunctionsDefs["VNAV"]["L1"]=nil
       fmsFunctionsDefs["VNAV"]["L2"]={"setdata","desspds"}
       fmsFunctionsDefs["VNAV"]["L3"]={"setdata","destrans"}
@@ -392,9 +395,12 @@ fmsPages["VNAV"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be thi
 
           end
 
-          if B747BR_eod_index>0 and currentWP<=B747BR_eod_index then
-            eodWpt=fms[B747BR_eod_index][8]
-            eodAlt=fms[B747BR_eod_index][9]
+          -- (v42: eod_index is the AFDS plan's leg index - it can be beyond X-Plane's FMS list: the
+          -- DES page in cruise stopped the whole instance - blank FMCs, autopilot dead)
+          local eodE = (B747BR_eod_index or 0) > 0 and fms[B747BR_eod_index] or nil
+          if eodE and currentWP<=B747BR_eod_index then
+            eodWpt=eodE[8]
+            eodAlt=eodE[9]
           else
             eodWpt = "*****"
             eodAlt = 0

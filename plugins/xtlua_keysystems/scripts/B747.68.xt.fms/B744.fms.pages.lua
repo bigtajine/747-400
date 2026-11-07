@@ -53,7 +53,7 @@ acarsS.."    SELECT>",
 "                        ",
 gs1,
 "                        ",
-"<ACMS                   ", 
+"<ACMS              MISC>", 
 "                        ",
 "<CMC             SELECT>"
 }
@@ -89,6 +89,7 @@ fmsFunctionsDefs["INDEX"]["L6"]={"setpage","CMC"}
 fmsFunctionsDefs["INDEX"]["R1"]={"setpage","EFISCTL152"}
 fmsFunctionsDefs["INDEX"]["R2"]={"setpage","EICASMODES"}
 fmsFunctionsDefs["INDEX"]["R4"]={"setpage","GNDHNDL"}
+fmsFunctionsDefs["INDEX"]["R5"]={"setpage","MISC"}
 fmsFunctionsDefs["INDEX"]["R6"]={"setpage","MAINTSIMCONFIG"}
 --fmsFunctionsDefs["INDEX"]["R6"]={"setpage", "MAINTSIMCONFIG"}
 
@@ -158,6 +159,13 @@ fmsPages["RTE1"].getPage=function(self,pgNo,fmsID)
   fmsFunctionsDefs["RTE1"]["R3"]={"setpage","FMC"}
   local line5="                "..string.sub(cleanFMSLine(B747DR_srcfms[fmsID][5]),1,8)
   if acarsSystem.provider.online() then line5=" <SEND          "..string.sub(cleanFMSLine(B747DR_srcfms[fmsID][5]),1,8) end
+  -- SimBrief route / load request (on the ground)
+  if simDR_onGround == 1 then
+    fmsFunctionsDefs["RTE1"]["L3"]={"sbRequest","rte"}
+    line5="<REQUEST        "..string.sub(cleanFMSLine(B747DR_srcfms[fmsID][5]),1,8)
+  else
+    fmsFunctionsDefs["RTE1"]["L3"]={"custom2fmc","L3"}
+  end
   local page={
   "      ACT RTE 1     " .. string.sub(cleanFMSLine(B747DR_srcfms[fmsID][1]),-4,-1) ,
   "                        ",
@@ -204,6 +212,9 @@ fmsPages["RTE1"].getSmallPage=function(self,pgNo,fmsID)
 		tLine="                 OFFSET "
 	end
 	if acarsSystem.provider.online() then line4=" REQUEST       CO ROUTE " end
+	if simDR_onGround == 1 then
+		line4 = " SIMBRIEF       CO ROUTE"
+	end
 	local page={
 		"                        ",
 		cleanFMSLine(B747DR_srcfms[fmsID][2]),
@@ -257,6 +268,7 @@ dofile("activepages/B744.fms.pages.progress.lua")
 dofile("activepages/B744.fms.pages.actrte1.lua")
 dofile("activepages/B744.fms.pages.fmccomm.lua")
 dofile("activepages/B744.fms.pages.vnav.lua")
+dofile("activepages/B744.fms.pages.desforecast.lua")
 dofile("activepages/B744.fms.pages.vnav.lrc.lua")
 dofile("activepages/B744.fms.pages.groundhandling.lua")
 dofile("activepages/B744.fms.pages.maintsimconfig.lua")
@@ -275,6 +287,7 @@ dofile("activepages/B744.fms.pages.efisctl.lua")
 dofile("activepages/B744.fms.pages.eicasctl.lua")
 dofile("activepages/B744.fms.pages.doors.lua")
 dofile("activepages/B744.fms.pages.soundconfig.lua")
+dofile("B744.fms.simbrief.lua")
 
 --[[
 dofile("B744.fms.pages.actclb.lua")
@@ -910,8 +923,10 @@ function fmsFunctions.setdata(fmsO,value)
 	local alt=tonumber(fmsO["scratchpad"])
 	if fmsO.id=="fmsR" then 
 		simDR_radio_alt_DH_fo=alt
+		B747DR_efis_min_ref_alt_fo_sel_dial_pos=0
 	else
 		simDR_radio_alt_DH_capt=alt
+		B747DR_efis_min_ref_alt_capt_sel_dial_pos=0
 	end
   elseif value=="MDA" then
 		if tonumber(fmsO["scratchpad"]) ==nil then 
@@ -921,8 +936,10 @@ function fmsFunctions.setdata(fmsO,value)
 		local alt=tonumber(fmsO["scratchpad"])
 		if fmsO.id=="fmsR" then 
 			B747DR_efis_baro_alt_ref_fo=alt
+			B747DR_efis_min_ref_alt_fo_sel_dial_pos=1
 		else
 			B747DR_efis_baro_alt_ref_capt=alt
+			B747DR_efis_min_ref_alt_capt_sel_dial_pos=1
 		end
   elseif value=="EFISMAP" then
 	if fmsO.id=="fmsR" then 
@@ -1305,6 +1322,8 @@ function fmsFunctions.setdata(fmsO,value)
 			timer_start = simDRTime
 		end
 	end
+  elseif value == "simbrief" then
+	if B744SIMBRIEF then B744SIMBRIEF.request(fmsO) end
   elseif value == "fltdep" then
 	print("set fltdep "..fmsO["scratchpad"])
 	if string.len(fmsO["scratchpad"])>0 or del==true then

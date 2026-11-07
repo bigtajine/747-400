@@ -40972,7 +40972,7 @@ ANIM_begin
 	ANIM_trans	   0.2048    2.4395    5.2159	   0.2048    2.4424    5.2055	0 6.0	sim/operation/failures/rel_trim_elv
 	TRIS	102033 6
 ANIM_end
-ATTR_light_level 0 1 sim/cockpit2/radios/indicators/fms_exec_light_copilot 5000
+ATTR_light_level 0 1 laminar/B747/fms/exec_light_copilot 5000
 TRIS	102039 432
-ATTR_light_level 0 1 sim/cockpit2/radios/indicators/fms_exec_light_pilot 5000
+ATTR_light_level 0 1 laminar/B747/fms/exec_light_pilot 5000
 TRIS	102471 864

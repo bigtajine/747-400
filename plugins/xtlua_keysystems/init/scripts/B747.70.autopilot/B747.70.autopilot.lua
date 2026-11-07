@@ -70,6 +70,7 @@ B747DR_ap_ias_bug_value            	= deferred_dataref("laminar/B747/autopilot/i
 B747DR_ap_ias_bug_value_pfd            	= deferred_dataref("laminar/B747/autopilot/ias_bug_value_pfd", "number")
 B747DR_ap_ias_mach_dial_value            	= deferred_dataref("laminar/B747/autopilot/ias_mach_dial_value", "number") --display only
 B747DR_ils_dots           	= deferred_dataref("laminar/B747/autopilot/ils_dots", "number") --display only
+B747DR_gs_ptr_show        	= deferred_dataref("laminar/B747/autopilot/gs_ptr_show", "number") --display only: G/S pointer within 17 nm
 B747DR_ap_vnav_system            	= deferred_dataref("laminar/B747/autopilot/vnav_system", "number")
 B747DR_ap_vnav_target_alt            	= deferred_dataref("laminar/B747/autopilot/vnav_target_alt", "number")
 B747DR_ap_lnav_xtk_error           	= deferred_dataref("laminar/B747/autopilot/lnav/xtk_error", "number")
@@ -272,3 +273,28 @@ function aircraft_unload()
     simDR_override_steering=0
     simDR_override_fms_progress=0
 end
+
+--*************************************************************************************--
+--**  REBUILT AFDS (2026) - interface between the new autopilot, the FMC and the servos  **--
+--*************************************************************************************--
+B747DR_afds_pitch_cmd      = deferred_dataref("laminar/B747/afds/pitch_cmd", "number")      -- deg, attitude command
+B747DR_afds_roll_cmd       = deferred_dataref("laminar/B747/afds/roll_cmd", "number")       -- deg, bank command
+B747DR_afds_cmd_valid      = deferred_dataref("laminar/B747/afds/cmd_valid", "number")      -- 1 = servos/FD use the commands above
+B747DR_afds_thr_target     = deferred_dataref("laminar/B747/afds/thr_target", "number")     -- A/T THR mode lever target (0..1), -1 none
+B747DR_afds_rudder_cmd     = deferred_dataref("laminar/B747/afds/rudder_cmd", "number")
+B747DR_afds_rudder_valid   = deferred_dataref("laminar/B747/afds/rudder_valid", "number")
+B747DR_afds_toga_count     = deferred_dataref("laminar/B747/afds/toga_count", "number")     -- incremented by every TO/GA switch press
+B747DR_afds_mcp_lights     = deferred_dataref("laminar/B747/afds/mcp_lights", "array[16]")  -- MCP switch lights
+B747DR_afds_debug          = deferred_dataref("laminar/B747/afds/debug", "string")
+B747DR_afds_lnav_roll      = deferred_dataref("laminar/B747/afds/lnav_roll", "number")
+B747DR_afds_vnav_sub       = deferred_dataref("laminar/B747/afds/vnav_sub", "string")
+B747DR_yoke_anim_pitch     = deferred_dataref("laminar/B747/flt_ctrls/yoke_anim_pitch", "number") -- 3D column (pilot input or A/P back-drive)
+B747DR_yoke_anim_roll      = deferred_dataref("laminar/B747/flt_ctrls/yoke_anim_roll", "number")  -- 3D wheel
+-- live autopilot tuning (gain multipliers, 0 = default 1.0)
+B747DR_afds_tune_pitch_kp = deferred_dataref("laminar/B747/afds/tune/pitch_kp", "number")
+B747DR_afds_tune_pitch_kd = deferred_dataref("laminar/B747/afds/tune/pitch_kd", "number")
+B747DR_afds_tune_pitch_ki = deferred_dataref("laminar/B747/afds/tune/pitch_ki", "number")
+B747DR_afds_tune_roll_kp = deferred_dataref("laminar/B747/afds/tune/roll_kp", "number")
+B747DR_afds_tune_roll_kd = deferred_dataref("laminar/B747/afds/tune/roll_kd", "number")
+B747DR_afds_tune_roll_ki = deferred_dataref("laminar/B747/afds/tune/roll_ki", "number")
+B747DR_afds_tune_trim_rate = deferred_dataref("laminar/B747/afds/tune/trim_rate", "number")

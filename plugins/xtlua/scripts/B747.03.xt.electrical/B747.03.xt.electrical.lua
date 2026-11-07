@@ -86,6 +86,7 @@ local B747_apu_inlet_door_target_pos = 0
 simDR_version=find_dataref("sim/version/xplane_internal_version")
 simDR_gpuvolts=find_dataref("sim/cockpit2/electrical/GPU_generator_volts")
 simDR_startup_running           = find_dataref("sim/operation/prefs/startup_running")
+simDRTime                       = find_dataref("sim/time/total_running_time_sec")
 
 simDR_engine_running            = find_dataref("sim/flightmodel/engine/ENGN_running")
 
@@ -335,14 +336,25 @@ end
 --*************************************************************************************--
 --** 				                 CUSTOM COMMANDS                			     **--
 --*************************************************************************************--
-function B747_connect_power_CMDhandler()
-    if B747DR_elec_ext_pwr1_available ==0 then
+-- ground power (FMC GND SRV / command): connected directly at the gate - no X-Plane ground service
+-- truck needed (the aircraft supplies the GPU voltage itself while connected; chocks must be in)
+function B747_gpu_connect(on)
+    if on then
+        simDR_override_gpu = 1
+        simDR_gpuvolts = 28
         B747DR_elec_ext_pwr1_available = 1
         B747DR_elec_ext_pwr2_available = 1
     else
+        simDR_override_gpu = 0
+        simDR_gpuvolts = 0
         B747DR_elec_ext_pwr1_available = 0
         B747DR_elec_ext_pwr2_available = 0
     end
+end
+function B747_connect_power_CMDhandler(phase, duration)
+    if phase ~= nil and phase ~= 0 then return end
+    gpu_cold_until = nil   -- (a manual connect/disconnect ends the cold-start auto-connect)
+    B747_gpu_connect(B747DR_elec_ext_pwr1_available == 0)
 end
 B747CMD_connect_power          = deferred_command("laminar/B747/electrical/connect_power", "Connect external power", B747_connect_power_CMDhandler)
 -- STANDBY POWER
@@ -460,6 +472,9 @@ function B747_external_power()
 	    B747DR_elec_ext_pwr2_available = 0
 			simDR_override_gpu = 0
 			simDR_gpuvolts = 0
+    end
+    if gpu_cold_until and simDRTime < gpu_cold_until and B747DR__gear_chocked == 1 and simDR_override_gpu == 0 then
+        B747_gpu_connect(true)
     end
     if simDR_version>=120012 and (simDR_gpuvolts<24) then
 			B747DR_elec_ext_pwr1_available = 0
@@ -1006,6 +1021,10 @@ function B747_flight_start_electric()
     if simDR_startup_running == 0 then
 
         B747_set_elec_CD()
+        -- cold & dark at the gate: external power connected and available (re-applied for the first
+        -- seconds, until the chocks set by the gear script are in)
+        B747_gpu_connect(true)
+        gpu_cold_until = simDRTime + 10
 
 
     -- ENGINES RUNNING ------------------------------------------------------------------

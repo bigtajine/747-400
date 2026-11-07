@@ -21,6 +21,25 @@ B747DR_TAS_pilot=deferred_dataref("laminar/B747/nd/TAS_pilot", "number")
 radioModes="AAAMM" --ils,vor l/r,adf l/r (ADF is manual only
 B747DR_FMSdata=deferred_dataref("laminar/B747/fms/data", "string")
 B747DR_FMSdata="{}"
+-- native RTE 1 LEGS page
+B747DR_legs_ext=deferred_dataref("laminar/B747/fms/legs_ext", "string")
+B747DR_legs_ext=""
+B747DR_exec_light_pilot=deferred_dataref("laminar/B747/fms/exec_light_pilot", "number")
+B747DR_exec_light_copilot=deferred_dataref("laminar/B747/fms/exec_light_copilot", "number")
+B747DR_lnav_active=deferred_dataref("laminar/B747/fms/lnav_active", "number")
+-- ND route geometry for the b744_nd drawing plugin (written by the AFDS)
+B747DR_nd_route_geom=deferred_dataref("laminar/B747/nd/route_geom", "string")
+B747DR_nd_rwy_geom=deferred_dataref("laminar/B747/nd/rwy_geom", "string")
+-- modified route waiting for EXEC (light blue on the ND): "id,lat,lon;..."
+B747DR_nd_mod_geom=deferred_dataref("laminar/B747/nd/mod_geom", "string")
+B747DR_nd_mod_geom=""
+-- VNAV predictions per route waypoint for the LEGS page (written by the AFDS): "lat,lon,alt,spd;..."
+-- (spd: CAS in kt, or Mach * 1000 when above 1)
+B747DR_legs_pred=deferred_dataref("laminar/B747/fms/legs_pred", "string")
+B747DR_legs_pred=""
+-- DES FORECAST winds for the VNAV descent profile (FMC page): "alt,dir,spd;..." (dir true, from)
+B747DR_des_winds=deferred_dataref("laminar/B747/fms/des_winds", "string")
+B747DR_des_winds=""
 irs_line1=deferred_dataref("laminar/B747/irs/line1", "string")
 irs_line2=deferred_dataref("laminar/B747/irs/line2", "string") 
 irs_line3=deferred_dataref("laminar/B747/irs/line3", "string") 
@@ -198,3 +217,6 @@ createFMSCommands("FMS L","cdu1","fms3","sim/FMS/","fms1")
 createFMSCommands("FMS R","cdu1","fms2","sim/FMS/","fms2")
 
 B747CMD_netTest              = XLuaCreateCommand("laminar/B747/networking/nettest", "Networking Test")
+-- PLAN mode map centre (LEGS page <CTR> / STEP), read by the ND plugin (v42)
+B747DR_nd_plan_ctr_lat=deferred_dataref("laminar/B747/nd/plan_ctr_lat", "number")
+B747DR_nd_plan_ctr_lon=deferred_dataref("laminar/B747/nd/plan_ctr_lon", "number")

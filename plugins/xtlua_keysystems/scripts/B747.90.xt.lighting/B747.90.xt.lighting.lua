@@ -42,6 +42,7 @@ function deferred_dataref(name,nilType,callFunction)
     end
     return find_dataref(name)
 end
+B747DR_afds_mcp_lights = find_dataref("laminar/B747/afds/mcp_lights")
 NUM_SPILL_LIGHT_INDICES = 9
 NUM_LANDING_LIGHTS      = 4
 NUM_ANNUN_LIGHTS        = 270
@@ -1652,19 +1653,20 @@ function B747_annunciators()
 
     -- MCP AUTOPILOT BUTTON SWITCHES ---------------------------------------------
 	--annun.b.ap_thrust 	= B747_ternary(B747DR_engine_TOGA_mode >0 , 1, 0)
-    annun.b.ap_thrust 	= B747_ternary(B747DR_ap_FMA_autothrottle_mode==5 and (simDR_autopilot_vs_status == 2 or simDR_autopilot_alt_hold_status == 2) , 1, 0)
-    annun.b.ap_speed 	= B747_ternary(B747DR_ap_FMA_autothrottle_mode==3 and B747DR_ap_vnav_state < 1, 1, 0)
-    annun.b.ap_lnav 	= B747_ternary(B747DR_ap_lnav_state>0, 1, 0)
-    annun.b.ap_vnav 	= B747_ternary(simDR_autopilot_fms_vnav_status > 0 or B747DR_ap_vnav_state>0, 1, 0)
-    annun.b.ap_fl_ch 	= B747_ternary(B747DR_ap_FMA_active_pitch_mode == 8 and simDR_autopilot_fms_vnav_status < 1 and B747DR_ap_vnav_state < 1, 1, 0)
-    annun.b.ap_hdg_hold	= B747_ternary(simDR_autopilot_heading_hold_status == 2, 1, 0)
-    annun.b.ap_vs 		= B747_ternary(simDR_autopilot_vs_status == 2 and simDR_autopilot_fms_vnav_status < 1 and B747DR_ap_vnav_state < 1 and simDR_autopilot_alt_hold_status==0 and B747DR_autopilot_gs_status < 2, 1, 0)
-    annun.b.ap_alt_hold = B747_ternary(simDR_autopilot_alt_hold_status == 2 and simDR_autopilot_fms_vnav_status < 1 and B747DR_ap_vnav_state < 1, 1, 0)
-    annun.b.ap_app 		= B747_ternary((B747DR_autopilot_nav_status > 0 and B747DR_autopilot_gs_status > 0) or B747DR_ap_approach_mode>0, 1, 0)
-    annun.b.ap_loc 		= B747_ternary((B747DR_autopilot_nav_status > 0 or B747DR_ap_approach_mode<0) and annun.b.ap_app == 0, 1, 0) --test this
-    annun.b.ap_CMD_L 	= B747_ternary(B747DR_autopilot_cmd_L_status == 1 and simDR_autopilot_servos_on == 1, 1, 0)
-    annun.b.ap_CMD_C 	= B747_ternary(B747DR_autopilot_cmd_C_status == 1 and simDR_autopilot_servos_on == 1, 1, 0)
-    annun.b.ap_CMD_R 	= B747_ternary(B747DR_autopilot_cmd_R_status == 1 and simDR_autopilot_servos_on == 1, 1, 0)
+    -- REBUILT AFDS: MCP switch lights come straight from the autopilot mode logic
+    annun.b.ap_thrust 	= B747DR_afds_mcp_lights[0]
+    annun.b.ap_speed 	= B747DR_afds_mcp_lights[1]
+    annun.b.ap_lnav 	= B747DR_afds_mcp_lights[2]
+    annun.b.ap_vnav 	= B747DR_afds_mcp_lights[3]
+    annun.b.ap_fl_ch 	= B747DR_afds_mcp_lights[4]
+    annun.b.ap_hdg_hold	= B747DR_afds_mcp_lights[5]
+    annun.b.ap_vs 		= B747DR_afds_mcp_lights[6]
+    annun.b.ap_alt_hold = B747DR_afds_mcp_lights[7]
+    annun.b.ap_loc 		= B747DR_afds_mcp_lights[8]
+    annun.b.ap_app 		= B747DR_afds_mcp_lights[9]
+    annun.b.ap_CMD_L 	= B747DR_afds_mcp_lights[10]
+    annun.b.ap_CMD_C 	= B747DR_afds_mcp_lights[11]
+    annun.b.ap_CMD_R 	= B747DR_afds_mcp_lights[12]
     
     
 end

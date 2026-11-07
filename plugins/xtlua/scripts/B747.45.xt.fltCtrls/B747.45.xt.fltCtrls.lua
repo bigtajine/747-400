@@ -1238,7 +1238,8 @@ function B747_set_fltctrls_CD()
     --B747_speedbrake_lever_DRhandler()
 
 
-    simDR_elevator_trim = 0
+    -- v45: stabilizer trim 5 units on spawn (units = (trim + 1) * 7.5, as the takeoff trim check uses)
+    simDR_elevator_trim = 5 / 7.5 - 1
 
 end
 
@@ -1249,6 +1250,7 @@ end
 function B747_set_fltctrls_ER()
   if simDR_all_wheels_on_ground == 1 then
 	B747DR_parking_brake_ratio=1
+	simDR_elevator_trim = 5 / 7.5 - 1     -- (v45) 5 units on the ground
   end
 	
 end

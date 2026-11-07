@@ -16,6 +16,30 @@
 --sim/flightmodel2/controls/slat2_deploy_ratio
 --sim/flightmodel2/controls/slat1_deploy_ratio
 dofile("pid.lua")
+dofile("afds_inner.lua")   -- REBUILT AFDS (2026): attitude inner loops
+local AFDS_IN = B744INNER
+local afds_inner = AFDS_IN.new()
+B747DR_afds_tune = {
+  pkp = find_dataref("laminar/B747/afds/tune/pitch_kp"), pkd = find_dataref("laminar/B747/afds/tune/pitch_kd"),
+  pki = find_dataref("laminar/B747/afds/tune/pitch_ki"), rkp = find_dataref("laminar/B747/afds/tune/roll_kp"),
+  rkd = find_dataref("laminar/B747/afds/tune/roll_kd"), rki = find_dataref("laminar/B747/afds/tune/roll_ki"),
+  trim = find_dataref("laminar/B747/afds/tune/trim_rate"),
+}
+local function afds_dt() return math.max(0.005, math.min(0.1, SIM_PERIOD or 0.03)) end
+-- stabilizer auto-trim for the new AFDS: continuous, ~0.2 deg/s of stabilizer, offloads the elevator
+local function afds_trim(u)
+  if simDR_radarAlt1 < 100 then return end
+  local w = 0.03
+  if math.abs(u) > w then
+    -- the stabilizer is less effective at low speed: trim faster there (up to 3x)
+    local vs_ = math.max(1, math.min(3, (250 / math.max(100, simDR_ind_airspeed_kts_pilot)) ^ 2))
+    local rate = 0.012 * vs_ * ((B747DR_afds_tune.trim > 0) and B747DR_afds_tune.trim or 1)
+    local d = (u > 0 and 1 or -1) * rate * afds_dt()
+    local nt = math.max(-1, math.min(1, simDR_elevator_trim + d))
+    AFDS_IN.pitch_trim_moved(afds_inner, (nt - simDR_elevator_trim) * 0.7)
+    simDR_elevator_trim = nt
+  end
+end
 
 B747DR_ap_AFDS_mode_box_status_pilot = find_dataref("laminar/B747/autopilot/AFDS/mode_box_status_pilot")
 B747DR_ap_AFDS_mode_box_status_copilot =find_dataref("laminar/B747/autopilot/AFDS/mode_box_status_copilot")
@@ -424,11 +448,9 @@ function ap_director_roll()
    end
 end
 function ap_director_yaw()
-    if math.abs(simDR_AHARS_roll_heading_deg_pilot)>5 then 
-        return -simDR_sideslip
-    else
-        return simDR_AHARS_heading_deg_pilot
-    end
+    -- yaw damper: turn coordination on sideslip at all bank angles (the former wings-level mode held
+    -- the averaged heading, so it opposed every small LNAV / pilot heading change and coupled into roll)
+    return -simDR_sideslip
 end
 local lastPitchMode=0
 local lastPitchModeChange=0
@@ -802,7 +824,16 @@ function ap_director_pitch(pitchMode)
     return ap_director_pitch_retVal(pitchMode,retval)
 end
 local current_roll_intregal=0
+-- REBUILT AFDS (2026): the new autopilot computes the attitude commands itself
+B747DR_afds_pitch_cmd  = find_dataref("laminar/B747/afds/pitch_cmd")
+B747DR_afds_roll_cmd   = find_dataref("laminar/B747/afds/roll_cmd")
+B747DR_afds_cmd_valid  = find_dataref("laminar/B747/afds/cmd_valid")
 function ap_director_roll_integral()
+    if B747DR_afds_cmd_valid == 1 then
+        local r = B747DR_afds_roll_cmd
+        B747DR_flight_director_roll = r
+        return r
+    end
     --return B747DR_ap_target_roll
     local displayUpdate=false
     --[[if math.abs(simDR_AHARS_roll_heading_deg_pilot)>5 then
@@ -884,21 +915,24 @@ function ap_director_yaw_integral()
          if director_currentyawRecord>30 then
              director_currentyawRecord=1
          end
-        if math.abs(simDR_AHARS_roll_heading_deg_pilot)>5 then 
-            if lastDamperSystem~=0 then clearYawIntegral() end
-            lastDamperSystem=0
-            current_yaw_intregal= dampSlip()
-        else
-            if lastDamperSystem~=1 then clearYawIntegral() end
-            lastDamperSystem=1
-            current_yaw_intregal= dampYaw()
-        end
+        lastDamperSystem=0
+        current_yaw_intregal= dampSlip()
      end
     
     return current_yaw_intregal
 end
 local current_pitch_intregal=0
 function ap_director_pitch_integral()
+    if B747DR_afds_cmd_valid == 1 then
+        local p = B747DR_afds_pitch_cmd
+        -- PFD pitch bar: the same pitch command the autopilot is flying (AP engaged) or the pilot
+        -- should fly (FD only), shown against the aircraft symbol at the pitch ladder scale (the panel
+        -- maps bar and ladder linearly at 6.81 px/deg); limited to +-10 deg from the present attitude
+        local th = simDR_AHARS_pitch_heading_deg_pilot
+        local disp = math.max(th - 10, math.min(th + 10, p))
+        B747DR_flight_director_pitch = (B747DR_flight_director_pitch or disp) + (disp - (B747DR_flight_director_pitch or disp)) * math.min(1, SIM_PERIOD / 0.15)
+        return p
+    end
     local displayUpdate=false
     if (simDRTime-director_lastPitchRecordUpdate)>directorSampleRate then
         displayUpdate=true
@@ -964,6 +998,14 @@ pitchPid.target=0
 pitchPid.input = 0
 pitchPid:compute()
 
+-- autopilot surface input after disengagement: back to zero in about a second
+function ap_washout(x)
+    x = x or 0
+    local k = math.min(1, (SIM_PERIOD or 0.05) / 0.6)
+    x = x - x * k
+    if math.abs(x) < 0.002 then x = 0 end
+    return x
+end
 function ap_pitch_assist()
     local flight_director_pitch=ap_director_pitch_integral()
     local target=0
@@ -983,6 +1025,17 @@ function ap_pitch_assist()
     pitchPid.ki=B747DR_pidPitchI
     pitchPid.kd=B747DR_pidPitchD
     
+    if B747DR_afds_cmd_valid == 1 and simDR_autopilot_servos_on>0 then
+        -- REBUILT AFDS: own attitude loop (P + rate damping + slow I, gain-scheduled on IAS)
+        simDR_electric_trim=0
+        local T = B747DR_afds_tune
+        local u = AFDS_IN.pitch(afds_inner, { dt = afds_dt(), theta = simDR_AHARS_pitch_heading_deg_pilot, cmd = flight_director_pitch,
+            ias = simDR_ind_airspeed_kts_pilot, cur = B747DR_sim_pitch_ratio, tune = { kp = T.pkp, kd = T.pkd, ki = T.pki } })
+        afds_trim(u)
+        pitchPid:compute(true)
+        return u
+    end
+    afds_inner.p = {}
     if simDR_autopilot_servos_on>0 and (B747DR_ap_FMA_active_pitch_mode>0 or B747DR_ap_autoland == 1) then
         simDR_electric_trim=0
         pitchPid.input = simDR_AHARS_pitch_heading_deg_pilot
@@ -1002,6 +1055,9 @@ function ap_pitch_assist()
     else
         pitchPid:compute(true)
         simDR_electric_trim=1
+        -- autopilot off: its elevator input is washed out (about 1 s) instead of being left in as a
+        -- permanent elevator bias added to the pilot's control
+        retval = ap_washout(B747DR_sim_pitch_ratio)
     end
     if retval==nil then return 0 end
     return retval
@@ -1023,6 +1079,14 @@ function ap_roll_assist()
     rollPid.ki=B747DR_pidRollI
     B747DR_pidRollD=B747_rescale(3000,B747DR_pidRollDL,30000,B747DR_pidRollDH,B747DR_autopilot_altitude_ft_pfd)
     rollPid.kd=B747DR_pidRollD
+    if B747DR_afds_cmd_valid == 1 and simDR_autopilot_servos_on>0 then
+        local T = B747DR_afds_tune
+        local u = AFDS_IN.roll(afds_inner, { dt = afds_dt(), phi = simDR_AHARS_roll_heading_deg_pilot, cmd = flight_director_roll,
+            ias = simDR_ind_airspeed_kts_pilot, cur = B747DR_sim_roll_ratio, tune = { kp = T.rkp, kd = T.rkd, ki = T.rki } })
+        rollPid:compute(true)
+        return u
+    end
+    afds_inner.r = {}
     if simDR_autopilot_servos_on>0 and (B747DR_ap_FMA_active_roll_mode>0) then
         rollPid.input = simDR_AHARS_roll_heading_deg_pilot
         rollPid.target= flight_director_roll
@@ -1035,6 +1099,9 @@ function ap_roll_assist()
         --print("flight_director_roll "..flight_director_roll.." speed "..speed .." simDR_AHARS_roll_heading_deg_pilot "..simDR_AHARS_roll_heading_deg_pilot .." retval "..retval)
     else
         rollPid:compute(true)
+        -- autopilot off: its aileron input is washed out (about 1 s) - it must not stay in as an aileron
+        -- bias (felt as heavy aileron trim) on top of the pilot's control
+        retval = ap_washout(B747DR_sim_roll_ratio)
     end
     return retval
 end
@@ -1056,7 +1123,7 @@ function get_damper_value(currentValue)
     end]]
     local mult=1
     if math.abs(simDR_AHARS_roll_heading_deg_pilot)<5 then
-        mult=B747_rescale(0,0,0.35,1,yawPid.input)
+        mult=B747_rescale(0,0,0.35,1,math.abs(yawPid.input or 0))   -- (small dead band both ways)
     end
     
     if mult==0 or target==nil then
@@ -1069,11 +1136,7 @@ function get_damper_value(currentValue)
 end
 
 function yaw_damper_system()
-    if math.abs(simDR_AHARS_roll_heading_deg_pilot)<5 then
-        B747DR_pidyawP = B747_rescale(3000, B747DR_pidyawProllL,30000, B747DR_pidyawProllH,B747DR_autopilot_altitude_ft_pfd)
-        B747DR_pidyawI = 0.000003
-        B747DR_pidyawD = B747_rescale(3000,B747DR_pidyawDrollL,30000,B747DR_pidyawDrollH,B747DR_autopilot_altitude_ft_pfd)
-    else
+    do
         B747DR_pidyawP = B747_rescale(3000, B747DR_pidyawPslipL,30000, B747DR_pidyawPslipH,B747DR_autopilot_altitude_ft_pfd)
         B747DR_pidyawI = 0.000003
         B747DR_pidyawD = B747_rescale(3000,B747DR_pidyawDslipL,30000,B747DR_pidyawDslipH,B747DR_autopilot_altitude_ft_pfd)
@@ -1143,8 +1206,16 @@ function flight_controls_override()
     B747DR_r_aileron_outer_lockout   = (1.0-B747_rescale(232,0,238,1.0,simDR_ias_pilot))*-1
     B747_slats()
     if((simDRTime - B747DR_switching_servos_on)<2) then
-        ap_pitch_assist()
-        ap_roll_assist()
+        if B747DR_afds_cmd_valid == 1 then
+            -- REBUILT AFDS: the outputs are not applied for these 2 s, so the attitude loops are held at
+            -- rest (no wind-up, no stabilizer trim from an elevator that is not moving); the smooth
+            -- engagement starts when they are applied
+            afds_inner.p = {}
+            afds_inner.r = {}
+        else
+            ap_pitch_assist()
+            ap_roll_assist()
+        end
     else
         B747DR_sim_pitch_ratio=ap_pitch_assist()
         B747DR_sim_roll_ratio=ap_roll_assist()

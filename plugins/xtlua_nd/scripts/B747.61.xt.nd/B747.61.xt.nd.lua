@@ -114,6 +114,51 @@ B747DR_nd_alt_distance_fo                  		= find_dataref("laminar/B747/nd/toc
 B747DR_nd_alt_distance_capt                  		= find_dataref("laminar/B747/nd/toc/distance/capt")
 B747DR_nd_alt_fo_active			                = find_dataref("laminar/B747/nd/toc/fo_active")
 B747DR_nd_alt_capt_active			              = find_dataref("laminar/B747/nd/toc/capt_active")
+-- b744_nd plugin: 1 while it draws the whole captain ND (the stock icons and arc are then hidden)
+-- (a global: XTLua returns dataref values only through globals)
+pcall(function() B744ND_custom_active = find_dataref("b744/nd/custom_active") end)
+-- 1 while it also draws the whole first officer ND (draw_fo 1 in b744_nd.cfg)
+pcall(function() B744ND_custom_active_fo = find_dataref("b744/nd/custom_active_fo") end)
+pcall(function() simDR_nd_acf_relpath = find_dataref("sim/aircraft/view/acf_relative_path") end)
+-- the plugin's setting (custom_nd and enable in b744_nd.cfg), read from the file every 3 s
+local cnd_t, cnd_v, cnd_fo = -100, false, false
+local function custom_nd_capt()
+  local ok, v = pcall(function() return B744ND_custom_active end)
+  if ok and type(v) == "number" and v > 0 then return true end
+  if simDRTime - cnd_t < 3 and simDRTime >= cnd_t then return cnd_v end
+  cnd_t = simDRTime
+  local dirs = {}
+  local okp, p = pcall(function() return simDR_nd_acf_relpath end)
+  if okp and type(p) == "string" and p:find("[/\\]") then dirs[#dirs + 1] = p:match("^(.*[/\\])") end
+  dirs[#dirs + 1] = "Aircraft/747-400/"
+  for _, d in ipairs(dirs) do
+    local f = io.open(d .. "plugins/b744_nd/b744_nd.cfg", "r")
+    if f then
+      local en, cu, dfo = 1, 0, 0
+      for line in f:lines() do
+        local k, val = line:match("^(%S+)%s+(%S+)")
+        if k == "custom_nd" then cu = tonumber(val) or 0 elseif k == "enable" then en = tonumber(val) or 1
+        elseif k == "draw_fo" then dfo = tonumber(val) or 0 end
+      end
+      f:close()
+      cnd_v = cu > 0 and en > 0
+      cnd_fo = cnd_v and dfo > 0
+      return cnd_v
+    end
+  end
+  cnd_v = false
+  cnd_fo = false
+  return false
+end
+-- the first officer ND drawn by the b744_nd plugin as well (its stock icons and arc are then hidden)
+local function custom_nd_fo()
+  local ok, v = pcall(function() return B744ND_custom_active_fo end)
+  if ok and type(v) == "number" and v > 0 then return true end
+  local okc, vc = pcall(function() return B744ND_custom_active end)
+  if okc and type(vc) == "number" and vc > 0 and ok and type(v) == "number" then return false end
+  custom_nd_capt()
+  return cnd_fo
+end
 
 local display_latitude_cpt=0
 local display_latitude_fo=0
@@ -317,13 +362,14 @@ function makeIcon(iconTextData,navtype,text,latitude,longitude,distance)
   iconTextData[lastNavaid].latitude=latitude
   iconTextData[lastNavaid].longitude=longitude
   if iconTextData==iconTextDataCapt then
-    B747DR_text_capt_show[lastNavaid]=1
+    -- (never shown while the b744_nd plugin draws the captain ND: no on/off flicker)
+    if custom_nd_capt() then B747DR_text_capt_show[lastNavaid]=0 else B747DR_text_capt_show[lastNavaid]=1 end
     B747DR_text_capt_heading[lastNavaid]=heading_diff
     B747DR_text_capt_distance[lastNavaid]=displayDistance
     lastCaptNavaid=lastCaptNavaid+1
     if text~=nil then usedNaviadsTableCapt[text]=true end
   else
-     B747DR_text_fo_show[lastNavaid]=1
+     if custom_nd_fo() then B747DR_text_fo_show[lastNavaid]=0 else B747DR_text_fo_show[lastNavaid]=1 end
      B747DR_text_fo_heading[lastNavaid]=heading_diff
      B747DR_text_fo_distance[lastNavaid]=displayDistance
      lastFONavaid=lastFONavaid+1
@@ -643,12 +689,12 @@ function compute_and_show_alt_range_arc()
   if captIRS==0 or B747DR_nd_alt_distance_capt<-90 or B747DR_nd_mode_capt_sel_dial_pos~=2 then 
     B747DR_nd_alt_capt_active=0 
   else
-    B747DR_nd_alt_capt_active=1
+    if custom_nd_capt() then B747DR_nd_alt_capt_active=0 else B747DR_nd_alt_capt_active=1 end
   end
   if foIRS==0 or B747DR_nd_alt_distance_fo<-90 or B747DR_nd_mode_fo_sel_dial_pos~=2 then 
     B747DR_nd_alt_fo_active=0
   else
-    B747DR_nd_alt_fo_active=1
+    if custom_nd_fo() then B747DR_nd_alt_fo_active=0 else B747DR_nd_alt_fo_active=1 end
    end
 end
 last_range_dial = 0
@@ -702,12 +748,13 @@ function after_physics()
     else
       B747DR_nd_fo_up = simDR_heading_track
     end
-    if B747DR_nd_capt_terr>0 or simDR_EFIS_wxr_on>0 then
+    -- (range arcs: shown with WXR, TERR or TFC selected)
+    if B747DR_nd_capt_terr>0 or simDR_EFIS_wxr_on>0 or B747DR_nd_capt_tfc>0 then
       B747DR_nd_terr_weather_capt=1
     else
       B747DR_nd_terr_weather_capt=0
     end
-    if B747DR_nd_fo_terr>0 or simDR_EFIS_wxr_on_copilot>0 then
+    if B747DR_nd_fo_terr>0 or simDR_EFIS_wxr_on_copilot>0 or B747DR_nd_fo_tfc>0 then
       B747DR_nd_terr_weather_fo=1
     else
       B747DR_nd_terr_weather_fo=0
@@ -744,6 +791,14 @@ function after_physics()
 
   updateIcons()
   compute_and_show_alt_range_arc()
+  if custom_nd_capt() then
+    for n = 0, 59 do B747DR_text_capt_show[n] = 0 end
+    B747DR_nd_alt_capt_active = 0
+  end
+  if custom_nd_fo() then
+    for n = 0, 59 do B747DR_text_fo_show[n] = 0 end
+    B747DR_nd_alt_fo_active = 0
+  end
   if debug_nd<-2 then return end
   local diff2=simDRTime-lastUpdateIcon
   if diff>0.2 then 
@@ -761,6 +816,14 @@ function after_physics()
   decodeNAVAIDS()
   decodeFlightPlan()
   newIcons()
+  if custom_nd_capt() then
+    for n = 0, 59 do B747DR_text_capt_show[n] = 0 end
+    B747DR_nd_alt_capt_active = 0
+  end
+  if custom_nd_fo() then
+    for n = 0, 59 do B747DR_text_fo_show[n] = 0 end
+    B747DR_nd_alt_fo_active = 0
+  end
   
   --print("navaids size="..table.getn(currentNaviadsTable))
   --print("fms size="..table.getn(fmsTable))

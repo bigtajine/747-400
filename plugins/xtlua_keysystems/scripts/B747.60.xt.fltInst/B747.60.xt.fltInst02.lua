@@ -143,7 +143,11 @@ B747DR_pfd_mode_show_mins          	= find_dataref("laminar/B747/pfd/show_mins")
 B747DR_ref_thr_limit_mode           = find_dataref("laminar/B747/engines/ref_thr_limit_mode")
 B747DR_nd_fo_heading_bug            = find_dataref("laminar/B747/nd/mode/fo/show_heading_bug")
 B747DR_nd_capt_heading_bug          = find_dataref("laminar/B747/nd/mode/capt/show_heading_bug")
+B747DR_nd_fo_hdg_line               = find_dataref("laminar/B747/nd/mode/fo/show_hdg_line")
+B747DR_nd_capt_hdg_line             = find_dataref("laminar/B747/nd/mode/capt/show_hdg_line")
 B747DR_ap_heading_deg               = deferred_dataref("laminar/B747/autopilot/heading/degrees", "number")
+simDR_nd_trk_mag                    = find_dataref("sim/cockpit2/gauges/indicators/ground_track_mag_pilot")
+simDR_nd_hdg_mag                    = find_dataref("sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_pilot")
 B747DR_xpdr_sel_pos                 = find_dataref("laminar/B747/flt_mgmt/txpdr/mode_sel_pos")
 --simDR_acf_weight_payload_kg         = find_dataref("sim/flightmodel/weight/m_fixed")
 simDR_acf_weight_total_kg           = find_dataref("sim/flightmodel/weight/m_total")
@@ -2867,7 +2871,10 @@ function setVmc(weight,flaps)
       flap_Vmc      =B747_rescale(10.0, 137, 30.0, 118, flaps) + weight_factor --0.95/1
     end
     B747DR_airspeed_Vmc = flap_Vmc 
-    if string.match(B747DR_ref_thr_limit_mode, "TO")==nil and B747DR_radio_altitude>10 then 
+    -- low speed bands (amber minimum maneuvering speed, red/black stick shaker): shown in flight in all
+    -- phases - from 400 ft after liftoff (or as soon as the takeoff thrust reference is left)
+    if simDR_all_wheels_on_ground == 0 and B747DR_radio_altitude > 10
+      and (string.match(B747DR_ref_thr_limit_mode or "", "TO") == nil or B747DR_radio_altitude > 400) then 
         B747DR_pfd_mode_show_mins = 1
     else
         B747DR_pfd_mode_show_mins = 0
@@ -3581,22 +3588,26 @@ function flight_start()
 end
 local lastHeading=0
 local lastRollMode=-1
+local hdgLineSeen = nil       -- (v41) selected heading when last seen / line shown until
+local hdgLineUntil = -1
 local mapHeading=false
 function clear_heading_bug()
     mapHeading=false
 end
+local mapHeadingUntil = -1     -- (v48) heading bug shown until (LNAV / LOC / ROLLOUT)
 function update_heading_bug()
+    -- v48: in LNAV / LOC / ROLLOUT the bug shows for 10 s after the heading selector (or the roll mode)
+    -- changes, timed here - the stop / restart of an XTLua timer every frame while the knob turned
+    -- made it flicker
+    local tnow = simDR_time_now or 0
     if B747DR_ap_FMA_active_roll_mode<2 or B747DR_ap_FMA_active_roll_mode>4 then
-        if is_timer_scheduled(clear_heading_bug) == true then
-            stop_timer(clear_heading_bug)
-        end
         mapHeading=true
-    elseif lastHeading~=B747DR_ap_heading_deg or lastRollMode~=B747DR_ap_FMA_active_roll_mode then
-        mapHeading=true
-        if is_timer_scheduled(clear_heading_bug) == true then
-            stop_timer(clear_heading_bug)
+        mapHeadingUntil = -1
+    else
+        if lastHeading~=B747DR_ap_heading_deg or lastRollMode~=B747DR_ap_FMA_active_roll_mode then
+            mapHeadingUntil = tnow + 10.0
         end
-        run_after_time(clear_heading_bug, 10.0)
+        mapHeading = tnow < mapHeadingUntil
     end
     if B747DR_nd_mode_capt_sel_dial_pos==2 then
         if mapHeading==true then
@@ -3620,6 +3631,28 @@ function update_heading_bug()
     else
         B747DR_nd_fo_heading_bug=0
     end
+    -- the bug is drawn on the compass arc: when the selected heading is beyond the visible arc it is not
+    -- shown (it would otherwise be drawn outside the display - the captain's bug appeared on the first
+    -- officer's ND). MAP: track up; APP / VOR: heading up
+    local function off_arc(mode)
+        local up = (mode == 2) and (simDR_nd_trk_mag or 0) or (simDR_nd_hdg_mag or 0)
+        local d = ((B747DR_ap_heading_deg or 0) - up + 540) % 360 - 180
+        return math.abs(d) > 50
+    end
+    if B747DR_nd_capt_heading_bug == 1 and B747DR_nd_mode_capt_sel_dial_pos <= 2 and off_arc(B747DR_nd_mode_capt_sel_dial_pos) then B747DR_nd_capt_heading_bug = 0 end
+    if B747DR_nd_fo_heading_bug == 1 and B747DR_nd_mode_fo_sel_dial_pos <= 2 and off_arc(B747DR_nd_mode_fo_sel_dial_pos) then B747DR_nd_fo_heading_bug = 0 end
+    -- the dashed selected heading line (v41): always in HDG SEL / HDG HOLD; in any other roll mode
+    -- (LNAV, LOC, TO/GA, ATT ...) only for 5 s after the heading selector is turned
+    local rm = B747DR_ap_FMA_active_roll_mode or 0
+    local tnow = simDR_time_now or 0
+    if hdgLineSeen == nil then hdgLineSeen = B747DR_ap_heading_deg end
+    if B747DR_ap_heading_deg ~= hdgLineSeen then
+        hdgLineSeen = B747DR_ap_heading_deg
+        hdgLineUntil = tnow + 5
+    end
+    local hdg_line = (rm == 6 or rm == 7 or tnow < (hdgLineUntil or -1)) and 1 or 0
+    B747DR_nd_capt_hdg_line = (B747DR_nd_capt_heading_bug == 1 and hdg_line == 1) and 1 or 0
+    B747DR_nd_fo_hdg_line = (B747DR_nd_fo_heading_bug == 1 and hdg_line == 1) and 1 or 0
     lastHeading=B747DR_ap_heading_deg
     lastRollMode=B747DR_ap_FMA_active_roll_mode
 end
