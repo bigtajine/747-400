@@ -1845,7 +1845,8 @@ function B747_toggle_switch_animation()
         local min, max = 0.0, 1.0
 
         -- SET THE SPEED OF THE ANIMATION
-        local speed = 50.0
+        -- Slightly quicker than the push-buttons, since a toggle snaps over.
+        local speed = 15.0
         if i >= 31 and i <= 32 then
             speed = 2.0             --  SUN VISORS
         elseif i >= 33 and i <= 36 then
