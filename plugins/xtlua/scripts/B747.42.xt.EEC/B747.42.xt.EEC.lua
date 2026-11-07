@@ -593,6 +593,18 @@ function clear_thrust_targets()
 	end
 end
 
+-- The FMC publishes its data as JSON, so decode it only when it changes.
+local last_fms_json, sel_temperature_K = nil, nil
+function assumed_temperature_K()
+	if B747DR_FMSdata ~= last_fms_json then
+		last_fms_json = B747DR_FMSdata
+		local ok, data = pcall(json.decode, last_fms_json)
+		local sel_C = ok and type(data) == "table" and tonumber(data.thrustsel)
+		sel_temperature_K = sel_C and (sel_C + 273.15) or nil
+	end
+	return sel_temperature_K
+end
+
 function take_off_thrust_corrected(altitude_ft_in, temperature_K_in)
 	local TOGA_corrected_thrust_lbf = 0.0
 	local TOGA_actual_thrust_lbf = 0.0
@@ -629,10 +641,19 @@ function take_off_thrust_corrected(altitude_ft_in, temperature_K_in)
 	    approximate_max_TO_thrust_lbf = 56500  --failsafe option
 	end
 
-	if temperature_K_in > corner_temperature_K then
-		TOGA_corrected_thrust_lbf = (-1.79545 * (temperature_K_in / corner_temperature_K) + 2.7874) * (-0.0000546 * altitude_ft_in^2 + 1.37 * altitude_ft_in + approximate_max_TO_thrust_lbf)
-	else
-		TOGA_corrected_thrust_lbf = (-0.0000546 * altitude_ft_in^2 + 1.37 * altitude_ft_in + approximate_max_TO_thrust_lbf)
+	local flat_rated_lbf = -0.0000546 * altitude_ft_in^2 + 1.37 * altitude_ft_in + approximate_max_TO_thrust_lbf
+	local function lapsed_lbf(t_K)
+		if t_K > corner_temperature_K then
+			return (-1.79545 * (t_K / corner_temperature_K) + 2.7874) * flat_rated_lbf
+		end
+		return flat_rated_lbf
+	end
+	TOGA_corrected_thrust_lbf = lapsed_lbf(temperature_K_in)
+
+	-- An assumed temperature may reduce thrust by at most 25 % of the rated thrust.
+	local sel_K = assumed_temperature_K()
+	if sel_K and sel_K > temperature_K_in then
+		TOGA_corrected_thrust_lbf = math.max(lapsed_lbf(sel_K), 0.75 * TOGA_corrected_thrust_lbf)
 	end
 
 	if B747DR_toderate == 1 then
@@ -749,6 +770,10 @@ function ecc_mode_set()
 			newTarget = "TO 1"
 		elseif B747DR_toderate == 2 then
 			newTarget = "TO 2"
+		end
+		local sel_K = assumed_temperature_K()
+		if sel_K and sel_K > simDR_temperature + 273.15 then
+			newTarget = "D-" .. newTarget
 		end
 	elseif B747DR_ap_flightPhase==1 then
 		if B747DR_clbderate == 0 then
