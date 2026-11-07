@@ -114,6 +114,8 @@ B747DR_speedbrake_lever_changed	= find_dataref("laminar/B747/flt_ctrls/speedbrak
 
 B747DR_CAS_memo_status          = find_dataref("laminar/B747/CAS/memo_status")
 B747DR_CAS_advisory_status          = find_dataref("laminar/B747/CAS/advisory_status")
+B747DR_CAS_caution_status       = find_dataref("laminar/B747/CAS/caution_status")
+simDR_time_now                  = find_dataref("sim/time/total_running_time_sec")
 
 
 --*************************************************************************************--
@@ -854,7 +856,22 @@ end
 
 
 ----- EICAS MESSAGES --------------------------------------------------------------------
+-- The longest gear cycle is 12 s, so anything slower than this is a fault.
+local GEAR_TRANSIT_S = 20.0
+local gear_disagree_since = nil
+
 function B747_gear_EICAS_msg()
+
+    -- GEAR DISAGREE
+    local agrees = (simDR_gear_handle_down == 1 and B747DR_gear_annun_status == 1)
+        or (simDR_gear_handle_down == 0 and B747DR_gear_annun_status == 0)
+    if agrees then
+        gear_disagree_since = nil
+    elseif gear_disagree_since == nil then
+        gear_disagree_since = simDR_time_now
+    end
+    B747DR_CAS_caution_status[38] = (gear_disagree_since ~= nil
+        and simDR_time_now - gear_disagree_since > GEAR_TRANSIT_S) and 1 or 0
 
     -- AUTOBRAKES 1
     if B747DR_autobrakes_sel_dial_pos == 2 then
