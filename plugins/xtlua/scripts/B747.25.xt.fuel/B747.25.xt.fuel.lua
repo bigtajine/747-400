@@ -2889,9 +2889,8 @@ function B747_fuel_EICAS_msg()
       B747DR_CAS_advisory_status[117] = 0
     end
 
-    -- FUEL IMBALANCE / IMBAL 1-4 / IMBAL 2-3: set when the difference exceeds 1360 kg (3000 lb) for 30 s,
-    -- cleared below 450 kg (1000 lb); inhibited on the ground until an engine is running (a short
-    -- difference while the APU runs or the tanks are being loaded is not an imbalance)
+    -- Each message sets after 30 s above its threshold and clears below a third of it.
+    -- Inhibited on the ground until an engine runs, so APU burn or refuelling can't trip it.
     local w = simDR_fuel_tank_weight_kg
     local eng_run = false
     if simDR_engine_running then
@@ -2900,14 +2899,15 @@ function B747_fuel_EICAS_msg()
         eng_run = true
     end
     local inhibit = (simDR_all_wheels_on_ground == 1) and not eng_run
-    local function imbal(idx, diff)
+    local function imbal(idx, diff, trigger_kg)
+        trigger_kg = trigger_kg or 1360.0
         if inhibit then B747DR_CAS_advisory_status[idx] = 0; fuel_imbal_t[idx] = nil return end
-        if diff > 1360.0 then
+        if diff > trigger_kg then
             fuel_imbal_t[idx] = fuel_imbal_t[idx] or simDR_time_now
             if simDR_time_now - fuel_imbal_t[idx] >= 30 then B747DR_CAS_advisory_status[idx] = 1 end
         else
             fuel_imbal_t[idx] = nil
-            if diff < 450.0 then B747DR_CAS_advisory_status[idx] = 0 end
+            if diff < trigger_kg / 3.0 then B747DR_CAS_advisory_status[idx] = 0 end
         end
     end
     if fuel_tankToEngine == 1 then
@@ -2916,7 +2916,8 @@ function B747_fuel_EICAS_msg()
         B747DR_CAS_advisory_status[148] = 0
     end
     imbal(149, math.abs(w[1] - w[4]))
-    imbal(150, math.abs(w[2] - w[3]))
+    -- The inboard pair is allowed twice the outboard imbalance.
+    imbal(150, math.abs(w[2] - w[3]), 2720.0)
 
     -- FUEL OVRD CTR L
     
