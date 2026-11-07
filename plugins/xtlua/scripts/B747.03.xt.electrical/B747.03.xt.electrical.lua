@@ -530,28 +530,6 @@ function B747_bus_tie()
 --         simDR_cross_tie = 0
 --     end
 
---     if B747DR_button_switch_position[18] < 0.05 and simDR_generator_off[0] ==1 then
---       simDR_esys0=6
---     else
---       simDR_esys0=0
---     end
---     if B747DR_button_switch_position[19] < 0.05 and simDR_generator_off[1] ==1 then
---       simDR_esys1=6
---     else
---       simDR_esys1=0
---     end
---
---     if B747DR_button_switch_position[20] < 0.05 and simDR_generator_off[2] ==1 then
---       simDR_esys2=6
---     else
---       simDR_esys2=0
---     end
---
---     if B747DR_button_switch_position[21] < 0.05 and simDR_generator_off[3] ==1 then
---       simDR_esys3=6
---     else
---       simDR_esys3=0
---     end
 
     B747DR_simDR_esys0=B747_ternary((B747DR_elec_bus1hot ==1 or simDR_generator_off[0] ==0),0,1)
     B747DR_simDR_esys1=B747_ternary((B747DR_elec_bus2hot ==1 or simDR_generator_off[1] ==0),0,1)
@@ -734,24 +712,6 @@ function B747_apu()
     	simDR_apu_gen_on = 0
     end
 
---     if simDR_aircraft_on_ground == 1 then
---         if (B747DR_elec_apu_pwr_1_switch_mode == 1 or B747DR_elec_apu_pwr_2_switch_mode == 1)
---             and simDR_apu_N1_pct > 95.0
---             and simDR_apu_gen_on == 0
---         then
---             simDR_apu_gen_on = 1
--- 	    B747DR_elec_apu_pwr1_available      = 1
--- 	    B747DR_elec_apu_pwr2_available      = 1
---         elseif B747DR_elec_apu_pwr_1_switch_mode == 0 and B747DR_elec_apu_pwr_2_switch_mode==0 then
---             simDR_apu_gen_on = 0
---         end
---     else
---         if simDR_apu_gen_on == 1 and B747DR_elec_apu_pwr_1_switch_mode == 0 and B747DR_elec_apu_pwr_2_switch_mode==0 then
---             simDR_apu_gen_on = 0
--- 	    B747DR_elec_apu_pwr1_available      = 0
--- 	    B747DR_elec_apu_pwr2_available      = 0
---         end
---     end
 
 end
 

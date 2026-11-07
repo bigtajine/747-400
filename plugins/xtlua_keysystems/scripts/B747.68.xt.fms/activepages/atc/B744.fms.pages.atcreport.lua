@@ -59,18 +59,4 @@ fmsFunctionsDefs["ATCREPORT"]={}
 fmsFunctionsDefs["ATCREPORT"]["L1"]={"setpage","POSREPORT"}
 fmsFunctionsDefs["ATCREPORT"]["L6"]={"setpage","ATCINDEX"}
 
---[[
-fmsFunctionsDefs["ATCREPORT"]["L1"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["L2"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["L3"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R4"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["L5"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["L6"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R1"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R2"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R3"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R4"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R5"]={"setpage",""}
-fmsFunctionsDefs["ATCREPORT"]["R6"]={"setpage",""}
-]]
 

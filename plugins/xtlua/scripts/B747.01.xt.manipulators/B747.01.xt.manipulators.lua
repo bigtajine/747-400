@@ -481,9 +481,6 @@ simCMD_hyd_eng_pumps_toggle         = replace_command("sim/flight_controls/hydra
 --simCMD_autopilot_autothrottle_off   = find_command("sim/autopilot/autothrottle_off")
 
 
---simCMD_autopilot_pitch_sync         = find_command("sim/autopilot/pitch_sync")
---simCMD_autopilot_wing_leveler       = find_command("sim/autopilot/wing_leveler")
---simCMD_autopilot_alt_hold_mode      = find_command("sim/autopilot/altitude_hold")
 
 
 
@@ -1684,23 +1681,6 @@ simCMDDClose[8]=find_command("sim/flight_controls/door_close_9")
 simCMDDClose[9]=find_command("sim/flight_controls/door_close_10")
 
 
--- function B747_open_door_CMDhandler(phase, duration)
---   if phase==0 then
---     for i = 0, 9 do
---       simCMDDOpen[i]:once()
---     end
---   end
--- end
---
--- function B747_close_door_CMDhandler (phase, duration)
---   if phase==0 then
---     for i = 0, 9 do
---       simCMDDClose[i]:once()
---     end
---   end
--- end
--- B747CMD_openAllDoors 				= deferred_command("laminar/B747/button_switch/open_all_doors", "Open All doors", B747_open_door_CMDhandler)
--- B747CMD_closeAllDoors 				= deferred_command("laminar/B747/button_switch/close_all_doors", "Close All doors", B747_close_door_CMDhandler)
 
 ----- GLARESHIELD PANEL TOGGLE SWITCHES -------------------------------------------------
 

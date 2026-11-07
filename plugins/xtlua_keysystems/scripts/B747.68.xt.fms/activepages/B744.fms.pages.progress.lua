@@ -1,43 +1,4 @@
 fmsPages["PROGRESS"]=createPage("PROGRESS")
---[[
-fmsPages["PROGRESS"].getPage=function(self,pgNo,fmsID)
-  local l1=cleanFMSLine(B747DR_srcfms[fmsID][1])
-  local page=string.sub(l1,22,22)
-  local l10="                        "
-  local l11="                        " 
-  local l13="                        "
-  if page=="1" then
-        l13="                POS REF>"
-	fmsFunctionsDefs["PROGRESS"]["R6"]={"setpage_no","POSINIT_2"}
-	if B747BR_tod>0 and B747BR_totalDistance>B747BR_tod then
-	  local dist=B747BR_totalDistance-B747BR_tod
-	  l10=" TOP OF DES             "
-	  l11="T/D      ".. string.format("%5d",dist) ..""
-	end
-  else
-     
-      fmsFunctionsDefs["PROGRESS"]["R6"]=nil
-  end
-  
-  local page={
-  l1,
-  cleanFMSLine(B747DR_srcfms[fmsID][2]),
-  cleanFMSLine(B747DR_srcfms[fmsID][3]),
-  cleanFMSLine(B747DR_srcfms[fmsID][4]),
-  cleanFMSLine(B747DR_srcfms[fmsID][5]),
-  cleanFMSLine(B747DR_srcfms[fmsID][6]),
-  cleanFMSLine(B747DR_srcfms[fmsID][7]),
-  cleanFMSLine(B747DR_srcfms[fmsID][8]),
-  cleanFMSLine(B747DR_srcfms[fmsID][9]),
-  l10,
-  l11,
-  cleanFMSLine(B747DR_srcfms[fmsID][12]),
-  l13,
-  }
-  return page 
-  
-end
-]]--
 local lastPageNum={}
 local lastPage={}
 function refreshPages()
@@ -286,17 +247,3 @@ fmsFunctionsDefs["PROGRESS"]={}
 fmsFunctionsDefs["PROGRESS"]["next"]={"custom2fmc","next"}
 fmsFunctionsDefs["PROGRESS"]["prev"]={"custom2fmc","prev"}
 fmsFunctionsDefs["PROGRESS"]["exec"]={"custom2fmc","exec"}
---[[
-fmsFunctionsDefs["PROGRESS"]["L1"]={"setdata",""}
-fmsFunctionsDefs["PROGRESS"]["L2"]={"setdata",""}
-fmsFunctionsDefs["PROGRESS"]["L3"]={"setpage",""}
-fmsFunctionsDefs["PROGRESS"]["L4"]={"setpage",""}
-fmsFunctionsDefs["PROGRESS"]["L5"]={"setpage",""}
-fmsFunctionsDefs["PROGRESS"]["L6"]={"setpage",""}
-fmsFunctionsDefs["PROGRESS"]["R1"]={"setdata",""}
-fmsFunctionsDefs["PROGRESS"]["R2"]={"setdata",""}
-fmsFunctionsDefs["PROGRESS"]["R3"]={"setdata",""}
-fmsFunctionsDefs["PROGRESS"]["R4"]={"setpage",""}
-fmsFunctionsDefs["PROGRESS"]["R5"]={"setpage",""}
-fmsFunctionsDefs["PROGRESS"]["R6"]={"setpage",""}
-]]

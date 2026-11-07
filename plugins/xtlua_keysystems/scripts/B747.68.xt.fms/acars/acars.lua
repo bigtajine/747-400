@@ -171,11 +171,6 @@ function fmsFunctions.acarsSystemSend(fmsO,value)
     acarsSystem.provider.sendCompany(json.encode(tMSG))
     fmsO["targetCustomFMC"]=true
     run_after_time(switchCustomMode, 0.5)
-    --fmsO["currentPage"]="ACARS" 
-    --local tMSG=json.encode({type="msg",msg="Test Message",time="12:00 UTC"})
-    --print(tMSG)
-    --local rMSG=json.decode(tMSG)
-    --print(rMSG["msg"])
   else
     fmsO["notify"]="ACARS NO COMM"
   end
@@ -199,13 +194,6 @@ function fmsFunctions.acarsSystemSendATC(fmsO,value)
     if string.len(msgToSend) <5 then fmsO["notify"]="EMPTY MESSAGE" return end
     print("sendATC "..value)
     acarsSystem.provider.sendATC(json.encode(tMSG))
-    --fmsO["targetCustomFMC"]=true
-    --run_after_time(switchCustomMode, 0.5)
-    --fmsO["currentPage"]="ACARS" 
-    --local tMSG=json.encode({type="msg",msg="Test Message",time="12:00 UTC"})
-    --print(tMSG)
-    --local rMSG=json.decode(tMSG)
-    --print(rMSG["msg"])
   else
     fmsO["notify"]="ACARS NO COMM"
   end
@@ -313,9 +301,6 @@ acarsSystem.getUpMessages=function(pgNo)
     if endNo <1 then endNo=1 end
     for i = startNo,endNo , -1 do
       local ln="<"..acarsSystem.messages[i]["title"]
-      --local msg=acarsSystem.messages[i]
-      --local encodedMSG=json.encode(msg)
-      --print("rendering "..encodedMSG)
       local padding=21-string.len(ln)
       if padding<0 then padding=0 end
      --[[ if acarsSystem.messages[i]["rr"]~=nil and acarsSystem.messages[i]["rr"]=="N" then

@@ -30,18 +30,4 @@ fmsFunctionsDefs["ATCINDEX"]["R1"]={"setpage","POSREPORT"}
 fmsFunctionsDefs["ATCINDEX"]["R2"]={"setpage","WHENCANWE"}
 fmsFunctionsDefs["ATCINDEX"]["R4"]={"setpage","ATCVERIFYREQUEST"}
 fmsFunctionsDefs["ATCINDEX"]["R5"]={"setpage","ATCVERIFYREQUEST"}
---[[
-fmsFunctionsDefs["ATCINDEX"]["L1"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["L2"]={"setpage",""}
-
-fmsFunctionsDefs["ATCINDEX"]["R4"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["L5"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["L6"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["R1"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["R2"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["R3"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["R4"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["R5"]={"setpage",""}
-fmsFunctionsDefs["ATCINDEX"]["R6"]={"setpage",""}
-]]
 

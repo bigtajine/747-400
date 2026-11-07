@@ -61,18 +61,4 @@ end
   
 fmsFunctionsDefs["POSREPORT"]={}
 fmsFunctionsDefs["POSREPORT"]["R6"]={"setpage","ATCREPORT"}
---[[
-fmsFunctionsDefs["POSREPORT"]["L1"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["L2"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["L3"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R4"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["L5"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["L6"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R1"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R2"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R3"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R4"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R5"]={"setpage",""}
-fmsFunctionsDefs["POSREPORT"]["R6"]={"setpage",""}
-]]
 

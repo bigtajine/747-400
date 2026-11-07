@@ -572,10 +572,6 @@ function engine_idle_control_PW(altitude_ft_in)
   
     
     if simDR_onGround == 1 or B747DR_ref_thr_limit_mode == "" or B747DR_ref_thr_limit_mode == "NONE" then
-        --temperature = find_closest_temperature(TOGA_N1_GE, simDR_temperature)
-        --airport_altitude = altitude
-        --print("Closest Temp = ", temperature)
-        --print("Takeoff Parameters = ", temperature, altitude, packs_adjustment_value, engine_anti_ice_adjustment_value)
         takeoff_thrust_epr, _ = take_off_EPR_PW(altitude_ft_in)
     
       if B747DR_toderate == 0 then

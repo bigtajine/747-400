@@ -3274,10 +3274,6 @@ function B747_fuel_balance_check()
   simDR_fuel_tank_weight_kg[2] = simDR_fueL_tank_weight_total_kg / 4
   simDR_fuel_tank_weight_kg[3] = simDR_fueL_tank_weight_total_kg / 4
 
-  --print("Initial Split Main1 = "..simDR_fuel_tank_weight_kg[1])
-  --print("Initial Split Main4 = "..simDR_fuel_tank_weight_kg[4])
-  --print("Initial Split Main2 = "..simDR_fuel_tank_weight_kg[2])
-  --print("Initial Split Main3 = "..simDR_fuel_tank_weight_kg[3])
   
   simDR_fuel_tank_weight_kg[5] = 0
   simDR_fuel_tank_weight_kg[6] = 0
@@ -3354,14 +3350,6 @@ function B747_fuel_balance_check()
     --print("Bal CENTER0 = "..simDR_fuel_tank_weight_kg[0])
   end
 
-  --print("Main1 = "..simDR_fuel_tank_weight_kg[1])
-  --print("Main4 = "..simDR_fuel_tank_weight_kg[4])
-  --print("Main2 = "..simDR_fuel_tank_weight_kg[2])
-  --print("Main3 = "..simDR_fuel_tank_weight_kg[3])
-  --print("Rsv5 = "..simDR_fuel_tank_weight_kg[5])
-  --print("Rsv6 = "..simDR_fuel_tank_weight_kg[6])
-  --print("Center0 = "..simDR_fuel_tank_weight_kg[0])
-  --print("Stab7 = "..simDR_fuel_tank_weight_kg[7])
 
 end
 --Marauder28

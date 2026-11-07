@@ -27,9 +27,6 @@ fmsPages["TAKEOFF"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be 
   local vr="---"
   local v2="---"
   local clbV=" "
-  --local clbF="FLAPS 5 "
-  --local clbF=string.format("%-8s", "1500FT")
-  --local clbF=string.format("%-8s", "FLAPS 5")
   local clbF=string.format("%-8s", "")
   if clbderate>0 then
     clbV=""..clbderate

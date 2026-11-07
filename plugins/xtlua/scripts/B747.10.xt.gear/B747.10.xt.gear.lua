@@ -323,9 +323,6 @@ simCMD_landing_gear_down = replace_command("sim/flight_controls/landing_gear_dow
 simCMD_landing_gear_down = replace_command("sim/flight_controls/landing_gear_off", B747CMD_gear_off_CMDhandler)
 simCMD_landing_gear_toggle = replace_command("sim/flight_controls/landing_gear_toggle", sim_landing_gear_toggle_CMDhandler)
 
---B747CMD_gear_up_full      = deferred_command("laminar/B747/gear/overrideUp", "Gear Full Up", B747CMD_gear_up_full_CMDhandler)
---B747CMD_gear_down_full    = deferred_command("laminar/B747/gear/overrideDown", "Gear Full Down", B747CMD_gear_down_full_CMDhandler)
---B747CMD_gear_off      = deferred_command("laminar/B747/gear/overrideOff", "Gear Off", B747CMD_gear_off_CMDhandler)
 
 
 --*************************************************************************************--

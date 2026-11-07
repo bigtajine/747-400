@@ -289,37 +289,6 @@ dofile("activepages/B744.fms.pages.doors.lua")
 dofile("activepages/B744.fms.pages.soundconfig.lua")
 dofile("B744.fms.simbrief.lua")
 
---[[
-dofile("B744.fms.pages.actclb.lua")
-dofile("B744.fms.pages.actcrz.lua")
-dofile("B744.fms.pages.actdes.lua")
-dofile("B744.fms.pages.actirslegs.lua")
-dofile("B744.fms.pages.actrte1data.lua")
-dofile("B744.fms.pages.actrte1hold.lua")
-dofile("B744.fms.pages.actrte1legs.lua")
-dofile("B744.fms.pages.altnnavradio.lua")
-dofile("B744.fms.pages.approach.lua")
-dofile("B744.fms.pages.arrivals.lua")
-
-
-dofile("B744.fms.pages.atcrejectdueto.lua")
-
-dofile("B744.fms.pages.atcreport2.lua")
-dofile("B744.fms.pages.atcuplink.lua")
-dofile("B744.fms.pages.atcverifyresponse.lua")
-dofile("B744.fms.pages.deparrindex.lua")
-dofile("B744.fms.pages.departures.lua")
-dofile("B744.fms.pages.fixinfo.lua")
-
-dofile("B744.fms.pages.identpage.lua")
-dofile("B744.fms.pages.irsprogress.lua")
-dofile("B744.fms.pages.navradpage.lua")
-dofile("B744.fms.pages.progress.lua")
-dofile("B744.fms.pages.refnavdata1.lua")
-dofile("B744.fms.pages.satcom.lua")
-dofile("B744.fms.pages.waypointwinds.lua")
-
-]]
 
 
 fmsPages["INITREF"]=createPage("INITREF")
@@ -832,27 +801,6 @@ function calc_pax_cargo()
 	--Update Sim Payload weight with PAX & Cargo entries
 	simDR_payload_weight = pax_weight_Tot + cargo_weight_tot + freight_weight_tot
 	
-	--print("PAX A Wgt = "..pax_weightA)
-	--print("PAX A = "..tonumber(fmsModules["data"].paxFirstClassA))
-	--print("PAX B Wgt = "..pax_weightB)
-	--print("PAX B = "..tonumber(fmsModules["data"].paxBusClassB))
-	--print("PAX C Wgt = "..pax_weightC)
-	--print("PAX C = "..tonumber(fmsModules["data"].paxEconClassC))
-	--print("PAX D Wgt = "..pax_weightD)
-	--print("PAX D = "..tonumber(fmsModules["data"].paxEconClassD))
-	--print("PAX E Wgt = "..pax_weightE)
-	--print("PAX E = "..tonumber(fmsModules["data"].paxEconClassE))
-	--print("PAX Tot = "..pax_weight_Tot)
-	--print("Cargo Fwd = "..cargo_weight_fwd)
-	--print("Cargo Aft = "..cargo_weight_aft)
-	--print("Cargo Bulk = "..cargo_weight_bulk)
-	--print("Cargo Tot = "..cargo_weight_tot)
-	--print("FREIGHT A = "..freight_weightA)
-	--print("FREIGHT B = "..freight_weightB)
-	--print("FREIGHT C = "..freight_weightC)
-	--print("FREIGHT D = "..freight_weightD)
-	--print("FREIGHT E = "..freight_weightE)
-	--print("Freight Tot = "..freight_weight_tot)
 end
 --Marauder28
 
@@ -1257,9 +1205,6 @@ function fmsFunctions.setdata(fmsO,value)
 	else
 		fmsO["notify"]="INVALID ENTRY"
 	end
---     if fmsModules["fmsL"].notify=="ENTER IRS POSITION" then fmsModules["fmsL"].notify="" end
---     if fmsModules["fmsC"].notify=="ENTER IRS POSITION" then fmsModules["fmsC"].notify="" end
---     if fmsModules["fmsR"].notify=="ENTER IRS POSITION" then fmsModules["fmsR"].notify="" end
    elseif value=="passengers" then
      local numPassengers=tonumber(fmsO["scratchpad"])
      if numPassengers==nil then numPassengers=2 end
@@ -1419,9 +1364,6 @@ function fmsFunctions.setdata(fmsO,value)
 	calc_CGMAC()  --Recalc CG %MAC and TRIM units
 	if (B747DR_airspeed_V1 < 999 or B747DR_airspeed_Vr < 999 or B747DR_airspeed_V2 < 999) and simDR_onground == 1 then
 		B747DR_airspeed_flapsRef = 0
-		--B747DR_airspeed_V1 = 999
-		--B747DR_airspeed_Vr = 999
-		--B747DR_airspeed_V2 = 999
 		fmsO["notify"] = "TAKEOFF SPEEDS DELETED"
 	end
 
@@ -1447,9 +1389,6 @@ function fmsFunctions.setdata(fmsO,value)
 	calc_CGMAC()  --Recalc CG %MAC and TRIM units
 	if (B747DR_airspeed_V1 < 999 or B747DR_airspeed_Vr < 999 or B747DR_airspeed_V2 < 999) and simDR_onground == 1 then
 		B747DR_airspeed_flapsRef = 0
-		--B747DR_airspeed_V1 = 999
-		--B747DR_airspeed_Vr = 999
-		--B747DR_airspeed_V2 = 999
 		fmsO["notify"] = "TAKEOFF SPEEDS DELETED"
 	end
   elseif value == "reserves" then

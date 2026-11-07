@@ -295,9 +295,6 @@ end
 function flight_controls_consumption()
     controlDiff={}
     for i=1,numSurfaces,1 do
-        --print(i.." getting")
-        --print(controlRatios[i])
-        --print(lastControlValue[i])
         if controlRatios[i]>lastControlValue[i] then
             controlDiff[i]=(controlRatios[i]-lastControlValue[i])
         else

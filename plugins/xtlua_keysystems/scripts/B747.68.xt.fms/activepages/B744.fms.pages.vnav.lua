@@ -61,9 +61,6 @@ fmsPages["VNAV"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be thi
       error_line = "                 "
 
       
-      --print(" --------------------- ")
-      --print(simDR_RA_Min)
-      --print("--------------------------------------"..B747DR_FMSdata)
 
       --if(simDR_onGround~=1) then
       if(string.len(fmsJson) > 2) then
@@ -305,9 +302,6 @@ fmsPages["VNAV"].getPage=function(self,pgNo,fmsID)--dynamic pages need to be thi
       eta_m = math.ceil( (eta - eta_h) * 60 )
       if(eta_h >= 24) then eta_h = eta_h - 24 end
 
-      --local timestamp = os.time() 
-      --local dt1 = os.date( "!%X", timestamp )  -- UTC
-      --local utcNow = string.formt("%02f%02f",dt1hour,dt1.min)
 
       etafuel = string.format("%02d%02dz/ %03.1f",eta_h,eta_m,conv*fad/1000)
       line1="       ECON CRZ         " 

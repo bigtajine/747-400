@@ -634,10 +634,6 @@ function GE(altitude_ft_in)
 	--print("Temp = "..temperature)
 
   if simDR_onGround == 1 or takeoff_thrust_n1==0.0 or B747DR_ref_thr_limit_mode == "" or B747DR_ref_thr_limit_mode == "NONE" then
-		--temperature = find_closest_temperature(TOGA_N1_GE, simDR_temperature)
-		--airport_altitude = altitude
-		--print("Closest Temp = ", temperature)
-		--print("Takeoff Parameters = ", temperature, altitude, packs_adjustment_value, engine_anti_ice_adjustment_value)
 		takeoff_thrust_n1, _ = take_off_N1_GE(altitude_ft_in)   --TOGA_N1_GE[temperature][altitude] + packs_adjustment_value + engine_anti_ice_adjustment_value
     
     if B747DR_toderate == 0 then

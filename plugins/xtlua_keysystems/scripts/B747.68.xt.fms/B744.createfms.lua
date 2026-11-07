@@ -491,9 +491,6 @@ end
 
 function fms:B747_fms_display()
     local thisID=self.id
-   -- local m="false"
-   -- if self.inCustomFMC then m="true" end
-    --print("B747_fms_display "..thisID.." "..m.." "..self.currentPage)
     if self.currentPage=="FMC" then 
       self.inCustomFMC = false 
     end

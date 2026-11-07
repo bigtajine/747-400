@@ -514,15 +514,6 @@ function calc_CGMAC()
 
 	simDR_cg_adjust = CG_shift * -1  --Value is flipped from what is in the XP slider
 	
-	--print("Dist = "..dist_default_CG.." - "..CG)
-	--print("CG Shift = "..CG_shift)
-	--print("OEW weight = "..wb.OEW_weight)
-	--print("OEW distance = "..wb.OEW_distance)
-	--print("Fuel = "..simDR_fuel_qty[0])
-	--print("Fuel = "..wb.fuel_CTR_0_weight)
-	--print("CG %MAC = "..wb.cg_mac)
-	--print("Stab Trim = "..wb.stab_trim)
-	--print("GW = "..GW)
 end
 
 function inflight_update_CG()

@@ -59,18 +59,4 @@ fmsFunctionsDefs["ATCLOGONSTATUS"]={}
 fmsFunctionsDefs["ATCLOGONSTATUS"]["L6"]={"setpage","ATCINDEX"}
 fmsFunctionsDefs["ATCLOGONSTATUS"]["L1"]={"setdata","atc"}
 fmsFunctionsDefs["ATCLOGONSTATUS"]["L2"]={"setdata","fltno"}
---[[
-fmsFunctionsDefs["ATCLOGONSTATUS"]["L1"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["L2"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["L3"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R4"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["L5"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["L6"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R1"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R2"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R3"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R4"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R5"]={"setpage",""}
-fmsFunctionsDefs["ATCLOGONSTATUS"]["R6"]={"setpage",""}
-]]
 

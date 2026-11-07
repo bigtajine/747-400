@@ -103,12 +103,6 @@ function round_thrustcalc(x, input_type)
       --print("x Corrected = "..x)
       return x >= 0 and math.floor((x / 5000) + 0.5) * 5000 or math.ceil((x / 5000) - 0.5) * 5000  --Alts in 5000s
     elseif input_type == "TEMP" then
-  --    if x < 10 then
-  --      x = 10
-  --    elseif x > 70 then
-  --      x = 70
-  --    end
-      --print("x Corrected = "..x)
       return x >= 0 and math.floor((x / 5) + 0.5) * 5 or math.ceil((x / 5) - 0.5) * 5  --Temps by 5's
     end
   end

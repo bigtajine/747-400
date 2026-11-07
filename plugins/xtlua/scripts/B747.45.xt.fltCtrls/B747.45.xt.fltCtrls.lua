@@ -1109,9 +1109,6 @@ function B747_fltCtrols_EICAS_msg()
 	
     --local curTrim   = B747_rescale(-1.0, 15, 1.0, 0.0, simDR_elevator_trim)
 	local curTrim   = B747_rescale(-1.0, 0.0, 1.0, 15.0, simDR_elevator_trim)  --Swapped top and bottom of range for better comparisons
-	--print("midIndTop = "..midIndTop)
-	--print("midIndBtm = "..midIndBtm)
-	--print("curTrim = "..curTrim)
     if (curTrim < midIndTop or curTrim > midIndBtm)              -- TODO:  VERIFY RANGE VALUES
         and simDR_all_wheels_on_ground == 1
         and simDR_ind_airspeed_kts_pilot < B747DR_airspeed_V1

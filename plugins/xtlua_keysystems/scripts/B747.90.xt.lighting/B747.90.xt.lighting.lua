@@ -150,12 +150,6 @@ simDR_hyd_pump_fail_eng_01          = find_dataref("sim/operation/failures/rel_h
 simDR_hyd_pump_fail_eng_02          = find_dataref("sim/operation/failures/rel_hydpmp2")
 simDR_hyd_pump_fail_eng_03          = find_dataref("sim/operation/failures/rel_hydpmp3")
 simDR_hyd_pump_fail_eng_04          = find_dataref("sim/operation/failures/rel_hydpmp4")
---simDR_nacelle_inlet_antiice_fail_01 = find_dataref("sim/operation/failures/rel_ice_inlet_heat")
---simDR_nacelle_inlet_antiice_fail_02 = find_dataref("sim/operation/failures/rel_ice_inlet_heat2")
---simDR_nacelle_inlet_antiice_fail_03 = find_dataref("sim/operation/failures/rel_ice_inlet_heat3")
---simDR_nacelle_inlet_antiice_fail_04 = find_dataref("sim/operation/failures/rel_ice_inlet_heat4")
---simDR_wing_anti_ice_fail_01         = find_dataref("sim/operation/failures/rel_ice_surf_heat")
---simDR_wing_anti_ice_fail_02         = find_dataref("sim/operation/failures/rel_ice_surf_heat2")
 simDR_window_heat_fail              = find_dataref("sim/operation/failures/rel_ice_window_heat")
 --simDR_bleed_air_fail_L              = find_dataref("sim/operation/failures/rel_bleed_air_lft")
 --simDR_bleed_air_fail_R              = find_dataref("sim/operation/failures/rel_bleed_air_rgt")
@@ -736,12 +730,6 @@ function B747_init_light_rheostats()
     B747DR_instrument_brightness_ratio[7]   = light_level * 0.10                            -- OVERHEAD PANEL
     B747DR_instrument_brightness_ratio[8]   = light_level * 0.10                            -- F/O PANEL
     
-    --simDR_panel_brightness_switch[1]        = light_level * 0.85                            -- FIRST OBSERVER PANEL
-    --simDR_panel_brightness_switch[2]        = light_level * 0.85                            -- AISLE STAND PANEL
-    --simDR_panel_brightness_switch[3]        = light_level * 0.90                            -- GLARESHIELD PANEL/MCP PANEL/COMPASS
-    --B747DR_instrument_brightness_ratio[6]   = light_level * 0.90                            -- CAPTAIN PANEL
-    --B747DR_instrument_brightness_ratio[7]   = light_level * 0.90                            -- OVERHEAD PANEL
-    --B747DR_instrument_brightness_ratio[8]   = light_level * 0.90                            -- F/O PANEL
 
 end
 

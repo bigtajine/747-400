@@ -1235,10 +1235,6 @@ end
 local int, frac = math.modf(os.clock())
 local seed = math.random(1, frac*1000.0)
 math.randomseed(seed)
---local B747_engine1_maxVib = math.min(1.3, math.random(0, 1) + math.random())
---local B747_engine2_maxVib = math.min(1.5, math.random(0, 3) + math.random())
---local B747_engine3_maxVib = math.min(1.4, math.random(0, 2) + math.random())
---local B747_engine4_maxVib = math.min(1.6, math.random(0, 3) + math.random())
 local B747_engine_maxVib = {}
 local B747_engine_vibPhase = {}
 local B747_engine_lastClock = {}
@@ -1640,11 +1636,6 @@ end
 
 
 function B747_set_engines_all_modes2()
---[[
-    for i = 0, 3 do
-        B747_old_throttle_lever_input[i+1] = simDR_engine_throttle_input[i]
-    end
---]]
 end
 
 
@@ -1735,18 +1726,6 @@ function B747_engine_start_sw_off(engine)
     -- ENGINE STARTERS ON
     function B747_engine_starter_on(engine)
 
---         if engine == 0 then
---             if simDR_engine_starter_status[0] < 4 and B747_starter_status[1]==0 then simCMD_starter_on_1:start() B747_starter_status[1]=1 end
---         end
---         if engine == 1 then
---             if simDR_engine_starter_status[1] < 4 and B747_starter_status[2]==0 then simCMD_starter_on_2:start() B747_starter_status[2]=1 end
---         end
---         if engine == 2 then
---             if simDR_engine_starter_status[2] < 4 and B747_starter_status[3]==0 then simCMD_starter_on_3:start() B747_starter_status[3]=1 end
---         end
---         if engine == 3 then
---             if simDR_engine_starter_status[3] < 4 and B747_starter_status[4]==0 then simCMD_starter_on_4:start() B747_starter_status[4]=1 end
---         end
 	if engine == 0 then
             if simDR_engine_starter_status[0] < 4 and B747_starter_status[1]==0 then simCMD_starter_on_1:start() simDR_engine_igniter_on[0]=1 B747_starter_status[1]=1 end
         end
@@ -1763,18 +1742,6 @@ function B747_engine_start_sw_off(engine)
     -- ENGINE STARTERS OFF
     function B747_engine_starter_off(engine)
 
---         if engine == 0 then
---             if simDR_engine_starter_status[0] > 3 and B747_starter_status[1]==1 then simCMD_starter_on_1:stop() simCMD_starter_off_1:once() B747_starter_status[1]=0 end
---         end
---         if engine == 1 then
---             if simDR_engine_starter_status[1] > 3 and B747_starter_status[2]==1 then simCMD_starter_on_2:stop() simCMD_starter_off_2:once() B747_starter_status[2]=0 end
---         end
---         if engine == 2 then
---             if simDR_engine_starter_status[2] > 3 and B747_starter_status[3]==1 then simCMD_starter_on_3:stop() simCMD_starter_off_3:once() B747_starter_status[3]=0 end
---         end
---         if engine == 3 then
---             if simDR_engine_starter_status[3] > 3 and B747_starter_status[4]==1 then simCMD_starter_on_4:stop() simCMD_starter_off_4:once() B747_starter_status[4]=0 end
---         end
 	if engine == 0 then
             if simDR_engine_starter_status[0] > 3 and B747_starter_status[1]==1 then simCMD_starter_on_1:stop() simCMD_starter_off_1:once() simDR_engine_igniter_on[0]=0 B747_starter_status[1]=0 end
         end
