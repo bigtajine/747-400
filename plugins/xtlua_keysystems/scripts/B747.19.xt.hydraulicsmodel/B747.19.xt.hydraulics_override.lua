@@ -287,7 +287,7 @@ function spoiler_consumption(controlDiff)
     if hydraulics_consumer({0,0,0,1},controlDiff[17]/3)==0 then
         controlRatios[17]=B747_animate_value(lastControlValue[17],0,-100,100,1)
     end
-    if hydraulics_consumer({0,0,0,1},controlDiff[1]/3)==0 then
+    if hydraulics_consumer({0,0,0,1},controlDiff[18]/3)==0 then
         controlRatios[18]=B747_animate_value(lastControlValue[18],0,-100,100,1)
     end
 end
