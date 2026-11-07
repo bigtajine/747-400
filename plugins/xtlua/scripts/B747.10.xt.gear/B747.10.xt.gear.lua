@@ -850,6 +850,14 @@ function B747_gear_EICAS_msg()
     B747DR_CAS_caution_status[38] = (gear_disagree_since ~= nil
         and simDR_time_now - gear_disagree_since > GEAR_TRANSIT_S) and 1 or 0
 
+    -- >TIRE PRESSURE
+    -- Normal is about 200 psi and a failed tire bleeds down to 5 psi.
+    local tire_low = 0
+    for i = 0, 17 do
+        if B747DR_tire_pressure[i] < 100 then tire_low = 1 end
+    end
+    B747DR_CAS_advisory_status[290] = tire_low
+
     -- AUTOBRAKES 1
     if B747DR_autobrakes_sel_dial_pos == 2 then
         B747DR_CAS_advisory_status[17] = 1
