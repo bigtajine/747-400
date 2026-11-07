@@ -2000,6 +2000,7 @@ function B747_electronic_engine_control()
 
     -- AUTOSTART
     elseif B747DR_button_switch_position[45] > 0.5                                          -- AUTOSTART BUTTON DEPRESSED
+        and B747DR_fuel_control_toggle_switch_pos[0] == 1.0                                 -- FUEL CONTROL SWITCH SET TO "RUN"
         and B747DR_display_N2[0] > 15.0
     then
         B747DR_engine_fuel_valve_pos[0] = 1                                                 -- OPEN THE VALVE
@@ -2023,6 +2024,7 @@ function B747_electronic_engine_control()
 
     -- AUTOSTART
     elseif B747DR_button_switch_position[45] > 0.5                                          -- AUTOSTART BUTTON DEPRESSED
+        and B747DR_fuel_control_toggle_switch_pos[1] == 1.0                                 -- FUEL CONTROL SWITCH SET TO "RUN"
         and B747DR_display_N2[1] > 15.0
     then
         B747DR_engine_fuel_valve_pos[1] = 1                                                 -- OPEN THE VALVE
@@ -2046,6 +2048,7 @@ function B747_electronic_engine_control()
 
     -- AUTOSTART
     elseif B747DR_button_switch_position[45] > 0.5                                          -- AUTOSTART BUTTON DEPRESSED
+        and B747DR_fuel_control_toggle_switch_pos[2] == 1.0                                 -- FUEL CONTROL SWITCH SET TO "RUN"
         and B747DR_display_N2[2] > 15.0
     then
         B747DR_engine_fuel_valve_pos[2] = 1                                                 -- OPEN THE VALVE
@@ -2069,6 +2072,7 @@ function B747_electronic_engine_control()
 
     -- AUTOSTART
     elseif B747DR_button_switch_position[45] > 0.5                                          -- AUTOSTART BUTTON DEPRESSED
+        and B747DR_fuel_control_toggle_switch_pos[3] == 1.0                                 -- FUEL CONTROL SWITCH SET TO "RUN"
         and B747DR_display_N2[3] > 15.0
     then
         B747DR_engine_fuel_valve_pos[3] = 1                                                 -- OPEN THE VALVE
