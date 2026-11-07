@@ -371,6 +371,7 @@ simDR_flap_deploy_ratio             = find_dataref("laminar/B747/cablecontrols/f
 simDR_wing_flap1_deg                = find_dataref("sim/flightmodel2/wing/flap1_deg")
 simDR_all_wheels_on_ground          = find_dataref("sim/flightmodel/failures/onground_any")
 simDR_engine_running                = find_dataref("sim/flightmodel/engine/ENGN_running")
+B747DR_ap_flightPhase               = deferred_dataref("laminar/B747/autopilot/flightPhase", "number")
 local fuel_imbal_t = {}   -- (local: XTLua wraps global bare tables, and reading a missing key of one overflows the stack)
 simDR_TAT                           = find_dataref("sim/cockpit2/temperature/outside_air_LE_temp_degc")
 
@@ -2973,10 +2974,17 @@ function B747_fuel_EICAS_msg()
       B747DR_CAS_advisory_status[158] = 0
     end
 
-    -- FUEL LOW CTR L
+    -- FUEL LOW CTR L / R: the center tank is low for its pumps, at a limit that depends on the phase
+    -- because the climb attitude makes the last of the fuel unusable sooner.
+    local ctr_low_kg = 1300.0
+    if simDR_all_wheels_on_ground == 1 then
+        ctr_low_kg = 7700.0
+    elseif B747DR_ap_flightPhase <= 1 then
+        ctr_low_kg = 3200.0
+    end
     if B747DR_CAS_caution_status[37] == 0 and B747DR_CAS_caution_status[69] == 0 then
         if B747DR_button_switch_position[52] > 0.95
-            and simDR_fuel_tank_weight_kg[0] <= 1300.0
+            and simDR_fuel_tank_weight_kg[0] <= ctr_low_kg
         then
             B747DR_CAS_advisory_status[302] = 1 
             if is_timer_scheduled(eicas_caution_center_left)==false then
@@ -2985,7 +2993,7 @@ function B747_fuel_EICAS_msg()
         else
             B747DR_CAS_advisory_status[302] = 0
         end
-    elseif B747DR_button_switch_position[52] < 0.95 or simDR_fuel_tank_weight_kg[0] >= 1300.0 then
+    elseif B747DR_button_switch_position[52] < 0.95 or simDR_fuel_tank_weight_kg[0] >= ctr_low_kg then
         B747DR_CAS_advisory_status[302] = 0
         B747DR_CAS_caution_status[69] = 0
     else
@@ -2995,7 +3003,7 @@ function B747_fuel_EICAS_msg()
     -- FUEL LOW CTR R
     if B747DR_CAS_caution_status[37] == 0 and B747DR_CAS_caution_status[70] == 0 then
         if B747DR_button_switch_position[53] > 0.95
-            and simDR_fuel_tank_weight_kg[0] <= 1300.0
+            and simDR_fuel_tank_weight_kg[0] <= ctr_low_kg
         then
             B747DR_CAS_advisory_status[303] = 1
             if is_timer_scheduled(eicas_caution_center_right)==false then
@@ -3005,7 +3013,7 @@ function B747_fuel_EICAS_msg()
         else
             B747DR_CAS_advisory_status[303] = 0
         end
-    elseif B747DR_button_switch_position[53] < 0.95 or simDR_fuel_tank_weight_kg[0] >= 1300.0 then
+    elseif B747DR_button_switch_position[53] < 0.95 or simDR_fuel_tank_weight_kg[0] >= ctr_low_kg then
         B747DR_CAS_advisory_status[303] = 0
         B747DR_CAS_caution_status[70] = 0
     else
