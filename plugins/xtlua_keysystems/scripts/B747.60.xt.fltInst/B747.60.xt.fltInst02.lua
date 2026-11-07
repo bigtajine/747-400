@@ -3586,61 +3586,20 @@ function flight_start()
     B747_flight_start_fltInst()
 
 end
-local lastHeading=0
-local lastRollMode=-1
 local hdgLineSeen = nil       -- (v41) selected heading when last seen / line shown until
 local hdgLineUntil = -1
-local mapHeading=false
-function clear_heading_bug()
-    mapHeading=false
-end
-local mapHeadingUntil = -1     -- (v48) heading bug shown until (LNAV / LOC / ROLLOUT)
 function update_heading_bug()
-    -- v48: in LNAV / LOC / ROLLOUT the bug shows for 10 s after the heading selector (or the roll mode)
-    -- changes, timed here - the stop / restart of an XTLua timer every frame while the knob turned
-    -- made it flicker
-    local tnow = simDR_time_now or 0
-    if B747DR_ap_FMA_active_roll_mode<2 or B747DR_ap_FMA_active_roll_mode>4 then
-        mapHeading=true
-        mapHeadingUntil = -1
-    else
-        if lastHeading~=B747DR_ap_heading_deg or lastRollMode~=B747DR_ap_FMA_active_roll_mode then
-            mapHeadingUntil = tnow + 10.0
-        end
-        mapHeading = tnow < mapHeadingUntil
-    end
-    if B747DR_nd_mode_capt_sel_dial_pos==2 then
-        if mapHeading==true then
-            B747DR_nd_capt_heading_bug=1
-        else
-            B747DR_nd_capt_heading_bug=0
-        end
-    elseif B747DR_nd_mode_capt_sel_dial_pos<=1 then
-        B747DR_nd_capt_heading_bug=1
-    else
-        B747DR_nd_capt_heading_bug=0
-    end
-    if B747DR_nd_mode_fo_sel_dial_pos==2 then
-        if mapHeading==true then
-            B747DR_nd_fo_heading_bug=1
-        else
-            B747DR_nd_fo_heading_bug=0
-        end
-    elseif B747DR_nd_mode_fo_sel_dial_pos<=1 then
-        B747DR_nd_fo_heading_bug=1
-    else
-        B747DR_nd_fo_heading_bug=0
-    end
-    -- the bug is drawn on the compass arc: when the selected heading is beyond the visible arc it is not
-    -- shown (it would otherwise be drawn outside the display - the captain's bug appeared on the first
-    -- officer's ND). MAP: track up; APP / VOR: heading up
-    local function off_arc(mode)
+    -- The bug always shows in APP, VOR and MAP, except beyond the expanded arc, where it would be
+    -- drawn outside the display. MAP is track up; APP and VOR are heading up.
+    local function bug_shown(mode, centered)
+        if mode > 2 then return 0 end
+        if centered == 1 then return 1 end
         local up = (mode == 2) and (simDR_nd_trk_mag or 0) or (simDR_nd_hdg_mag or 0)
         local d = ((B747DR_ap_heading_deg or 0) - up + 540) % 360 - 180
-        return math.abs(d) > 50
+        return math.abs(d) > 50 and 0 or 1
     end
-    if B747DR_nd_capt_heading_bug == 1 and B747DR_nd_mode_capt_sel_dial_pos <= 2 and off_arc(B747DR_nd_mode_capt_sel_dial_pos) then B747DR_nd_capt_heading_bug = 0 end
-    if B747DR_nd_fo_heading_bug == 1 and B747DR_nd_mode_fo_sel_dial_pos <= 2 and off_arc(B747DR_nd_mode_fo_sel_dial_pos) then B747DR_nd_fo_heading_bug = 0 end
+    B747DR_nd_capt_heading_bug = bug_shown(B747DR_nd_mode_capt_sel_dial_pos, B747_nd_map_center_capt)
+    B747DR_nd_fo_heading_bug = bug_shown(B747DR_nd_mode_fo_sel_dial_pos, B747_nd_map_center_fo)
     -- the dashed selected heading line (v41): always in HDG SEL / HDG HOLD; in any other roll mode
     -- (LNAV, LOC, TO/GA, ATT ...) only for 5 s after the heading selector is turned
     local rm = B747DR_ap_FMA_active_roll_mode or 0
@@ -3653,8 +3612,6 @@ function update_heading_bug()
     local hdg_line = (rm == 6 or rm == 7 or tnow < (hdgLineUntil or -1)) and 1 or 0
     B747DR_nd_capt_hdg_line = (B747DR_nd_capt_heading_bug == 1 and hdg_line == 1) and 1 or 0
     B747DR_nd_fo_hdg_line = (B747DR_nd_fo_heading_bug == 1 and hdg_line == 1) and 1 or 0
-    lastHeading=B747DR_ap_heading_deg
-    lastRollMode=B747DR_ap_FMA_active_roll_mode
 end
 --function flight_crash() end
 
