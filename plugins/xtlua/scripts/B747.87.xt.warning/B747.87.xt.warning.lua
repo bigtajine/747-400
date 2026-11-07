@@ -172,8 +172,8 @@ B747_CAScautionMsg   = {
     {DRindex = 64, name = "STARTER CUTOUT 4", status = 0},      --
     {DRindex = 65, name = "TIRE PRESSURE", status = 0},
     {DRindex = 66, name = "UNABLE RNP", status = 0},
-    {DRindex = 67, name = "FUEL PRES STAB L", status = 0},
-    {DRindex = 68, name = "FUEL PRES STAB R", status = 0},
+    {DRindex = 67, name = "FUEL PRES STB L", status = 0},
+    {DRindex = 68, name = "FUEL PRES STB R", status = 0},
     {DRindex = 69, name = "FUEL PRESS CTR L", status = 0},
     {DRindex = 70, name = "FUEL PRESS CTR R", status = 0},
     {DRindex = 71, name = "ELEC GEN OFF 1", status = 0},
@@ -183,7 +183,7 @@ B747_CAScautionMsg   = {
 }
 
 B747_CASadvisoryMsg   = {
-    {DRindex = 0, name = ">ADC CENTRE", status = 0},
+    {DRindex = 0, name = ">ADC CENTER", status = 0},
     {DRindex = 1, name = ">ADC LEFT", status = 0},
     {DRindex = 2, name = ">ADC RIGHT", status = 0},
     {DRindex = 3, name = "AILERON LOCKOUT", status = 0},
@@ -192,7 +192,7 @@ B747_CASadvisoryMsg   = {
     {DRindex = 6, name = ">ALT CALLOUTS", status = 0},
     {DRindex = 7, name = ">ANTI-ICE", status = 0},              --
     {DRindex = 8, name = ">ANTI-ICE NAC", status = 0},
-    {DRindex = 9, name = ">ANTI ICE WING", status = 0},
+    {DRindex = 9, name = ">ANTI-ICE WING", status = 0},
     {DRindex = 10, name = "ANTISKID", status = 0},
     {DRindex = 11, name = "ANTISKID OFF", status = 0},
     {DRindex = 12, name = ">AOA RIGHT", status = 0},            --
@@ -408,11 +408,11 @@ B747_CASadvisoryMsg   = {
     {DRindex = 222, name = ">ICE DETECTORS", status = 0},
     {DRindex = 223, name = ">IDLE DISAGREE", status = 0},
     {DRindex = 224, name = ">IFF MODE 4", status = 0},
-    {DRindex = 225, name = ">IRS AC CENTRE", status = 0},
+    {DRindex = 225, name = ">IRS AC CENTER", status = 0},
     {DRindex = 226, name = ">IRS AC LEFT", status = 0},
     {DRindex = 227, name = ">IRS AC RIGHT", status = 0},
-    {DRindex = 228, name = "IRS CENTRE", status = 0},
-    {DRindex = 229, name = ">IRS DC CENTRE", status = 0},
+    {DRindex = 228, name = "IRS CENTER", status = 0},
+    {DRindex = 229, name = ">IRS DC CENTER", status = 0},
     {DRindex = 230, name = ">IRS DC LEFT", status = 0},
     {DRindex = 231, name = ">IRS DC RIGHT", status = 0},
     {DRindex = 232, name = "IRS LEFT", status = 0},
@@ -501,7 +501,7 @@ B747_CASmemoMsg   = {
     {DRindex = 7, name = "AUTOBRAKES RTO", status = 0},         --
     {DRindex = 8, name = "CON IGNITION ON", status = 0},        --
     {DRindex = 9, name = "DOORS AUTO", status = 0},
-    {DRindex = 10, name = "DOORS AUTO/MAN", status = 0},
+    {DRindex = 10, name = "DOORS AUTO/MANUAL", status = 0},
     {DRindex = 11, name = "DOORS MANUAL", status = 0},
     {DRindex = 12, name = "HF DATA OFF", status = 0},
     {DRindex = 13, name = "HIGH ALT LDG", status = 0},
