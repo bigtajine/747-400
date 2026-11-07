@@ -607,25 +607,11 @@ function B747_bus_tie()
     B747DR_elec_bus3hot = B747_ternary((B747DR_button_switch_position[20] > 0.95 and (simDR_generator_off[2] ==0 or B747DR_elec_toprightbus ==1)),1,0)
     B747DR_elec_bus4hot = B747_ternary((B747DR_button_switch_position[21] > 0.95 and (simDR_generator_off[3] ==0 or B747DR_elec_toprightbus ==1)),1,0)
 
-    if B747DR_elec_bus1hot==0 then
-        B747DR_CAS_caution_status[15]=1
-    else
-        B747DR_CAS_caution_status[15]=0
-    end
-    if B747DR_elec_bus2hot==0 then
-        B747DR_CAS_caution_status[16]=1
-    else
-        B747DR_CAS_caution_status[16]=0
-    end
-    if B747DR_elec_bus3hot==0 then
-        B747DR_CAS_caution_status[17]=1
-    else
-        B747DR_CAS_caution_status[17]=0
-    end
-    if B747DR_elec_bus4hot==0 then
-        B747DR_CAS_caution_status[18]=1
-    else
-        B747DR_CAS_caution_status[18]=0
+    -- ELEC AC BUS
+    -- An isolated bus is still powered by its own generator.
+    local tied = { [0] = B747DR_elec_bus1hot, B747DR_elec_bus2hot, B747DR_elec_bus3hot, B747DR_elec_bus4hot }
+    for i = 0, 3 do
+        B747DR_CAS_caution_status[15 + i] = (tied[i] == 0 and simDR_generator_off[i] == 1) and 1 or 0
     end
 
  -- Captain PFD
