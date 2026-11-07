@@ -100,6 +100,19 @@ B747DR_hyd_sys_pressure_2      = find_dataref("laminar/B747/hydraulics/pressure_
 B747DR_hyd_sys_pressure_3      = find_dataref("laminar/B747/hydraulics/pressure_3")
 B747DR_hyd_sys_pressure_4      = find_dataref("laminar/B747/hydraulics/pressure_4")
 B747DR_hyd_dmd_pmp_sel_pos      = find_dataref("laminar/B747/hydraulics/dmd_pump/sel_dial_pos")
+simDR_engine_running            = find_dataref("sim/flightmodel/engine/ENGN_running")
+B747DR_hyd_valve_1              = find_dataref("laminar/B747/hydraulics/valve_1")
+B747DR_hyd_valve_2              = find_dataref("laminar/B747/hydraulics/valve_2")
+B747DR_hyd_valve_3              = find_dataref("laminar/B747/hydraulics/valve_3")
+B747DR_hyd_valve_4              = find_dataref("laminar/B747/hydraulics/valve_4")
+B747DR_hyd_dem_pressure_1       = find_dataref("laminar/B747/hydraulics/dem_pressure_1")
+B747DR_hyd_dem_pressure_2       = find_dataref("laminar/B747/hydraulics/dem_pressure_2")
+B747DR_hyd_dem_pressure_3       = find_dataref("laminar/B747/hydraulics/dem_pressure_3")
+B747DR_hyd_dem_pressure_4       = find_dataref("laminar/B747/hydraulics/dem_pressure_4")
+B747DR_hyd_edp_pressure_1       = find_dataref("laminar/B747/hydraulics/edp_pressure_1")
+B747DR_hyd_edp_pressure_2       = find_dataref("laminar/B747/hydraulics/edp_pressure_2")
+B747DR_hyd_edp_pressure_3       = find_dataref("laminar/B747/hydraulics/edp_pressure_3")
+B747DR_hyd_edp_pressure_4       = find_dataref("laminar/B747/hydraulics/edp_pressure_4")
 
 --*************************************************************************************--
 --** 				        CREATE READ-ONLY CUSTOM DATAREFS               	         **--
@@ -365,8 +378,23 @@ function B747_hyd_EICAS_msg()
         B747DR_CAS_caution_status[43] = 0
     end
 
+    -- HYD PRESS ENG 1-4 and HYD PRESS DEM 1-4
+    -- The engine pump message is inhibited while its engine is shut down.
+    local valve = { B747DR_hyd_valve_1, B747DR_hyd_valve_2, B747DR_hyd_valve_3, B747DR_hyd_valve_4 }
+    local edp_fail = { simDR_engine01_hyd_pump_fail, simDR_engine02_hyd_pump_fail,
+                       simDR_engine03_hyd_pump_fail, simDR_engine04_hyd_pump_fail }
+    local edp = { B747DR_hyd_edp_pressure_1, B747DR_hyd_edp_pressure_2, B747DR_hyd_edp_pressure_3, B747DR_hyd_edp_pressure_4 }
+    local dem = { B747DR_hyd_dem_pressure_1, B747DR_hyd_dem_pressure_2, B747DR_hyd_dem_pressure_3, B747DR_hyd_dem_pressure_4 }
+    for i = 1, 4 do
+        local edp_low = valve[i] == 0 or edp_fail[i] == 6
+        B747DR_CAS_advisory_status[209 + i] = (simDR_engine_running[i - 1] == 1 and edp_low) and 1 or 0
+        local sel = B747DR_hyd_dmd_pmp_sel_pos[i - 1]
+        local dem_commanded = sel == 2 or (sel == 1 and edp[i] < 2500)
+        B747DR_CAS_advisory_status[205 + i] = (dem_commanded and dem[i] < 1000) and 1 or 0
+    end
+
     -- PARK BRAKE SET
-    
+
     if simDR_parking_brake_ratio > 0.9 and B747DR_parking_brake_ratio> 0.9 then 
       B747DR_CAS_memo_status[26] = 1 
     else
