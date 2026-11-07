@@ -75,6 +75,7 @@ simDR_wing_heat_on                  = find_dataref("sim/cockpit2/ice/ice_surfce_
 simDR_wing_heat_on_L                = find_dataref("sim/cockpit2/ice/ice_surfce_heat_left_on")
 simDR_wing_heat_on_R                = find_dataref("sim/cockpit2/ice/ice_surfce_heat_right_on")
 simDR_window_heat_on                = find_dataref("sim/cockpit2/ice/ice_window_heat_on")
+simDR_window_heat_fail              = find_dataref("sim/operation/failures/rel_ice_window_heat")
 simDR_windshield_wiper_speed        = find_dataref("sim/cockpit2/switches/wiper_speed_switch")
 simDR_windshield_wiper_speedXP11        = find_dataref("sim/cockpit2/switches/wiper_speed")
 simDR_flap_deploy_ratio             = find_dataref("laminar/B747/cablecontrols/flap_ratio")
@@ -534,6 +535,12 @@ function B747_antiice_EICAS_msg()
     else
         B747DR_CAS_advisory_status[189] = 0
     end
+
+    -- HEAT WINDOW L/R
+    -- A window with its heat switched off counts as inoperative.
+    local window_failed = simDR_window_heat_fail == 6
+    B747DR_CAS_advisory_status[194] = (B747DR_button_switch_position[73] < 0.05 or window_failed) and 1 or 0
+    B747DR_CAS_advisory_status[195] = (B747DR_button_switch_position[74] < 0.05 or window_failed) and 1 or 0
 
 
 
