@@ -612,6 +612,7 @@ function B747_bus_tie()
     local tied = { [0] = B747DR_elec_bus1hot, B747DR_elec_bus2hot, B747DR_elec_bus3hot, B747DR_elec_bus4hot }
     for i = 0, 3 do
         B747DR_CAS_caution_status[15 + i] = (tied[i] == 0 and simDR_generator_off[i] == 1) and 1 or 0
+        B747DR_CAS_advisory_status[92 + i] = B747DR_button_switch_position[18 + i] < 0.05 and 1 or 0
     end
 
  -- Captain PFD
