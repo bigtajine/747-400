@@ -141,6 +141,7 @@ simDR_acf_weight_total_kg       = find_dataref("sim/flightmodel/weight/m_total")
 simDR_flap_control_fail         = find_dataref("sim/operation/failures/rel_flap_act")
 
 simDR_engine_throttle_jet_all   = find_dataref("sim/cockpit2/engine/actuators/throttle_jet_rev_ratio_all")
+B747DR_throttle                 = deferred_dataref("laminar/B747/engine/throttle", "array[4]")
 
 simDR_hyd_press_1_2             = find_dataref("laminar/B747/hydraulics/indicators/hydraulic_pressure_1_2_4")
 
@@ -1154,13 +1155,16 @@ function B747_fltCtrols_EICAS_msg()
 
     -- >SPEEDBRAKES EXT
     
+    -- Each condition is enough on its own: below 800 ft, landing flaps, or two levers off idle.
+    local levers_off_idle = 0
+    for i = 0, 3 do
+        if B747DR_throttle[i] >= 0.05 then levers_off_idle = levers_off_idle + 1 end
+    end
     if simDR_speedbrake_ratio_control > 0.15
-        and 
-        ((simDR_radio_alt_height_capt > 15.0 and simDR_radio_alt_height_capt < 800.0)
-        or
-        (simDR_wing_flap1_deg[0] > 24.0 and simDR_wing_flap1_deg[0] < 31.0 and simDR_all_wheels_on_ground == 0)
-        and
-        num_thrust_levers_open >= 1)
+        and ((simDR_radio_alt_height_capt > 15.0 and simDR_radio_alt_height_capt < 800.0)
+            or (simDR_all_wheels_on_ground == 0
+                and ((simDR_wing_flap1_deg[0] > 24.0 and simDR_wing_flap1_deg[0] < 31.0)
+                    or levers_off_idle >= 2)))
     then
         B747DR_CAS_caution_status[59] = 1
     else
