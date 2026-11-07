@@ -819,7 +819,7 @@ function B747_CAS_queue()
     end 
     if B747DR_master_warning == 1 then
         --is there fire?
-        if B747DR_fire_ovht_button_pos > 0 or B747DR_engine_fire > 0 or B747DR_apu_fire > 0 then
+        if B747DR_fire_ovht_button_pos > 0 or B747DR_engine_fire > 0 or B747DR_apu_fire == 6 then
             B747DR_warning_bell           	= 1
         elseif B747DR_warning_wailer == 0 then
             B747DR_warning_siren = 1

@@ -325,7 +325,8 @@ function B747_fire_ext_switch_animation()
     if  B747DR_fire_ovht_button_pos==1 then 
 	  B747DR_engine_fire[4]=1
       else
-	B747DR_engine_fire[4]=simDR_apu_fire
+	-- A failure enum of 6 is an active fire. Lower values only mean a failure is armed.
+	B747DR_engine_fire[4] = simDR_apu_fire == 6 and 1 or 0
       end
     B747DR_engine01_fire_ext_switch_pos_arm = B747_set_animation_position(B747DR_engine01_fire_ext_switch_pos_arm, fire_extinguisher_switch_pos_arm_target[1], 0.0, 1.0, 10)
     B747DR_engine02_fire_ext_switch_pos_arm = B747_set_animation_position(B747DR_engine02_fire_ext_switch_pos_arm, fire_extinguisher_switch_pos_arm_target[2], 0.0, 1.0, 10)
