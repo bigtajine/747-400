@@ -77,6 +77,7 @@ function deferred_dataref(name,nilType,callFunction)
 end
 local B747_apu_start = 0
 local B747_apu_inlet_door_target_pos = 0
+local gen_was_online = { [0] = false, false, false, false }
 
 
 
@@ -639,11 +640,18 @@ function B747_bus_tie()
     B747DR_elec_display_power[6]=6-B747DR_simDR_fo_display
     B747DR_elec_display_power[7]=6-B747DR_simDR_fo_display
     B747DR_elec_display_power[8]=6-B747DR_simDR_captain_display
-    if simDR_generator_off[0] ==0 or simDR_generator_off[1] ==0 then
+    -- A generator coming online takes over from APU/EXT power, but APU/EXT can still be
+    -- selected afterwards so the buses stay powered through engine shutdown.
+    local online = {}
+    for i = 0, 3 do
+        online[i] = simDR_generator_off[i] == 0 and not gen_was_online[i]
+        gen_was_online[i] = simDR_generator_off[i] == 0
+    end
+    if online[0] or online[1] then
         B747DR_elec_apu_pwr_1_switch_mode = 0
         B747DR_elec_ext_pwr_1_switch_mode = 0
     end
-    if simDR_generator_off[2] ==0 or simDR_generator_off[3] ==0 then
+    if online[2] or online[3] then
         B747DR_elec_apu_pwr_2_switch_mode = 0
         B747DR_elec_ext_pwr_2_switch_mode = 0
     end
