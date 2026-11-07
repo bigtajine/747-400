@@ -180,24 +180,24 @@ function engine_idle_control_RR(altitude_ft_in)
       if string.match(simConfigData["data"].PLANE.engines, "524G") then
         --V/S mode / use what the pilot has input on the MCP for V/S
         if B747DR_ap_FMA_active_pitch_mode == 7 then
-          if B747DR_ap_vvi_fpm > 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm + 500
-          elseif B747DR_ap_vvi_fpm <= 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm
+          if simDR_ap_vvi_dial_fpm > 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm + 500
+          elseif simDR_ap_vvi_dial_fpm <= 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm
           end
 
           if B747DR_airspeed_pilot < (simDR_ind_airspeed_kts_pilot - 3) then
             if last_climb_rate_fpm <= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, B747DR_ap_vvi_fpm + 1000)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, simDR_ap_vvi_dial_fpm + 1000)
             end
             climb_rate_fpm = last_climb_rate_fpm
           elseif B747DR_airspeed_pilot > simDR_ind_airspeed_kts_pilot then
             if last_climb_rate_fpm >= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, B747DR_ap_vvi_fpm)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, simDR_ap_vvi_dial_fpm)
             end
             climb_rate_fpm = last_climb_rate_fpm
           end
@@ -215,24 +215,24 @@ function engine_idle_control_RR(altitude_ft_in)
       elseif string.match(simConfigData["data"].PLANE.engines, "524H$") then
         --V/S mode / use what the pilot has input on the MCP for V/S
         if B747DR_ap_FMA_active_pitch_mode == 7 then
-          if B747DR_ap_vvi_fpm > 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm + 500
-          elseif B747DR_ap_vvi_fpm <= 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm
+          if simDR_ap_vvi_dial_fpm > 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm + 500
+          elseif simDR_ap_vvi_dial_fpm <= 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm
           end
 
           if B747DR_airspeed_pilot < (simDR_ind_airspeed_kts_pilot - 3) then
             if last_climb_rate_fpm <= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, B747DR_ap_vvi_fpm + 1000)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, simDR_ap_vvi_dial_fpm + 1000)
             end
             climb_rate_fpm = last_climb_rate_fpm
           elseif B747DR_airspeed_pilot > simDR_ind_airspeed_kts_pilot then
             if last_climb_rate_fpm >= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, B747DR_ap_vvi_fpm)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, simDR_ap_vvi_dial_fpm)
             end
             climb_rate_fpm = last_climb_rate_fpm
           end
@@ -250,24 +250,24 @@ function engine_idle_control_RR(altitude_ft_in)
       elseif string.match(simConfigData["data"].PLANE.engines, "524H8T") then
         --V/S mode / use what the pilot has input on the MCP for V/S
         if B747DR_ap_FMA_active_pitch_mode == 7 then
-          if B747DR_ap_vvi_fpm > 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm + 500
-          elseif B747DR_ap_vvi_fpm <= 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm
+          if simDR_ap_vvi_dial_fpm > 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm + 500
+          elseif simDR_ap_vvi_dial_fpm <= 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm
           end
 
           if B747DR_airspeed_pilot < (simDR_ind_airspeed_kts_pilot - 3) then
             if last_climb_rate_fpm <= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, B747DR_ap_vvi_fpm + 1000)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, simDR_ap_vvi_dial_fpm + 1000)
             end
             climb_rate_fpm = last_climb_rate_fpm
           elseif B747DR_airspeed_pilot > simDR_ind_airspeed_kts_pilot then
             if last_climb_rate_fpm >= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, B747DR_ap_vvi_fpm)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, simDR_ap_vvi_dial_fpm)
             end
             climb_rate_fpm = last_climb_rate_fpm
           end
@@ -284,24 +284,24 @@ function engine_idle_control_RR(altitude_ft_in)
         end
       else  --Assume 524G if all else fails
         if B747DR_ap_FMA_active_pitch_mode == 7 then
-          if B747DR_ap_vvi_fpm > 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm + 500
-          elseif B747DR_ap_vvi_fpm <= 0 then
-            climb_rate_fpm = B747DR_ap_vvi_fpm
+          if simDR_ap_vvi_dial_fpm > 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm + 500
+          elseif simDR_ap_vvi_dial_fpm <= 0 then
+            climb_rate_fpm = simDR_ap_vvi_dial_fpm
           end
 
           if B747DR_airspeed_pilot < (simDR_ind_airspeed_kts_pilot - 3) then
             if last_climb_rate_fpm <= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, B747DR_ap_vvi_fpm + 1000)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm + 1, simDR_ap_vvi_dial_fpm + 1000)
             end
             climb_rate_fpm = last_climb_rate_fpm
           elseif B747DR_airspeed_pilot > simDR_ind_airspeed_kts_pilot then
             if last_climb_rate_fpm >= climb_rate_fpm then
               last_climb_rate_fpm = climb_rate_fpm
             else
-              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, B747DR_ap_vvi_fpm)
+              last_climb_rate_fpm = math.min(last_climb_rate_fpm - 1, simDR_ap_vvi_dial_fpm)
             end
             climb_rate_fpm = last_climb_rate_fpm
           end

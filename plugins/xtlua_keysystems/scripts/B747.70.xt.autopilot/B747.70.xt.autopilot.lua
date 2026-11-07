@@ -1667,7 +1667,8 @@ local function core()
   -- (the thousands digit only while the V/S window is open: with the window blank the digit of the
   -- last V/S - e.g. "6" - stayed in the window)
   B747DR_ap_vs_show_thousands = (out.vs_win and math.abs(simDR_autopilot_vs_fpm) >= 1000) and 1 or 0
-  B747DR_ap_vvi_fpm = simDR_autopilot_vs_fpm
+  -- The MCP digit drums loop and can't show a negative; the arrow drum shows the sign.
+  B747DR_ap_vvi_fpm = math.abs(simDR_autopilot_vs_fpm)
 
   -- SPEED TARGET for the A/T (EEC uses the sim speed dial) and the PFD bug ---------------------------
   local tgt = out.spd_tgt or mcp_spd

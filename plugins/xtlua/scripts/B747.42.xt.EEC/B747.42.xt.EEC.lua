@@ -343,6 +343,8 @@ B747DR_newsimconfig_data				= deferred_dataref("laminar/B747/newsimconfig", "num
 B747DR_FMSdata						= deferred_dataref("laminar/B747/fms/data", "string")
 B747DR_autothrottle_fail			= deferred_dataref("laminar/B747/engines/autothrottle_fail", "number")
 B747DR_ap_vvi_fpm					= deferred_dataref("laminar/B747/autopilot/vvi_fpm")
+-- vvi_fpm is unsigned for the MCP display, so read the sign from the sim dial.
+simDR_ap_vvi_dial_fpm				= find_dataref("sim/cockpit2/autopilot/vvi_dial_fpm")
 simDR_autopilot_airspeed_kts = find_dataref("sim/cockpit2/autopilot/airspeed_dial_kts")
 B747DR_airspeed_pilot				= deferred_dataref("laminar/B747/gauges/indicators/airspeed_kts_pilot")
 
