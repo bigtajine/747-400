@@ -173,7 +173,7 @@ B747_CAScautionMsg   = {
     {DRindex = 65, name = "TIRE PRESSURE", status = 0},
     {DRindex = 66, name = "UNABLE RNP", status = 0},
     {DRindex = 67, name = "FUEL PRES STAB L", status = 0},
-    {DRindex = 68, name = "FUEL PRES STAB L", status = 0},
+    {DRindex = 68, name = "FUEL PRES STAB R", status = 0},
     {DRindex = 69, name = "FUEL PRESS CTR L", status = 0},
     {DRindex = 70, name = "FUEL PRESS CTR R", status = 0},
     {DRindex = 71, name = "ELEC GEN OFF 1", status = 0},
