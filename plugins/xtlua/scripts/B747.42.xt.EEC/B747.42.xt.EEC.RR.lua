@@ -803,10 +803,8 @@ function engine_idle_control_RR(altitude_ft_in)
       for i = 0, 3 do
         EPR_target_bug[i] = string.format("%3.2f", epr_clb) + packs_adjustment_value + engine_anti_ice_adjustment_value
         display_EPR_ref[i] = math.min(string.format("%3.2f", epr_clb) + packs_adjustment_value + engine_anti_ice_adjustment_value, 1.90)
-
-        if B747DR_display_EPR_max[i] < B747DR_display_EPR_ref[i] then
-          display_EPR_max[i] = B747DR_display_EPR_ref[i]
-        end
+        -- The A/T clamps to this max, so it must track the climb limit.
+        display_EPR_max[i] = display_EPR_ref[i]
       end
     elseif string.match(B747DR_ref_thr_limit_mode, "CRZ") then
       EPR_actual, _, EPR_max_climb = in_flight_EPR_RR(altitude_ft_in, 0)
