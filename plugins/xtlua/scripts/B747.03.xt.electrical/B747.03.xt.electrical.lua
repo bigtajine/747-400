@@ -790,12 +790,10 @@ function B747_generator()
             and B747DR_button_switch_position[22] >= 0.95
         then
             simDR_generator_on[0] = 1
-            B747DR_CAS_caution_status[71]=0
         elseif simDR_generator_on[0] == 1
             and B747DR_button_switch_position[22] <= 0.05
         then
             simDR_generator_on[0] = 0
-            B747DR_CAS_caution_status[71]=1
         end
     end
 
@@ -808,12 +806,10 @@ function B747_generator()
                 and B747DR_button_switch_position[23] >= 0.95
         then
             simDR_generator_on[1] = 1
-            B747DR_CAS_caution_status[72]=0
         elseif simDR_generator_on[1] == 1
                 and B747DR_button_switch_position[23] <= 0.05
         then
             simDR_generator_on[1] = 0
-            B747DR_CAS_caution_status[72]=1
         end
     end
 
@@ -826,12 +822,10 @@ function B747_generator()
                 and B747DR_button_switch_position[24] >= 0.95
         then
             simDR_generator_on[2] = 1
-            B747DR_CAS_caution_status[73]=0
         elseif simDR_generator_on[2] == 1
                 and B747DR_button_switch_position[24] <= 0.05
         then
             simDR_generator_on[2] = 0
-            B747DR_CAS_caution_status[73]=1
         end
     end
 
@@ -844,12 +838,10 @@ function B747_generator()
                 and B747DR_button_switch_position[25] >= 0.95
         then
             simDR_generator_on[3] = 1
-            B747DR_CAS_caution_status[74]=0
         elseif simDR_generator_on[3] == 1
                 and B747DR_button_switch_position[25] <= 0.05
         then
             simDR_generator_on[3] = 0
-            B747DR_CAS_caution_status[74]=1
         end
     end
 
@@ -890,6 +882,12 @@ function B747_electrical_EICAS_msg()
         B747DR_CAS_advisory_status[14] = 1
     else
         B747DR_CAS_advisory_status[14] = 0
+    end
+
+    -- ELEC GEN OFF
+    -- The message is inhibited while its engine is shut down.
+    for i = 0, 3 do
+        B747DR_CAS_caution_status[71 + i] = (simDR_engine_running[i] == 1 and simDR_generator_off[i] == 1) and 1 or 0
     end
 
     -- >DRIVE DISC 1
