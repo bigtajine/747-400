@@ -104959,7 +104959,7 @@ GROUP First Officer ND
             gen_needle Rose
               POS 1023.000000 72.000000
               IMAGE EFIS/Maps/rose_S
-              DATAREF 
+              DATAREF sim/cockpit2/gauges/indicators/heading_AHARS_deg_mag_copilot
               SHOW_LESS 1.000000 laminar/B747/nd/mode/fo/sel_dial_pos
               HIDE
               LIGHT_MODE GLASS_AUTO
@@ -104973,7 +104973,7 @@ GROUP First Officer ND
             gen_needle Rose:MAP
               POS 1023.000000 72.000000
               IMAGE EFIS/Maps/roseM_S
-              DATAREF 
+              DATAREF laminar/B747/nd/up/fo
               SHOW_EQUAL 2.000000 laminar/B747/nd/mode/fo/sel_dial_pos
               HIDE
               LIGHT_MODE GLASS_AUTO
