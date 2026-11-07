@@ -785,10 +785,8 @@ function B747_efis_dh_capt_reset_switch_CMDhandler(phase, duration)
         B747DR_efis_dh_reset_capt_switch_pos = 1
         if B747DR_efis_min_ref_alt_capt_sel_dial_pos == 0 then
             simDR_radio_alt_DH_capt=350
-            simDR_radio_alt_DH_fo=350
         else
             B747DR_efis_baro_alt_ref_capt=1000
-            B747DR_efis_baro_alt_ref_fo=1000
         end
    
     elseif phase == 2 then
@@ -954,12 +952,9 @@ end
 function B747_efis_dh_fo_reset_switch_CMDhandler(phase, duration)
     if phase == 0 then
         B747DR_efis_dh_reset_fo_switch_pos = 1
-        B747DR_efis_dh_reset_capt_switch_pos = 1
         if B747DR_efis_min_ref_alt_fo_sel_dial_pos == 0 then
-            simDR_radio_alt_DH_capt=350
             simDR_radio_alt_DH_fo=350
         else
-            B747DR_efis_baro_alt_ref_capt=1000
             B747DR_efis_baro_alt_ref_fo=1000
         end
     elseif phase == 2 then
