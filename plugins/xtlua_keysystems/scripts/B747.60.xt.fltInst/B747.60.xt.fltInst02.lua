@@ -166,6 +166,8 @@ simDR_hsi_vdef_dots_copilot         = find_dataref("sim/cockpit2/radios/indicato
 
 simDR_elec_bus_volts				= find_dataref("sim/cockpit2/electrical/bus_volts")		
 simDR_time_now						= find_dataref("sim/time/total_running_time_sec")
+B747DR_mcp_altitude_ft              = find_dataref("laminar/B747/autopilot/heading/altitude_dial_ft")
+B747DR_ap_gs_status                 = find_dataref("laminar/B747/autopilot/glideslope_status")
 
 simDR_autopilot_TOGA_pitch_deg      	= find_dataref("sim/cockpit2/autopilot/TOGA_pitch_deg")
 --*************************************************************************************--
@@ -2994,6 +2996,19 @@ function fltInstDisagree()
     B747DR_CAS_caution_status[44] = persists("ias", math.abs(simDR_airspeed_pilot - simDR_airspeed_copilot) >= 5) and 1 or 0
 end
 
+-- >ALTITUDE ALERT
+-- It arms once the airplane is within 200 ft of the MCP altitude and alerts on a later
+-- deviation of more than 200 ft. Changing the MCP altitude disarms it.
+local alt_alert_armed, alt_alert_sel = false, nil
+function fltInstAltitudeAlert()
+    local sel = B747DR_mcp_altitude_ft
+    if sel ~= alt_alert_sel then alt_alert_armed, alt_alert_sel = false, sel end
+    local dev = math.abs(simDR_altitude_ft_pilot - sel)
+    if dev <= 200 then alt_alert_armed = true end
+    local landing = B747DR_ap_gs_status == 2 or (simDR_gear_deploy_ratio[0] > 0.99 and simDR_flap_ratio_control > 0.8)
+    B747DR_CAS_caution_status[2] = (alt_alert_armed and dev > 200 and not landing) and 1 or 0
+end
+
 function fltInstsetCRTs()
   
   
@@ -3415,6 +3430,7 @@ function after_physics()
     fltInstsetCRTs()
     fltInstsetASIs()
     fltInstDisagree()
+    fltInstAltitudeAlert()
     update_heading_bug()
 
     B747_10000_callout()
