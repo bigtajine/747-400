@@ -480,36 +480,13 @@ end
 ----- EICAS MESSAGES --------------------------------------------------------------------
 function B747_fire_EICAS_msg()
 
-    -- FIRE ENG 1
-    
-    if simDR_engine_fire[0] > 0 then 
-        B747DR_CAS_warning_status[11] = 1 
-    else
-        B747DR_CAS_warning_status[11] = 0
+    -- FIRE ENG 1-4, FIRE APU and >TEST IN PROG
+    -- B747DR_engine_fire includes the fire/overheat test, which shows the warnings too.
+    for i = 0, 3 do
+        B747DR_CAS_warning_status[11 + i] = B747DR_engine_fire[i] > 0 and 1 or 0
     end
-
-    -- FIRE ENG 2
-    
-    if simDR_engine_fire[1] > 0 then 
-        B747DR_CAS_warning_status[12] = 1 
-    else B747DR_CAS_warning_status[12] = 0
-    end
-
-    -- FIRE ENG 3
-    
-    if simDR_engine_fire[2] > 0 then 
-        B747DR_CAS_warning_status[13] = 1 
-    else
-        B747DR_CAS_warning_status[13] = 0
-    end
-
-    -- FIRE ENG 4
-    
-    if simDR_engine_fire[3] > 0 then 
-        B747DR_CAS_warning_status[14] = 1 
-    else
-        B747DR_CAS_warning_status[14] = 0
-    end
+    B747DR_CAS_warning_status[8] = B747DR_engine_fire[4] > 0 and 1 or 0
+    B747DR_CAS_warning_status[24] = B747DR_fire_ovht_button_pos == 1 and 1 or 0
 
 end
 
